@@ -22,7 +22,7 @@
 	</appender>
 	<root level="DEBUG">
 		<appender-ref ref="CONSOLE" />
-		<appender-ref ref="FILE" />
+		<appender-ref ref="FILE"  />
 	</root>
 	<logger name="io.github.dantesun" level="TRACE"></logger>
 </configuration>

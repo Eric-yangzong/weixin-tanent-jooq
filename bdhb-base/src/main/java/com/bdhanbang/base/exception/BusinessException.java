@@ -16,4 +16,8 @@ public class BusinessException extends BaseException {
 	public BusinessException(Exception e, String status, String error) {
 		super(e, status, error);
 	}
+
+	public BusinessException(String status, String error) {
+		super(new Exception(error), status, error);
+	}
 }

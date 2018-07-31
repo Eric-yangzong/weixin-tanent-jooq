@@ -123,7 +123,7 @@ public class JOOQHelper {
 			}
 
 			// 子查询条件
-			List<Query> queryChildren = query.getQuery();
+			List<Query> queryChildren = query.getQuerys();
 			if (queryChildren.size() > 0) {
 				Condition conditionChildren = analyzeQuery(tableImpl, queryChildren);
 				if (Objects.isNull(condition)) {

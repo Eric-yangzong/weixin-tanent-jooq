@@ -30,7 +30,7 @@ public class Query implements Serializable {
 	@Max(2)
 	private Integer relation;// 逻辑符 1:and ,2:or
 
-	List<Query> query = new ArrayList<Query>();
+	List<Query> querys = new ArrayList<Query>();
 
 	public String getField() {
 		return field;
@@ -64,12 +64,13 @@ public class Query implements Serializable {
 		this.relation = relation;
 	}
 
-	public List<Query> getQuery() {
-		return query;
+	public List<Query> getQuerys() {
+		return querys;
 	}
 
-	public void setQuery(List<Query> query) {
-		this.query = query;
+	public void setQuerys(List<Query> querys) {
+		this.querys = querys;
 	}
+
 
 }
