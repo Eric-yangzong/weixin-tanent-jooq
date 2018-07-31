@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration>
+	<jdbc>
+		<driver>org.postgresql.Driver</driver>
+		<url>jdbc:postgresql://10.10.168.250:5432/jiahhdb</url>
+		<user>postgres</user>
+		<password>calis@123</password>
+	</jdbc>
+
+	<generator>
+		<!-- 代码生成器 -->
+		<name>org.jooq.util.JavaGenerator</name>
+		<database>
+
+			<forcedTypes>
+				<forcedType>
+
+					<!-- Specify the Java type of your custom type. This corresponds to 
+						the Binding's <U> type. -->
+					<userType>com.fasterxml.jackson.databind.JsonNode</userType>
+
+					<!-- Associate that custom type with your binding. -->
+					<binding>com.bdhanbang.base.jooq.PostgresJsonBinding
+					</binding>
+
+					<!-- Add a Java regular expression matching fully-qualified columns. 
+						Use the pipe to separate several expressions. If provided, both "expressions" 
+						and "types" must match. -->
+					<expression>.*jsonb.*</expression>
+
+					<!-- Add a Java regular expression matching data types to be forced 
+						to have this type. Data types may be reported by your database as: - NUMBER 
+						regexp suggestion: NUMBER - NUMBER(5) regexp suggestion: NUMBER\(5\) - NUMBER(5, 
+						2) regexp suggestion: NUMBER\(5,\s*2\) - any other form It is thus recommended 
+						to use defensive regexes for types. If provided, both "expressions" and "types" 
+						must match. -->
+					<types>.*</types>
+				</forcedType>
+			</forcedTypes>
+
+			<!--下面这两行是为view也生成代码的关键 -->
+			<!--force generating id'sfor everything in public schema, that has an 
+				'id' field -->
+			<syntheticPrimaryKeys>public\..*\.id</syntheticPrimaryKeys>
+			<!--name for fake primary key -->
+			<overridePrimaryKeys>override_primmary_key</overridePrimaryKeys>
+
+			<name>org.jooq.util.postgres.PostgresDatabase</name>
+
+			<!--include和exclude用于控制为数据库中哪些表生成代码 -->
+			<includes>.*</includes>
+			<!--<excludes></excludes> -->
+
+			<!--数据库名称 -->
+			<inputSchema>userlib</inputSchema>
+		</database>
+
+		<generate>
+			<!--生成dao和pojo -->
+			<daos>true</daos>
+			<pojos>true</pojos>
+			<!--把数据库时间类型映射到java 8时间类型 -->
+			<javaTimeTypes>true</javaTimeTypes>
+			<!--<interfaces>true</interfaces> -->
+			<!--不在生成的代码中添加spring注释，比如@Repository -->
+			<springAnnotations>false</springAnnotations>
+		</generate>
+
+		<target>
+			<!--生成代码文件的包名及放置目录 -->
+			<packageName>com.generator</packageName>
+			<directory>src/main/java</directory>
+		</target>
+	</generator>
+</configuration>

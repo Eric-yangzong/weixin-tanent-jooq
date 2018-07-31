@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include
+		resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<!-- Override LOG PATTERN from defaults.xml -->
+	<property name="CONSOLE_LOG_PATTERN"
+		value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
+	<include
+		resource="org/springframework/boot/logging/logback/console-appender.xml" />
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/bdhb.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>logs/bdhb%d{yyyy-MM-dd}.log.zip
+			</fileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%-20(%d{HH:mm:ss.SSS} [%thread]) %-5level %logger{80} -
+				%msg%n</pattern>
+		</layout>
+	</appender>
+	<root level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</root>
+	<logger name="io.github.dantesun" level="TRACE"></logger>
+</configuration>
