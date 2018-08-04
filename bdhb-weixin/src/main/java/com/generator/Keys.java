@@ -4,14 +4,12 @@
 package com.generator;
 
 
-import com.generator.tables.TLogLogin;
-import com.generator.tables.TLogOperation;
-import com.generator.tables.TLoginType;
 import com.generator.tables.TMyLogin;
-import com.generator.tables.records.TLogLoginRecord;
-import com.generator.tables.records.TLogOperationRecord;
-import com.generator.tables.records.TLoginTypeRecord;
+import com.generator.tables.TWeXinOkapi;
+import com.generator.tables.TWeXinUserinfo;
 import com.generator.tables.records.TMyLoginRecord;
+import com.generator.tables.records.TWeXinOkapiRecord;
+import com.generator.tables.records.TWeXinUserinfoRecord;
 
 import javax.annotation.Generated;
 
@@ -21,7 +19,7 @@ import org.jooq.impl.Internal;
 
 /**
  * A class modelling foreign key relationships and constraints of tables of 
- * the <code>userlib</code> schema.
+ * the <code>tat0003_mod_login</code> schema.
  */
 @Generated(
     value = {
@@ -42,10 +40,9 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<TLogLoginRecord> LOG_LOGIN_PKEY = UniqueKeys0.LOG_LOGIN_PKEY;
-    public static final UniqueKey<TLogOperationRecord> LOG_OPERATION_PKEY = UniqueKeys0.LOG_OPERATION_PKEY;
-    public static final UniqueKey<TLoginTypeRecord> T_LOGIN_TYPE_PKEY = UniqueKeys0.T_LOGIN_TYPE_PKEY;
     public static final UniqueKey<TMyLoginRecord> MY_LOGIN_PKEY = UniqueKeys0.MY_LOGIN_PKEY;
+    public static final UniqueKey<TWeXinOkapiRecord> T_WE_XIN_OKAPI_PKEY = UniqueKeys0.T_WE_XIN_OKAPI_PKEY;
+    public static final UniqueKey<TWeXinUserinfoRecord> T_WE_XIN_USERINFO_PKEY = UniqueKeys0.T_WE_XIN_USERINFO_PKEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -57,9 +54,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<TLogLoginRecord> LOG_LOGIN_PKEY = Internal.createUniqueKey(TLogLogin.T_LOG_LOGIN, "log_login_pkey", TLogLogin.T_LOG_LOGIN.ID);
-        public static final UniqueKey<TLogOperationRecord> LOG_OPERATION_PKEY = Internal.createUniqueKey(TLogOperation.T_LOG_OPERATION, "log_operation_pkey", TLogOperation.T_LOG_OPERATION.ID);
-        public static final UniqueKey<TLoginTypeRecord> T_LOGIN_TYPE_PKEY = Internal.createUniqueKey(TLoginType.T_LOGIN_TYPE, "t_login_type_pkey", TLoginType.T_LOGIN_TYPE.ID);
         public static final UniqueKey<TMyLoginRecord> MY_LOGIN_PKEY = Internal.createUniqueKey(TMyLogin.T_MY_LOGIN, "my_login_pkey", TMyLogin.T_MY_LOGIN.ID);
+        public static final UniqueKey<TWeXinOkapiRecord> T_WE_XIN_OKAPI_PKEY = Internal.createUniqueKey(TWeXinOkapi.T_WE_XIN_OKAPI, "t_we_xin_okapi_pkey", TWeXinOkapi.T_WE_XIN_OKAPI.ID);
+        public static final UniqueKey<TWeXinUserinfoRecord> T_WE_XIN_USERINFO_PKEY = Internal.createUniqueKey(TWeXinUserinfo.T_WE_XIN_USERINFO, "t_we_xin_userinfo_pkey", TWeXinUserinfo.T_WE_XIN_USERINFO.ID);
     }
 }

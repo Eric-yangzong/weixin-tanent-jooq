@@ -30,6 +30,8 @@ public interface BaseService<T extends TableImpl<?>, E extends Serializable> {
 
 	int updateEntity(String schema, Class<T> clazz, E entity);
 
+	E selectEntity(String schema, Class<T> clazz, Class<E> entityClass, Object id);
+
 	List<E> queryList(Class<T> clazz, Class<E> entityClass, List<Query> queryList);
 
 	List<E> queryList(String schema, Class<T> clazz, Class<E> entityClass, List<Query> queryList);

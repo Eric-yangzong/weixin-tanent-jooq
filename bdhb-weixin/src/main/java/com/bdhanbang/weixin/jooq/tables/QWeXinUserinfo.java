@@ -4,9 +4,16 @@ import org.jooq.Schema;
 
 import com.bdhanbang.base.jooq.IEntity;
 import com.bdhanbang.base.jooq.ISchemaSwitch;
-import com.generator.tables.TLogLogin;
+import com.generator.tables.TWeXinUserinfo;
 
-public class QLogLogin extends TLogLogin implements ISchemaSwitch, IEntity {
+/**
+ * @ClassName: QWeXinUserinfo
+ * @Description: 存放微信用户信息
+ * @author yangxz
+ * @date 2018年8月4日 下午12:42:25
+ * 
+ */
+public class QWeXinUserinfo extends TWeXinUserinfo implements ISchemaSwitch, IEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,4 +35,5 @@ public class QLogLogin extends TLogLogin implements ISchemaSwitch, IEntity {
 	public String getEntityIdName() {
 		return idName;
 	}
+
 }

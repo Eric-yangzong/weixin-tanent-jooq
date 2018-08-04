@@ -1,4 +1,4 @@
-#建立schema 【_mod_login】各个业务模块自定义
+﻿#建立schema 【_mod_login】各个业务模块自定义
 schema.create=CREATE SCHEMA IF NOT EXISTS ${tenantid}_mod_login;
 #建立数据库表		
 schema.table=CREATE TABLE IF NOT EXISTS ${tenantid}_mod_login.T_MY_LOGIN (\
@@ -13,29 +13,34 @@ schema.table=CREATE TABLE IF NOT EXISTS ${tenantid}_mod_login.T_MY_LOGIN (\
 					    PRIMARY KEY (id)\
 					) WITH (\
 					    OIDS = FALSE\
-					  );
-#向数据库中写入数据
-#schema.insert=insert into ${tenantid}_mod_log.t_log_login(id,\
-			  user_code,user_name,login_type,login_time,login_ip,jsonb) \
-			  values('65291cfd-6dd6-400c-9cbd-2210cb2bc9e2','admin_code',\
-			  'admin',1,now(),'192.168.1.1','{"aa":"bbb"}');
-#建立视图		
-#schema.index=CREATE INDEX IF NOT EXISTS IDX_APP_CODE ON \
-		${tenantid}_mod_log.T_LOG_OPERATION (APP_CODE);\
-		CREATE INDEX IF NOT EXISTS IDX_APP_NAME ON \
-		${tenantid}_mod_log.T_LOG_OPERATION (APP_NAME);\
-		CREATE INDEX IF NOT EXISTS IDX_MODULE_ID ON \
-		${tenantid}_mod_log.T_LOG_OPERATION (MODULE_ID);\
-		CREATE INDEX IF NOT EXISTS IDX_USER_CODE ON \
-		${tenantid}_mod_log.T_LOG_OPERATION (USER_CODE);\
-		CREATE INDEX IF NOT EXISTS IDX_USER_NAME ON \
-		${tenantid}_mod_log.T_LOG_OPERATION (USER_NAME);\
-		CREATE INDEX IF NOT EXISTS IDX_OPT_TIME ON \
-		${tenantid}_mod_log.T_LOG_OPERATION (OPT_TIME);\
-		CREATE INDEX IF NOT EXISTS IDX_QUOTE_ADDR ON \
-		${tenantid}_mod_log.T_LOG_OPERATION (QUOTE_ADDR);\
-		CREATE INDEX IF NOT EXISTS IDX_OPT_MARK ON \
-		${tenantid}_mod_log.T_LOG_OPERATION (OPT_MARK);
-
-#删除schema	
-schema.drop=DROP TABLE IF EXISTS ${tenantid}_mod_login.T_MY_LOGIN;
+					  );\
+		     CREATE TABLE IF NOT EXISTS ${tenantid}_mod_login.T_WE_XIN_OKAPI (\
+			  id          uuid NOT NULL,\
+			  tanentid    varchar(100) NOT NULL,\
+			  app_id      varchar(100) NOT NULL,\
+			  app_secret  varchar(100) NOT NULL,\
+			  user_name   varchar(100) NOT NULL,\
+			  "password"  varchar(100) NOT NULL,\
+			  note        varchar(500),\
+			  "jsonb"     jsonb,\
+			  CONSTRAINT t_we_xin_okapi_pkey \
+			    PRIMARY KEY (id)\
+			) WITH (\
+			    OIDS = FALSE\
+			  );\
+			  CREATE TABLE IF NOT EXISTS  ${tenantid}_mod_login.T_WE_XIN_USERINFO (\
+			  id          uuid NOT NULL,\
+			  open_id     varchar(100) NOT NULL,\
+			  nick_name   varchar(100),\
+			  gender      integer,\
+			  "language"  varchar(100),\
+			  city        varchar(100),\
+			  province    varchar(100),\
+			  country     varchar(100),\
+			  avatar_url  varchar(500),\
+			  watermark   jsonb,\
+			  CONSTRAINT t_we_xin_userinfo_pkey \
+			    PRIMARY KEY (id)\
+			) WITH (\
+			    OIDS = FALSE\
+			  );

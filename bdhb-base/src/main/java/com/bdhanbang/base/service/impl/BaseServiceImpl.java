@@ -121,6 +121,24 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 	}
 
 	@Override
+	public E selectEntity(String schema, Class<T> clazz, Class<E> entityClass, Object id) {
+
+		T tableImpl = createTableImpl(schema, clazz);
+
+		Field<?>[] fields = tableImpl.fields();
+
+		SelectJoinStep<Record> selectStep = dsl.select(fields).from(tableImpl);
+
+		TableField<?, Object> tableIdField = getTableIdField(tableImpl);
+
+		selectStep.where(tableIdField.eq(id));
+
+		Record record = selectStep.fetchOne();
+
+		return getNewEntity(record, fields, entityClass);
+	}
+
+	@Override
 	public List<E> queryList(Class<T> clazz, Class<E> entityClass, List<Query> queryList) {
 		return queryList(GenSchema.schemaName, clazz, entityClass, queryList);
 	}

@@ -22,13 +22,13 @@ public class Query implements Serializable {
 
 	@Min(1)
 	@Max(10)
-	private Integer op;// 操作符1:=,2:!=,3:like,4:>,5:>=,6:<,7:<=,8:not like, 9:isNull,10:isNotNull
+	private Integer op = 1;// 操作符1:=,2:!=,3:like,4:>,5:>=,6:<,7:<=,8:not like, 9:isNull,10:isNotNull
 
 	private Object value;// 字段值
 
 	@Min(1)
 	@Max(2)
-	private Integer relation;// 逻辑符 1:and ,2:or
+	private Integer relation = 1;// 逻辑符 1:and ,2:or
 
 	List<Query> querys = new ArrayList<Query>();
 
@@ -71,6 +71,5 @@ public class Query implements Serializable {
 	public void setQuerys(List<Query> querys) {
 		this.querys = querys;
 	}
-
 
 }

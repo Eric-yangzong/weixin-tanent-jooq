@@ -4,16 +4,15 @@
 package com.generator;
 
 
-import com.generator.tables.TLogLogin;
-import com.generator.tables.TLogOperation;
-import com.generator.tables.TLoginType;
 import com.generator.tables.TMyLogin;
+import com.generator.tables.TWeXinOkapi;
+import com.generator.tables.TWeXinUserinfo;
 
 import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in userlib
+ * Convenience access to all tables in tat0003_mod_login
  */
 @Generated(
     value = {
@@ -26,22 +25,17 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * The table <code>userlib.t_log_login</code>.
-     */
-    public static final TLogLogin T_LOG_LOGIN = com.generator.tables.TLogLogin.T_LOG_LOGIN;
-
-    /**
-     * The table <code>userlib.t_log_operation</code>.
-     */
-    public static final TLogOperation T_LOG_OPERATION = com.generator.tables.TLogOperation.T_LOG_OPERATION;
-
-    /**
-     * The table <code>userlib.t_login_type</code>.
-     */
-    public static final TLoginType T_LOGIN_TYPE = com.generator.tables.TLoginType.T_LOGIN_TYPE;
-
-    /**
-     * The table <code>userlib.t_my_login</code>.
+     * The table <code>tat0003_mod_login.t_my_login</code>.
      */
     public static final TMyLogin T_MY_LOGIN = com.generator.tables.TMyLogin.T_MY_LOGIN;
+
+    /**
+     * The table <code>tat0003_mod_login.t_we_xin_okapi</code>.
+     */
+    public static final TWeXinOkapi T_WE_XIN_OKAPI = com.generator.tables.TWeXinOkapi.T_WE_XIN_OKAPI;
+
+    /**
+     * The table <code>tat0003_mod_login.t_we_xin_userinfo</code>.
+     */
+    public static final TWeXinUserinfo T_WE_XIN_USERINFO = com.generator.tables.TWeXinUserinfo.T_WE_XIN_USERINFO;
 }

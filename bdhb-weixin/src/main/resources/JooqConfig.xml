@@ -26,7 +26,8 @@
 					<!-- Add a Java regular expression matching fully-qualified columns. 
 						Use the pipe to separate several expressions. If provided, both "expressions" 
 						and "types" must match. -->
-					<expression>.*jsonb.*</expression>
+					<expression>.*jsonb|watermark.*</expression>
+
 
 					<!-- Add a Java regular expression matching data types to be forced 
 						to have this type. Data types may be reported by your database as: - NUMBER 
@@ -52,12 +53,12 @@
 			<!--<excludes></excludes> -->
 
 			<!--数据库名称 -->
-			<inputSchema>userlib</inputSchema>
+			<inputSchema>tat0003_mod_login</inputSchema>
 		</database>
 
 		<generate>
 			<!--生成dao和pojo -->
-			<daos>true</daos>
+			<daos>false</daos>
 			<pojos>true</pojos>
 			<!--把数据库时间类型映射到java 8时间类型 -->
 			<javaTimeTypes>true</javaTimeTypes>
