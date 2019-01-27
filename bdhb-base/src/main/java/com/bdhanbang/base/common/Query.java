@@ -72,4 +72,10 @@ public class Query implements Serializable {
 		this.querys = querys;
 	}
 
+	public Query add(Query query) {
+		this.querys.add(query);
+
+		return this;
+	};
+
 }

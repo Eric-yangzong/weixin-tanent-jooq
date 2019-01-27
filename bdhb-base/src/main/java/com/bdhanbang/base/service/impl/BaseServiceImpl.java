@@ -14,6 +14,7 @@ import org.jooq.InsertValuesStepN;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
+import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.TableImpl;
@@ -43,23 +44,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @param <E>
  *            询用实体
  */
-public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> implements BaseService<T, E> {
+
+/**
+ * @ClassName: BaseServiceImpl
+ * @Description: Service的基础实现类
+ * @author yangxz
+ * @date 2018年7月14日 上午10:51:16
+ * 
+ * @param <T>
+ *            Q开头的查询用和tableImpl
+ * @param <E>
+ *            询用实体
+ */
+public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Serializable>
+		implements BaseService<T, E> {
 
 	@Autowired
-	DSLContext dsl;
+	protected DSLContext dsl;
 
 	@Override
-	public int deleteEntity(Class<T> clazz, Object id) {
-
-		return deleteEntity(GenSchema.schemaName, clazz, id);
-	}
-
-	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int deleteEntity(String schema, Class<T> clazz, Object id) {
 
 		T tableImpl = createTableImpl(schema, clazz);
 
-		DeleteWhereStep<?> deleteStep = dsl.delete(tableImpl);
+		DeleteWhereStep<?> deleteStep = dsl.delete((Table) tableImpl);
 
 		TableField<?, Object> tableIdField = getTableIdField(tableImpl);
 
@@ -69,12 +78,23 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 	}
 
 	@Override
-	public int insertEntity(Class<T> clazz, E entity) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public int deleteEntitys(String schema, Class<T> clazz, List<Query> queryList) {
 
-		return insertEntity(GenSchema.schemaName, clazz, entity);
+		T tableImpl = createTableImpl(schema, clazz);
+
+		DeleteWhereStep<?> deleteStep = dsl.delete((Table) tableImpl);
+
+		Condition delWhere = JOOQHelper.analyzeQuery(tableImpl, queryList);
+
+		deleteStep.where(delWhere);
+
+		return deleteStep.execute();
+
 	}
 
 	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int insertEntity(String schema, Class<T> clazz, E entity) {
 
 		T tableImpl = createTableImpl(schema, clazz);
@@ -82,7 +102,7 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 		Field<?>[] fields = tableImpl.fields();
 		List<Object> values = getValueList(fields, entity);
 
-		InsertValuesStepN<?> insertStep = dsl.insertInto(tableImpl).columns(fields);
+		InsertValuesStepN<?> insertStep = dsl.insertInto((Table) tableImpl).columns(fields);
 
 		insertStep.values(values);// 进行赋值工作
 
@@ -91,12 +111,21 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 	}
 
 	@Override
-	public int updateEntity(Class<T> clazz, E entity) {
-		return updateEntity(GenSchema.schemaName, clazz, entity);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public int insertEntityBatch(String schema, Class<T> clazz, List<E> entitys) {
+		T tableImpl = createTableImpl(schema, clazz);
+
+		Field<?>[] fields = tableImpl.fields();
+		InsertValuesStepN<?> insertStep = dsl.insertInto((Table) tableImpl).columns(fields);
+		for (E entity : entitys) {
+			List<Object> values = getValueList(fields, entity);
+			insertStep.values(values);// 进行赋值工作
+		}
+		return insertStep.execute();// 执行写入工作
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int updateEntity(String schema, Class<T> clazz, E entity) {
 
 		T tableImpl = createTableImpl(schema, clazz);
@@ -104,7 +133,7 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 		TableField<?, Object> tableIdField = getTableIdField(tableImpl);
 		Object idValue = getFieldIdValue(tableImpl, entity);
 
-		UpdateSetMoreStep<?> updateStep = dsl.update(tableImpl).set(tableIdField, idValue);
+		UpdateSetMoreStep<?> updateStep = dsl.update((Table) tableImpl).set(tableIdField, idValue);
 
 		Field<?>[] fields = tableImpl.fields();
 		List<Object> values = getValueList(fields, entity);
@@ -120,8 +149,34 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public int updateEntitys(String schema, Class<T> clazz, E entity, List<Query> queryList) {
+
+		T tableImpl = createTableImpl(schema, clazz);
+
+		TableField<?, Object> tableIdField = getTableIdField(tableImpl);
+		Object idValue = getFieldIdValue(tableImpl, entity);
+
+		UpdateSetMoreStep<?> updateStep = dsl.update((Table) tableImpl).set(tableIdField, idValue);
+
+		Field<?>[] fields = tableImpl.fields();
+		List<Object> values = getValueList(fields, entity);
+
+		for (int i = 0; i < fields.length; i++) {
+			TableField<?, Object> tableField = (TableField<?, Object>) fields[i];
+			updateStep.set(tableField, values.get(i));
+		}
+
+		Condition updateWhere = JOOQHelper.analyzeQuery(tableImpl, queryList);
+
+		updateStep.where(updateWhere);
+
+		return updateStep.execute();
+
+	}
+
 	@Override
-	public E selectEntity(String schema, Class<T> clazz, Class<E> entityClass, Object id) {
+	public E getEntity(String schema, Class<T> clazz, Class<E> entityClass, Object id) {
 
 		T tableImpl = createTableImpl(schema, clazz);
 
@@ -136,11 +191,6 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 		Record record = selectStep.fetchOne();
 
 		return getNewEntity(record, fields, entityClass);
-	}
-
-	@Override
-	public List<E> queryList(Class<T> clazz, Class<E> entityClass, List<Query> queryList) {
-		return queryList(GenSchema.schemaName, clazz, entityClass, queryList);
 	}
 
 	@Override
@@ -213,7 +263,12 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 	 * @return E 返回类型
 	 * @throws:
 	 */
-	private E getNewEntity(Record record, Field<?>[] fields, Class<E> entityClass) {
+	protected E getNewEntity(Record record, Field<?>[] fields, Class<E> entityClass) {
+
+		if (Objects.isNull(record)) {
+			return null;
+		}
+
 		E entity = getNewEntity(entityClass);
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -258,7 +313,7 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 	 * @return E 返回类型
 	 * @throws:
 	 */
-	private E getNewEntity(Class<E> entityClass) {
+	protected E getNewEntity(Class<E> entityClass) {
 		try {
 
 			return entityClass.newInstance();
@@ -281,12 +336,11 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 	 * @return Object 返回类型
 	 * @throws:
 	 */
-	private Object getFieldIdValue(T tableImpl, E entity) {
+	protected Object getFieldIdValue(T tableImpl, E entity) {
 
 		try {
 
 			String idName = ((IEntity) tableImpl).getEntityIdName();
-			System.out.println(tableImpl.getPrimaryKey().getName());
 
 			java.lang.reflect.Field fieldVal = entity.getClass().getDeclaredField(JOOQHelper.UnderlineToHump(idName));
 			fieldVal.setAccessible(true);
@@ -323,7 +377,7 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 	 * @throws:
 	 */
 	@SuppressWarnings("unchecked")
-	private TableField<?, Object> getTableIdField(T tableImpl) {
+	protected TableField<?, Object> getTableIdField(T tableImpl) {
 		String idName = ((IEntity) tableImpl).getEntityIdName();
 
 		TableField<?, Object> tableIdField = (TableField<?, Object>) tableImpl.field(idName);
@@ -342,7 +396,7 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 	 * @return List<Object> 返回类型
 	 * @throws:
 	 */
-	private List<Object> getValueList(Field<?>[] fields, E entity) {
+	protected List<Object> getValueList(Field<?>[] fields, E entity) {
 		try {
 
 			List<Object> values = new ArrayList<>();
@@ -374,7 +428,7 @@ public class BaseServiceImpl<T extends TableImpl<?>, E extends Serializable> imp
 	 * @return T 返回类型
 	 * @throws:
 	 */
-	private T createTableImpl(String schema, Class<T> clazz) {
+	protected T createTableImpl(String schema, Class<T> clazz) {
 		try {
 			T tableImpl = clazz.newInstance();
 

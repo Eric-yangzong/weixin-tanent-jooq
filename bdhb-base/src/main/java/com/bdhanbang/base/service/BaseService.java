@@ -18,21 +18,17 @@ import com.bdhanbang.base.common.QueryResults;
  */
 public interface BaseService<T extends TableImpl<?>, E extends Serializable> {
 
-	int deleteEntity(Class<T> clazz, Object id);
-
 	int deleteEntity(String schema, Class<T> clazz, Object id);
 
-	int insertEntity(Class<T> clazz, E entity);
+	int deleteEntitys(String schema, Class<T> clazz, List<Query> queryList);
 
 	int insertEntity(String schema, Class<T> clazz, E entity);
 
-	int updateEntity(Class<T> clazz, E entity);
+	int insertEntityBatch(String schema, Class<T> clazz, List<E> entitys);
 
 	int updateEntity(String schema, Class<T> clazz, E entity);
 
-	E selectEntity(String schema, Class<T> clazz, Class<E> entityClass, Object id);
-
-	List<E> queryList(Class<T> clazz, Class<E> entityClass, List<Query> queryList);
+	E getEntity(String schema, Class<T> clazz, Class<E> entityClass, Object id);
 
 	List<E> queryList(String schema, Class<T> clazz, Class<E> entityClass, List<Query> queryList);
 

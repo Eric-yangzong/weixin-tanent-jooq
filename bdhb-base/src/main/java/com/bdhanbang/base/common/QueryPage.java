@@ -56,8 +56,15 @@ public class QueryPage implements Serializable {
 		return querys;
 	}
 
-	public void setQuery(List<Query> querys) {
+	public void setQuerys(List<Query> querys) {
 		this.querys = querys;
+	}
+
+	public QueryPage add(Query query) {
+
+		this.querys.add(query);
+
+		return this;
 	}
 
 }

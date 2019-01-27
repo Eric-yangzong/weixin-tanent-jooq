@@ -18,6 +18,6 @@ public class BusinessException extends BaseException {
 	}
 
 	public BusinessException(String status, String error) {
-		super(new Exception(error), status, error);
+		super(new RuntimeException(), status, error);
 	}
 }

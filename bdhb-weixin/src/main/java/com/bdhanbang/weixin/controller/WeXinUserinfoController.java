@@ -44,8 +44,8 @@ public class WeXinUserinfoController {
 			throw new BusinessException("100001", "数据不能为空");
 		}
 
-		WeXinUserinfo oldEntity = weXinUserinfoService.selectEntity(realSchema, QWeXinUserinfo.class,
-				WeXinUserinfo.class, weXinUserinfo.getId());
+		WeXinUserinfo oldEntity = weXinUserinfoService.getEntity(realSchema, QWeXinUserinfo.class, WeXinUserinfo.class,
+				weXinUserinfo.getId());
 
 		// 只更新呢称
 		oldEntity.setNickName(weXinUserinfo.getNickName());
