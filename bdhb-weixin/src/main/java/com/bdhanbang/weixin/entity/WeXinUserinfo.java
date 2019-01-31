@@ -14,22 +14,24 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class WeXinUserinfo implements Serializable {
 
-	private static final long serialVersionUID = 387578048;
 
-	private UUID id;
-	private String openId;
-	private String nickName;
-	private Integer gender;
-	private String language;
-	private String city;
-	private String province;
-	private String country;
-	private String avatarUrl;
-	private JsonNode watermark;
+    private static final long serialVersionUID = 2006772118;
 
-	public WeXinUserinfo() {}
+    private UUID     id;
+    private String   openId;
+    private String   nickName;
+    private Integer  gender;
+    private String   language;
+    private String   city;
+    private String   province;
+    private String   country;
+    private String   avatarUrl;
+    private JsonNode watermark;
+    private JsonNode jsonb;
 
-	public WeXinUserinfo(WeXinUserinfo value) {
+    public WeXinUserinfo() {}
+
+    public WeXinUserinfo(WeXinUserinfo value) {
         this.id = value.id;
         this.openId = value.openId;
         this.nickName = value.nickName;
@@ -40,9 +42,10 @@ public class WeXinUserinfo implements Serializable {
         this.country = value.country;
         this.avatarUrl = value.avatarUrl;
         this.watermark = value.watermark;
+        this.jsonb = value.jsonb;
     }
 
-	public WeXinUserinfo(
+    public WeXinUserinfo(
         UUID     id,
         String   openId,
         String   nickName,
@@ -52,7 +55,8 @@ public class WeXinUserinfo implements Serializable {
         String   province,
         String   country,
         String   avatarUrl,
-        JsonNode watermark
+        JsonNode watermark,
+        JsonNode jsonb
     ) {
         this.id = id;
         this.openId = openId;
@@ -64,104 +68,115 @@ public class WeXinUserinfo implements Serializable {
         this.country = country;
         this.avatarUrl = avatarUrl;
         this.watermark = watermark;
+        this.jsonb = jsonb;
     }
 
-	public UUID getId() {
-		return this.id;
-	}
+    public UUID getId() {
+        return this.id;
+    }
 
-	public void setId(UUID id) {
-		this.id = id;
-	}
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
-	public String getOpenId() {
-		return this.openId;
-	}
+    public String getOpenId() {
+        return this.openId;
+    }
 
-	public void setOpenId(String openId) {
-		this.openId = openId;
-	}
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
 
-	public String getNickName() {
-		return this.nickName;
-	}
+    public String getNickName() {
+        return this.nickName;
+    }
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
-	public Integer getGender() {
-		return this.gender;
-	}
+    public Integer getGender() {
+        return this.gender;
+    }
 
-	public void setGender(Integer gender) {
-		this.gender = gender;
-	}
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
 
-	public String getLanguage() {
-		return this.language;
-	}
+    public String getLanguage() {
+        return this.language;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-	public String getCity() {
-		return this.city;
-	}
+    public String getCity() {
+        return this.city;
+    }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public String getProvince() {
-		return this.province;
-	}
+    public String getProvince() {
+        return this.province;
+    }
 
-	public void setProvince(String province) {
-		this.province = province;
-	}
+    public void setProvince(String province) {
+        this.province = province;
+    }
 
-	public String getCountry() {
-		return this.country;
-	}
+    public String getCountry() {
+        return this.country;
+    }
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
-	public String getAvatarUrl() {
-		return this.avatarUrl;
-	}
+    public String getAvatarUrl() {
+        return this.avatarUrl;
+    }
 
-	public void setAvatarUrl(String avatarUrl) {
-		this.avatarUrl = avatarUrl;
-	}
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 
-	public JsonNode getWatermark() {
-		return this.watermark;
-	}
+    public JsonNode getWatermark() {
+        return this.watermark;
+    }
 
-	public void setWatermark(JsonNode watermark) {
-		this.watermark = watermark;
-	}
+    public void setWatermark(JsonNode watermark) {
+        this.watermark = watermark;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder("TWeXinUserinfo (");
+    public JsonNode getJsonb() {
+        return this.jsonb;
+    }
 
-		sb.append(id);
-		sb.append(", ").append(openId);
-		sb.append(", ").append(nickName);
-		sb.append(", ").append(gender);
-		sb.append(", ").append(language);
-		sb.append(", ").append(city);
-		sb.append(", ").append(province);
-		sb.append(", ").append(country);
-		sb.append(", ").append(avatarUrl);
-		sb.append(", ").append(watermark);
+    public void setJsonb(JsonNode jsonb) {
+        this.jsonb = jsonb;
+    }
 
-		sb.append(")");
-		return sb.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("WeXinUserinfo (");
+
+        sb.append(id);
+        sb.append(", ").append(openId);
+        sb.append(", ").append(nickName);
+        sb.append(", ").append(gender);
+        sb.append(", ").append(language);
+        sb.append(", ").append(city);
+        sb.append(", ").append(province);
+        sb.append(", ").append(country);
+        sb.append(", ").append(avatarUrl);
+        sb.append(", ").append(watermark);
+        sb.append(", ").append(jsonb);
+
+        sb.append(")");
+        return sb.toString();
+    }
+
 }

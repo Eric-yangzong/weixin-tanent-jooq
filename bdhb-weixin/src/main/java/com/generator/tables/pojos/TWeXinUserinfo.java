@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TWeXinUserinfo implements Serializable {
 
-    private static final long serialVersionUID = 387578048;
+    private static final long serialVersionUID = 2006772118;
 
     private UUID     id;
     private String   openId;
@@ -37,6 +37,7 @@ public class TWeXinUserinfo implements Serializable {
     private String   country;
     private String   avatarUrl;
     private JsonNode watermark;
+    private JsonNode jsonb;
 
     public TWeXinUserinfo() {}
 
@@ -51,6 +52,7 @@ public class TWeXinUserinfo implements Serializable {
         this.country = value.country;
         this.avatarUrl = value.avatarUrl;
         this.watermark = value.watermark;
+        this.jsonb = value.jsonb;
     }
 
     public TWeXinUserinfo(
@@ -63,7 +65,8 @@ public class TWeXinUserinfo implements Serializable {
         String   province,
         String   country,
         String   avatarUrl,
-        JsonNode watermark
+        JsonNode watermark,
+        JsonNode jsonb
     ) {
         this.id = id;
         this.openId = openId;
@@ -75,6 +78,7 @@ public class TWeXinUserinfo implements Serializable {
         this.country = country;
         this.avatarUrl = avatarUrl;
         this.watermark = watermark;
+        this.jsonb = jsonb;
     }
 
     public UUID getId() {
@@ -157,6 +161,14 @@ public class TWeXinUserinfo implements Serializable {
         this.watermark = watermark;
     }
 
+    public JsonNode getJsonb() {
+        return this.jsonb;
+    }
+
+    public void setJsonb(JsonNode jsonb) {
+        this.jsonb = jsonb;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TWeXinUserinfo (");
@@ -171,6 +183,7 @@ public class TWeXinUserinfo implements Serializable {
         sb.append(", ").append(country);
         sb.append(", ").append(avatarUrl);
         sb.append(", ").append(watermark);
+        sb.append(", ").append(jsonb);
 
         sb.append(")");
         return sb.toString();

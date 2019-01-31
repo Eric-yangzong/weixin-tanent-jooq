@@ -4,9 +4,13 @@
 package com.generator;
 
 
+import com.generator.tables.AuthCredentials;
+import com.generator.tables.TMyData;
 import com.generator.tables.TMyLogin;
 import com.generator.tables.TWeXinOkapi;
 import com.generator.tables.TWeXinUserinfo;
+import com.generator.tables.records.AuthCredentialsRecord;
+import com.generator.tables.records.TMyDataRecord;
 import com.generator.tables.records.TMyLoginRecord;
 import com.generator.tables.records.TWeXinOkapiRecord;
 import com.generator.tables.records.TWeXinUserinfoRecord;
@@ -40,6 +44,8 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<AuthCredentialsRecord> AUTH_CREDENTIALS_PKEY = UniqueKeys0.AUTH_CREDENTIALS_PKEY;
+    public static final UniqueKey<TMyDataRecord> T_MY_DATA_PKEY = UniqueKeys0.T_MY_DATA_PKEY;
     public static final UniqueKey<TMyLoginRecord> MY_LOGIN_PKEY = UniqueKeys0.MY_LOGIN_PKEY;
     public static final UniqueKey<TWeXinOkapiRecord> T_WE_XIN_OKAPI_PKEY = UniqueKeys0.T_WE_XIN_OKAPI_PKEY;
     public static final UniqueKey<TWeXinUserinfoRecord> T_WE_XIN_USERINFO_PKEY = UniqueKeys0.T_WE_XIN_USERINFO_PKEY;
@@ -54,6 +60,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<AuthCredentialsRecord> AUTH_CREDENTIALS_PKEY = Internal.createUniqueKey(AuthCredentials.AUTH_CREDENTIALS, "auth_credentials_pkey", AuthCredentials.AUTH_CREDENTIALS._ID);
+        public static final UniqueKey<TMyDataRecord> T_MY_DATA_PKEY = Internal.createUniqueKey(TMyData.T_MY_DATA, "t_my_data_pkey", TMyData.T_MY_DATA.ID);
         public static final UniqueKey<TMyLoginRecord> MY_LOGIN_PKEY = Internal.createUniqueKey(TMyLogin.T_MY_LOGIN, "my_login_pkey", TMyLogin.T_MY_LOGIN.ID);
         public static final UniqueKey<TWeXinOkapiRecord> T_WE_XIN_OKAPI_PKEY = Internal.createUniqueKey(TWeXinOkapi.T_WE_XIN_OKAPI, "t_we_xin_okapi_pkey", TWeXinOkapi.T_WE_XIN_OKAPI.ID);
         public static final UniqueKey<TWeXinUserinfoRecord> T_WE_XIN_USERINFO_PKEY = Internal.createUniqueKey(TWeXinUserinfo.T_WE_XIN_USERINFO, "t_we_xin_userinfo_pkey", TWeXinUserinfo.T_WE_XIN_USERINFO.ID);

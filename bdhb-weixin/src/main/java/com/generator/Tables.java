@@ -4,6 +4,8 @@
 package com.generator;
 
 
+import com.generator.tables.AuthCredentials;
+import com.generator.tables.TMyData;
 import com.generator.tables.TMyLogin;
 import com.generator.tables.TWeXinOkapi;
 import com.generator.tables.TWeXinUserinfo;
@@ -23,6 +25,16 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>tat0003_mod_login.auth_credentials</code>.
+     */
+    public static final AuthCredentials AUTH_CREDENTIALS = com.generator.tables.AuthCredentials.AUTH_CREDENTIALS;
+
+    /**
+     * The table <code>tat0003_mod_login.t_my_data</code>.
+     */
+    public static final TMyData T_MY_DATA = com.generator.tables.TMyData.T_MY_DATA;
 
     /**
      * The table <code>tat0003_mod_login.t_my_login</code>.

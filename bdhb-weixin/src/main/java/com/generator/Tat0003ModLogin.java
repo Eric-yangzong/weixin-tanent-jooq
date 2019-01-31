@@ -4,6 +4,8 @@
 package com.generator;
 
 
+import com.generator.tables.AuthCredentials;
+import com.generator.tables.TMyData;
 import com.generator.tables.TMyLogin;
 import com.generator.tables.TWeXinOkapi;
 import com.generator.tables.TWeXinUserinfo;
@@ -32,12 +34,22 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tat0003ModLogin extends SchemaImpl {
 
-    private static final long serialVersionUID = 506080241;
+    private static final long serialVersionUID = -1886699969;
 
     /**
      * The reference instance of <code>tat0003_mod_login</code>
      */
     public static final Tat0003ModLogin TAT0003_MOD_LOGIN = new Tat0003ModLogin();
+
+    /**
+     * The table <code>tat0003_mod_login.auth_credentials</code>.
+     */
+    public final AuthCredentials AUTH_CREDENTIALS = com.generator.tables.AuthCredentials.AUTH_CREDENTIALS;
+
+    /**
+     * The table <code>tat0003_mod_login.t_my_data</code>.
+     */
+    public final TMyData T_MY_DATA = com.generator.tables.TMyData.T_MY_DATA;
 
     /**
      * The table <code>tat0003_mod_login.t_my_login</code>.
@@ -79,6 +91,8 @@ public class Tat0003ModLogin extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            AuthCredentials.AUTH_CREDENTIALS,
+            TMyData.T_MY_DATA,
             TMyLogin.T_MY_LOGIN,
             TWeXinOkapi.T_WE_XIN_OKAPI,
             TWeXinUserinfo.T_WE_XIN_USERINFO);

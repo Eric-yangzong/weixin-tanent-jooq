@@ -39,8 +39,16 @@ schema.table=CREATE TABLE IF NOT EXISTS ${tenantid}_mod_login.T_MY_LOGIN (\
 			  country     varchar(100),\
 			  avatar_url  varchar(500),\
 			  watermark   jsonb,\
+			  jsonb   jsonb,\
 			  CONSTRAINT t_we_xin_userinfo_pkey \
 			    PRIMARY KEY (id)\
 			) WITH (\
 			    OIDS = FALSE\
-			  );
+			  );\
+			  CREATE TABLE IF NOT EXISTS  ${tenantid}_mod_login.t_my_data (\
+				  "id" uuid NOT NULL,\
+				  "data_type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,\
+				  "jsonb" jsonb,\
+				  CONSTRAINT t_my_data_pkey PRIMARY KEY (id)\
+				);
+			  

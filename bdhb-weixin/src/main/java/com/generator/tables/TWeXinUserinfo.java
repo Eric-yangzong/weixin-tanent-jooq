@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TWeXinUserinfo extends TableImpl<TWeXinUserinfoRecord> {
 
-    private static final long serialVersionUID = -1241671948;
+    private static final long serialVersionUID = 1889065066;
 
     /**
      * The reference instance of <code>tat0003_mod_login.t_we_xin_userinfo</code>
@@ -105,6 +105,11 @@ public class TWeXinUserinfo extends TableImpl<TWeXinUserinfoRecord> {
      * The column <code>tat0003_mod_login.t_we_xin_userinfo.watermark</code>.
      */
     public final TableField<TWeXinUserinfoRecord, JsonNode> WATERMARK = createField("watermark", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "", new PostgresJsonBinding());
+
+    /**
+     * The column <code>tat0003_mod_login.t_we_xin_userinfo.jsonb</code>.
+     */
+    public final TableField<TWeXinUserinfoRecord, JsonNode> JSONB = createField("jsonb", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "", new PostgresJsonBinding());
 
     /**
      * Create a <code>tat0003_mod_login.t_we_xin_userinfo</code> table reference
