@@ -29,16 +29,21 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<exclusions>
+			<!--  exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
-			</exclusions>
+			</exclusions>-->
 		</dependency>
 		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+		<!-- dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-undertow</artifactId>
+<<<<<<< HEAD
 		</dependency>
 		<!-- 微信小程序用 -->
 		<dependency>
@@ -52,6 +57,9 @@
             <version>1.6.1</version>
         </dependency>
         <!-- 微信小程序用 -->
+=======
+		</dependency>-->
+>>>>>>> temp
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
