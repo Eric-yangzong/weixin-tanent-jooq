@@ -1,4 +1,4 @@
-package com.bdhanbang.weixin.common;
+package bdhb.weixin_pay.common;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

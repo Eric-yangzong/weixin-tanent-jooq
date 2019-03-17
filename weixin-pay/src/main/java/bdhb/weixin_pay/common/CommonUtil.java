@@ -1,4 +1,4 @@
-package com.bdhanbang.weixin.common;
+package bdhb.weixin_pay.common;
 
 import java.io.Writer;
 import java.util.HashMap;
@@ -10,8 +10,6 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-import com.bdhanbang.weixin.entity.PayInfo;
-import com.bdhanbang.weixin.util.MD5Utils;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -54,7 +52,8 @@ public class CommonUtil {
 		}
 	});
 
-	public static String payInfoToXML(PayInfo pi) {
+
+	public static String payInfoToXML(Object pi) {
 		xstream.alias("xml", pi.getClass());
 		return xstream.toXML(pi);
 	}
@@ -70,8 +69,4 @@ public class CommonUtil {
 		return map;
 	}
 
-	public static String getMD5(String trim) {
-
-		return MD5Utils.getMD5(trim);
-	}
 }

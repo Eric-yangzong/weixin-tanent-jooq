@@ -1,4 +1,4 @@
-package com.bdhanbang.weixin.util;
+package bdhb.weixin_pay.util;
 
 import java.util.Objects;
 

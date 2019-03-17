@@ -29,21 +29,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<!--  exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-tomcat</artifactId>
-				</exclusion>
-			</exclusions>-->
+			<!-- exclusions> <exclusion> <groupId>org.springframework.boot</groupId> 
+				<artifactId>spring-boot-starter-tomcat</artifactId> </exclusion> </exclusions> -->
 		</dependency>
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
-		<!-- dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-undertow</artifactId>
-<<<<<<< HEAD
+			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 		<!-- 微信小程序用 -->
 		<dependency>
@@ -52,14 +43,10 @@
 			<version>1.4.9</version>
 		</dependency>
 		<dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        <!-- 微信小程序用 -->
-=======
-		</dependency>-->
->>>>>>> temp
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+		</dependency>
+		<!-- 微信小程序用 -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -88,6 +75,11 @@
 		<dependency>
 			<groupId>bdhb-base</groupId>
 			<artifactId>bdhb-base</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>bdhb</groupId>
+			<artifactId>weixin-pay</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

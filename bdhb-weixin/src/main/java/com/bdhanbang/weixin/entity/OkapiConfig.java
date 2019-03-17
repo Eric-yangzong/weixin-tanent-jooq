@@ -51,6 +51,15 @@ public class OkapiConfig implements Serializable {
 	// 文件访问接口
 	private String file = "";
 
+	// 商户号
+	private String mchId = "";
+
+	// 支付密钥
+	private String appKey = "";
+
+	// ip地址
+	private String ip = "";
+
 	public String getHost() {
 		return host;
 	}
@@ -65,6 +74,30 @@ public class OkapiConfig implements Serializable {
 
 	public void setFile(String file) {
 		this.file = file;
+	}
+
+	public String getMchId() {
+		return mchId;
+	}
+
+	public void setMchId(String mchId) {
+		this.mchId = mchId;
+	}
+
+	public String getAppKey() {
+		return appKey;
+	}
+
+	public void setAppKey(String appKey) {
+		this.appKey = appKey;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }
