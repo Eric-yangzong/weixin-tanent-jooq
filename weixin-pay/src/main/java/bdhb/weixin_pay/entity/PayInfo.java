@@ -26,7 +26,6 @@ public class PayInfo {
 	private String trade_type;// 交易类型:小程序取值如下：JSAPI，
 	private String limit_pay;// 指定支付方式:上传此参数no_credit--可限制用户不能使用信用卡支付
 	private String openid;// 用户标识:trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识
-	private String appKey;// 支付密钥
 
 	public String getAppid() {
 		return appid;
@@ -165,7 +164,7 @@ public class PayInfo {
 	 * 
 	 * @param payInfo
 	 */
-	public String getSign() {
+	public String getSign(String appKey) {
 
 		StringBuffer buf = new StringBuffer();
 
@@ -185,18 +184,10 @@ public class PayInfo {
 		buf.append("&time_start=" + this.getTime_start());
 		buf.append("&total_fee=" + this.getTotal_fee());
 		buf.append("&trade_type=" + this.getTrade_type());
-		buf.append("&key=" + ("".equals(Constant.APP_KEY) ? this.appKey : Constant.APP_KEY));
+		buf.append("&key=" + ("".equals(Constant.APP_KEY) ? appKey : Constant.APP_KEY));
 		this.sign = MD5Utils.getMD5(buf.toString().trim()).toUpperCase();
 
 		return this.sign;
-	}
-
-	public String getAppKey() {
-		return appKey;
-	}
-
-	public void setAppKey(String appKey) {
-		this.appKey = appKey;
 	}
 
 }

@@ -16,7 +16,7 @@ schema.table=CREATE TABLE IF NOT EXISTS ${tenantid}_mod_login.T_MY_LOGIN (\
 					  );\
 		     CREATE TABLE IF NOT EXISTS ${tenantid}_mod_login.T_WE_XIN_OKAPI (\
 			  id          uuid NOT NULL,\
-			  tanentid    varchar(100) NOT NULL,\
+			  tanent_id    varchar(100) NOT NULL,\
 			  app_id      varchar(100) NOT NULL,\
 			  app_secret  varchar(100) NOT NULL,\
 			  user_name   varchar(100) NOT NULL,\

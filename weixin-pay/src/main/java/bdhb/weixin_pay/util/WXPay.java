@@ -20,17 +20,17 @@ public class WXPay {
 	/**
 	 * @Title: unifiedOrder
 	 * @param @param
-	 *            openId
+	 *            openId 每个人对应小程序的唯一id
 	 * @param @param
-	 *            clientIP
+	 *            clientIP 客户ip
 	 * @param @param
-	 *            randomNonceStr
+	 *            randomNonceStr 随机码
 	 * @param @param
-	 *            totalFee
+	 *            totalFee 总费用（单位：分）
 	 * @param @param
-	 *            body
+	 *            body 商品-名称
 	 * @param @param
-	 *            attach
+	 *            attach 附加信息
 	 * @param @return
 	 *            设定文件
 	 * @return PackageInfo 返回类型
@@ -48,17 +48,17 @@ public class WXPay {
 	/**
 	 * @Title: unifiedOrder
 	 * @param @param
-	 *            openId
+	 *            openId-每个人对应小程序的唯一id
 	 * @param @param
-	 *            clientIP
+	 *            clientIP 客户ip
 	 * @param @param
-	 *            randomNonceStr
+	 *            randomNonceStr 随机码
 	 * @param @param
-	 *            totalFee
+	 *            totalFee 总费用（单位：分）
 	 * @param @param
-	 *            body
+	 *            body 商品-名称
 	 * @param @param
-	 *            attach
+	 *            attach 附加信息
 	 * @param @return
 	 *            设定文件
 	 * @return PackageInfo 返回类型
@@ -73,7 +73,7 @@ public class WXPay {
 			PackageInfo pageInfi = new PackageInfo();
 
 			PayInfo payInfo = createPayInfo(openId, clientIP, randomNonceStr, totalFee, body, attach, appMchKey);
-			payInfo.getSign();// 返回并生成签名
+			payInfo.getSign(appMchKey.getAppKey());// 返回并生成签名
 
 			String xml = CommonUtil.payInfoToXML(payInfo);
 			xml = xml.replace("__", "_").replace("<![CDATA[1]]>", "1");
@@ -137,7 +137,6 @@ public class WXPay {
 
 		payInfo.setAppid("".equals(Constant.APP_ID) ? appMchKey.getAppId() : Constant.APP_ID);// 微信分配的小程序ID：wxd678efh567hg6787（必填）
 		payInfo.setMch_id("".equals(Constant.MCH_ID) ? appMchKey.getMchId() : Constant.MCH_ID);// 微信支付分配的商户号：1230000109（必填）
-		payInfo.setAppKey(appMchKey.getAppKey());
 		payInfo.setDevice_info("WEB");// 设备号：自定义参数，可以为终端设备号(门店号或收银设备ID)，PC网页或公众号内支付可以传"WEB"
 		payInfo.setNonce_str(randomNonceStr);// 随机字符串：随机字符串，长度要求在32位以内。（必填）
 		payInfo.setSign_type("MD5"); // 签名类型:签名类型，默认为MD5，支持HMAC-SHA256和MD5。（必填）

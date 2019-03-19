@@ -1,5 +1,7 @@
 package com.bdhanbang.weixin.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,15 +20,35 @@ import bdhb.weixin_pay.common.CommonUtil;
 import bdhb.weixin_pay.entity.AppMchKey;
 import bdhb.weixin_pay.entity.PackageInfo;
 import bdhb.weixin_pay.util.WXPay;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping("/weapp/pay")
 public class WeXinPayController {
 
+	public static String notifyMessage = "";
+
+	@RequestMapping(value = "/notify", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResult<String> getEntity(HttpServletRequest request) {
+
+		// String realSchema = tanentId + AppCommon.scheam;
+		ApiResult<String> apiResult = new ApiResult<>();
+
+		if (notifyMessage.length() > 8000) {
+			notifyMessage = String.valueOf(request.getContentLength());
+		} else {
+			notifyMessage = notifyMessage + String.valueOf(request.getContentLength());
+		}
+
+		return apiResult;
+
+	}
+
 	@RequestMapping(value = "/{openId}", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResult<PackageInfo> getEntity(@RequestHeader(AppCommon.X_WX_TENANT) String tanentId,
-			@PathVariable("openId") String openId, @WeXinOkapi TWeXinOkapi weXinOkapi) {
+			@PathVariable("openId") String openId, @ApiIgnore @WeXinOkapi TWeXinOkapi weXinOkapi) {
 
 		// String realSchema = tanentId + AppCommon.scheam;
 		ApiResult<PackageInfo> apiResult = new ApiResult<>();
@@ -38,7 +60,7 @@ public class WeXinPayController {
 
 		AppMchKey appMchKey = new AppMchKey();
 		appMchKey.setAppId(weXinOkapi.getAppId());
-		appMchKey.setMchId(weXinOkapi.getJsonb().getAppKey());
+		appMchKey.setMchId(weXinOkapi.getJsonb().getMchId());
 		appMchKey.setAppKey(weXinOkapi.getJsonb().getAppKey());
 
 		// -----------到此结束
@@ -47,8 +69,8 @@ public class WeXinPayController {
 
 		apiResult.setData(myData);
 
-		apiResult.setStatus(CommonMessage.UPDATE.getStatus());
-		apiResult.setMessage(CommonMessage.UPDATE.getMessage());
+		apiResult.setStatus(CommonMessage.SUCCESS.getStatus());
+		apiResult.setMessage(CommonMessage.SUCCESS.getMessage());
 
 		return apiResult;
 
