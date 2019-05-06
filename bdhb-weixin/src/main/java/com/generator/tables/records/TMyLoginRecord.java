@@ -32,101 +32,101 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TMyLoginRecord extends UpdatableRecordImpl<TMyLoginRecord> implements Record7<UUID, String, String, String, LocalDateTime, String, JsonNode> {
 
-    private static final long serialVersionUID = 311968831;
+    private static final long serialVersionUID = -1224719743;
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_login.id</code>.
+     * Setter for <code>tat0004_mod_login.t_my_login.id</code>.
      */
     public void setId(UUID value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_login.id</code>.
+     * Getter for <code>tat0004_mod_login.t_my_login.id</code>.
      */
     public UUID getId() {
         return (UUID) get(0);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_login.user_code</code>.
+     * Setter for <code>tat0004_mod_login.t_my_login.user_code</code>.
      */
     public void setUserCode(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_login.user_code</code>.
+     * Getter for <code>tat0004_mod_login.t_my_login.user_code</code>.
      */
     public String getUserCode() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_login.user_name</code>.
+     * Setter for <code>tat0004_mod_login.t_my_login.user_name</code>.
      */
     public void setUserName(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_login.user_name</code>.
+     * Getter for <code>tat0004_mod_login.t_my_login.user_name</code>.
      */
     public String getUserName() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_login.login_type</code>.
+     * Setter for <code>tat0004_mod_login.t_my_login.login_type</code>.
      */
     public void setLoginType(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_login.login_type</code>.
+     * Getter for <code>tat0004_mod_login.t_my_login.login_type</code>.
      */
     public String getLoginType() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_login.login_time</code>.
+     * Setter for <code>tat0004_mod_login.t_my_login.login_time</code>.
      */
     public void setLoginTime(LocalDateTime value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_login.login_time</code>.
+     * Getter for <code>tat0004_mod_login.t_my_login.login_time</code>.
      */
     public LocalDateTime getLoginTime() {
         return (LocalDateTime) get(4);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_login.login_ip</code>.
+     * Setter for <code>tat0004_mod_login.t_my_login.login_ip</code>.
      */
     public void setLoginIp(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_login.login_ip</code>.
+     * Getter for <code>tat0004_mod_login.t_my_login.login_ip</code>.
      */
     public String getLoginIp() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_login.jsonb</code>.
+     * Setter for <code>tat0004_mod_login.t_my_login.jsonb</code>.
      */
     public void setJsonb(JsonNode value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_login.jsonb</code>.
+     * Getter for <code>tat0004_mod_login.t_my_login.jsonb</code>.
      */
     public JsonNode getJsonb() {
         return (JsonNode) get(6);

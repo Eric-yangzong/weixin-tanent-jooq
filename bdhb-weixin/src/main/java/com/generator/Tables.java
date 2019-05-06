@@ -5,6 +5,8 @@ package com.generator;
 
 
 import com.generator.tables.AuthCredentials;
+import com.generator.tables.Friend;
+import com.generator.tables.FriendMessage;
 import com.generator.tables.TMyData;
 import com.generator.tables.TMyLogin;
 import com.generator.tables.TWeXinOkapi;
@@ -14,7 +16,7 @@ import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in tat0003_mod_login
+ * Convenience access to all tables in tat0004_mod_login
  */
 @Generated(
     value = {
@@ -27,27 +29,37 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * The table <code>tat0003_mod_login.auth_credentials</code>.
+     * The table <code>tat0004_mod_login.auth_credentials</code>.
      */
     public static final AuthCredentials AUTH_CREDENTIALS = com.generator.tables.AuthCredentials.AUTH_CREDENTIALS;
 
     /**
-     * The table <code>tat0003_mod_login.t_my_data</code>.
+     * The table <code>tat0004_mod_login.friend</code>.
+     */
+    public static final Friend FRIEND = com.generator.tables.Friend.FRIEND;
+
+    /**
+     * The table <code>tat0004_mod_login.friend_message</code>.
+     */
+    public static final FriendMessage FRIEND_MESSAGE = com.generator.tables.FriendMessage.FRIEND_MESSAGE;
+
+    /**
+     * The table <code>tat0004_mod_login.t_my_data</code>.
      */
     public static final TMyData T_MY_DATA = com.generator.tables.TMyData.T_MY_DATA;
 
     /**
-     * The table <code>tat0003_mod_login.t_my_login</code>.
+     * The table <code>tat0004_mod_login.t_my_login</code>.
      */
     public static final TMyLogin T_MY_LOGIN = com.generator.tables.TMyLogin.T_MY_LOGIN;
 
     /**
-     * The table <code>tat0003_mod_login.t_we_xin_okapi</code>.
+     * The table <code>tat0004_mod_login.t_we_xin_okapi</code>.
      */
     public static final TWeXinOkapi T_WE_XIN_OKAPI = com.generator.tables.TWeXinOkapi.T_WE_XIN_OKAPI;
 
     /**
-     * The table <code>tat0003_mod_login.t_we_xin_userinfo</code>.
+     * The table <code>tat0004_mod_login.t_we_xin_userinfo</code>.
      */
     public static final TWeXinUserinfo T_WE_XIN_USERINFO = com.generator.tables.TWeXinUserinfo.T_WE_XIN_USERINFO;
 }

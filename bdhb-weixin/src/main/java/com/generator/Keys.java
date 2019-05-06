@@ -5,11 +5,15 @@ package com.generator;
 
 
 import com.generator.tables.AuthCredentials;
+import com.generator.tables.Friend;
+import com.generator.tables.FriendMessage;
 import com.generator.tables.TMyData;
 import com.generator.tables.TMyLogin;
 import com.generator.tables.TWeXinOkapi;
 import com.generator.tables.TWeXinUserinfo;
 import com.generator.tables.records.AuthCredentialsRecord;
+import com.generator.tables.records.FriendMessageRecord;
+import com.generator.tables.records.FriendRecord;
 import com.generator.tables.records.TMyDataRecord;
 import com.generator.tables.records.TMyLoginRecord;
 import com.generator.tables.records.TWeXinOkapiRecord;
@@ -23,7 +27,7 @@ import org.jooq.impl.Internal;
 
 /**
  * A class modelling foreign key relationships and constraints of tables of 
- * the <code>tat0003_mod_login</code> schema.
+ * the <code>tat0004_mod_login</code> schema.
  */
 @Generated(
     value = {
@@ -45,6 +49,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<AuthCredentialsRecord> AUTH_CREDENTIALS_PKEY = UniqueKeys0.AUTH_CREDENTIALS_PKEY;
+    public static final UniqueKey<FriendRecord> FRIEND_PKEY = UniqueKeys0.FRIEND_PKEY;
+    public static final UniqueKey<FriendMessageRecord> FRIEND_MESSAGE_PKEY = UniqueKeys0.FRIEND_MESSAGE_PKEY;
     public static final UniqueKey<TMyDataRecord> T_MY_DATA_PKEY = UniqueKeys0.T_MY_DATA_PKEY;
     public static final UniqueKey<TMyLoginRecord> MY_LOGIN_PKEY = UniqueKeys0.MY_LOGIN_PKEY;
     public static final UniqueKey<TWeXinOkapiRecord> T_WE_XIN_OKAPI_PKEY = UniqueKeys0.T_WE_XIN_OKAPI_PKEY;
@@ -61,6 +67,8 @@ public class Keys {
 
     private static class UniqueKeys0 {
         public static final UniqueKey<AuthCredentialsRecord> AUTH_CREDENTIALS_PKEY = Internal.createUniqueKey(AuthCredentials.AUTH_CREDENTIALS, "auth_credentials_pkey", AuthCredentials.AUTH_CREDENTIALS._ID);
+        public static final UniqueKey<FriendRecord> FRIEND_PKEY = Internal.createUniqueKey(Friend.FRIEND, "friend_pkey", Friend.FRIEND.ID);
+        public static final UniqueKey<FriendMessageRecord> FRIEND_MESSAGE_PKEY = Internal.createUniqueKey(FriendMessage.FRIEND_MESSAGE, "friend_message_pkey", FriendMessage.FRIEND_MESSAGE.ID);
         public static final UniqueKey<TMyDataRecord> T_MY_DATA_PKEY = Internal.createUniqueKey(TMyData.T_MY_DATA, "t_my_data_pkey", TMyData.T_MY_DATA.ID);
         public static final UniqueKey<TMyLoginRecord> MY_LOGIN_PKEY = Internal.createUniqueKey(TMyLogin.T_MY_LOGIN, "my_login_pkey", TMyLogin.T_MY_LOGIN.ID);
         public static final UniqueKey<TWeXinOkapiRecord> T_WE_XIN_OKAPI_PKEY = Internal.createUniqueKey(TWeXinOkapi.T_WE_XIN_OKAPI, "t_we_xin_okapi_pkey", TWeXinOkapi.T_WE_XIN_OKAPI.ID);

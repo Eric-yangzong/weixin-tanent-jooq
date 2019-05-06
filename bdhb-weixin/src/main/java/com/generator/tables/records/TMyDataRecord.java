@@ -31,45 +31,45 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TMyDataRecord extends UpdatableRecordImpl<TMyDataRecord> implements Record3<UUID, String, JsonNode> {
 
-    private static final long serialVersionUID = -1931615895;
+    private static final long serialVersionUID = -1161293077;
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_data.id</code>.
+     * Setter for <code>tat0004_mod_login.t_my_data.id</code>.
      */
     public void setId(UUID value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_data.id</code>.
+     * Getter for <code>tat0004_mod_login.t_my_data.id</code>.
      */
     public UUID getId() {
         return (UUID) get(0);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_data.data_type</code>.
+     * Setter for <code>tat0004_mod_login.t_my_data.data_type</code>.
      */
     public void setDataType(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_data.data_type</code>.
+     * Getter for <code>tat0004_mod_login.t_my_data.data_type</code>.
      */
     public String getDataType() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_my_data.jsonb</code>.
+     * Setter for <code>tat0004_mod_login.t_my_data.jsonb</code>.
      */
     public void setJsonb(JsonNode value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_my_data.jsonb</code>.
+     * Getter for <code>tat0004_mod_login.t_my_data.jsonb</code>.
      */
     public JsonNode getJsonb() {
         return (JsonNode) get(2);

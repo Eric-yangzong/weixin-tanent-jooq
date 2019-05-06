@@ -31,157 +31,157 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TWeXinUserinfoRecord extends UpdatableRecordImpl<TWeXinUserinfoRecord> implements Record11<UUID, String, String, Integer, String, String, String, String, String, JsonNode, JsonNode> {
 
-    private static final long serialVersionUID = 1296406857;
+    private static final long serialVersionUID = 835649039;
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.id</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.id</code>.
      */
     public void setId(UUID value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.id</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.id</code>.
      */
     public UUID getId() {
         return (UUID) get(0);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.open_id</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.open_id</code>.
      */
     public void setOpenId(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.open_id</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.open_id</code>.
      */
     public String getOpenId() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.nick_name</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.nick_name</code>.
      */
     public void setNickName(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.nick_name</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.nick_name</code>.
      */
     public String getNickName() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.gender</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.gender</code>.
      */
     public void setGender(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.gender</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.gender</code>.
      */
     public Integer getGender() {
         return (Integer) get(3);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.language</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.language</code>.
      */
     public void setLanguage(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.language</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.language</code>.
      */
     public String getLanguage() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.city</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.city</code>.
      */
     public void setCity(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.city</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.city</code>.
      */
     public String getCity() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.province</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.province</code>.
      */
     public void setProvince(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.province</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.province</code>.
      */
     public String getProvince() {
         return (String) get(6);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.country</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.country</code>.
      */
     public void setCountry(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.country</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.country</code>.
      */
     public String getCountry() {
         return (String) get(7);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.avatar_url</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.avatar_url</code>.
      */
     public void setAvatarUrl(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.avatar_url</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.avatar_url</code>.
      */
     public String getAvatarUrl() {
         return (String) get(8);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.watermark</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.watermark</code>.
      */
     public void setWatermark(JsonNode value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.watermark</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.watermark</code>.
      */
     public JsonNode getWatermark() {
         return (JsonNode) get(9);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_userinfo.jsonb</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_userinfo.jsonb</code>.
      */
     public void setJsonb(JsonNode value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_userinfo.jsonb</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_userinfo.jsonb</code>.
      */
     public JsonNode getJsonb() {
         return (JsonNode) get(10);

@@ -1,8 +1,11 @@
 package com.bdhanbang.weixin.ws;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.OnClose;
@@ -15,12 +18,19 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.springframework.stereotype.Component;
 
+import com.bdhanbang.base.common.Query;
+import com.bdhanbang.weixin.common.AppCommon;
+import com.bdhanbang.weixin.configuration.MyApplicationContextAware;
+import com.bdhanbang.weixin.entity.Chat;
+import com.bdhanbang.weixin.entity.Friend;
 import com.bdhanbang.weixin.entity.FriendMessage;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.bdhanbang.weixin.jooq.tables.QFriend;
+import com.bdhanbang.weixin.jooq.tables.QFriendMessage;
+import com.bdhanbang.weixin.service.FriendMessageService;
+import com.bdhanbang.weixin.service.FriendService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-@ServerEndpoint(value = "/websocket/{userId}")
+@ServerEndpoint(value = "/websocket/{userId}/{tenantId}")
 @Component
 public class MyWebSocket {
 
@@ -28,28 +38,96 @@ public class MyWebSocket {
 	private static ConcurrentHashMap<String, Session> mapUS = new ConcurrentHashMap<String, Session>();
 	private static ConcurrentHashMap<Session, String> mapSU = new ConcurrentHashMap<Session, String>();
 
+	private FriendMessageService friendMessageService = (FriendMessageService) MyApplicationContextAware
+			.getApplicationContext().getBean("friendMessageService");
+	private FriendService friendService = (FriendService) MyApplicationContextAware.getApplicationContext()
+			.getBean("friendService");
+
+	private void buildFriend(Chat chat, String tenantId) {
+		String realSchema = tenantId + AppCommon.scheam;
+
+		String userId = chat.getMine().getId();
+		String myAvatar = chat.getMine().getAvatar();
+		String myName = chat.getMine().getUsername();
+
+		String friendId = chat.getTo().getId();
+		String friendAvatar = chat.getTo().getAvatar();
+		String friendName = "";
+
+		Query query = new Query();
+
+		query.add(new Query("userId", userId));
+		query.add(new Query("friendId", friendId));
+
+		List<Friend> friends = friendService.queryList(realSchema, QFriend.class, Friend.class, query.getQuerys());
+
+		if (Objects.isNull(friends) || friends.size() == 0) {
+			Friend myFriend = new Friend();
+
+			myFriend.setId(UUID.randomUUID());
+			myFriend.setUserId(userId);
+			myFriend.setFriendId(friendId);
+			myFriend.setFriendName(friendName);
+			myFriend.setAvatar(friendAvatar);
+			myFriend.setBuildTime(LocalDateTime.now());
+
+			// user表中写一条记录
+			friendService.insertEntity(realSchema, QFriend.class, myFriend);
+
+			Friend friend = new Friend();
+
+			friend.setId(UUID.randomUUID());
+			friend.setUserId(friendId);
+			friend.setFriendId(userId);
+			friend.setFriendName(myName);
+			friend.setAvatar(myAvatar);
+			friend.setBuildTime(LocalDateTime.now());
+
+			friendService.insertEntity(realSchema, QFriend.class, friend);
+
+		}
+	}
+
 	// 连接建立成功调用的方法
 	@OnOpen
-	public void onOpen(Session session, @PathParam("userId") String userId) {
-		String jsonString = "{'content':'online','id':" + userId + ",'type':'onlineStatus'}";
-		for (Session s : session.getOpenSessions()) { // 循环发给所有在线的人
-			s.getAsyncRemote().sendText(jsonString); // 上线通知
-		}
-		mapUS.put(userId + "", session);
-		mapSU.put(session, userId + "");
-		// 更新redis中的用户在线状态
-		// RedisUtils.set(userId+"_status","online");
-		// logger.info("用户" + userId + "进入llws,当前在线人数为" + mapUS.size());
-		sendDelayedMessage(userId, session);
+	public void onOpen(Session session, @PathParam("userId") String userId, @PathParam("tenantId") String tenantId) {
+
+		String realSchema = tenantId + AppCommon.scheam;
+
+		mapUS.put(userId, session);
+		mapSU.put(session, userId);
+
+		sendDelayedMessage(realSchema, userId, session);
 
 	}
 
-	private void sendDelayedMessage(String userId, Session session) {
-		// String id = userId + "_msg";
+	private void sendDelayedMessage(String realSchema, String userId, Session session) {
+		StringBuffer buf = new StringBuffer();
 
-		String buf = new String();
+		Query query = new Query();
+		query.add(new Query("toUserId", userId));
+		query.add(new Query("isSend", 0));
 
-		session.getAsyncRemote().sendText(buf.toString());
+		List<FriendMessage> friends = friendMessageService.queryList(realSchema, QFriendMessage.class,
+				FriendMessage.class, query.getQuerys());
+
+		friends.sort((x, y) -> x.getSendTime().compareTo(y.getSendTime()));
+
+		friends.forEach(x -> {
+			buf.append(x.getContent());
+			buf.append(",");
+		});
+
+		if (buf.length() > 0) {
+			buf.setLength(buf.length() - 1);
+			session.getAsyncRemote().sendText(String.format("[%s]", buf.toString()));
+
+			friends.forEach(x -> {
+				x.setIsSend((short) 1);
+				friendMessageService.updateEntity(realSchema, QFriendMessage.class, x);
+			});
+
+		}
 
 	}
 
@@ -58,105 +136,70 @@ public class MyWebSocket {
 	public void onClose(Session session) {
 		String userId = mapSU.get(session);
 		if (userId != null && userId != "") {
-			// 更新redis中的用户在线状态
-			// RedisUtils.set(userId + "_status", "offline");
-			String jsonString = "{'content':'offline','id':" + userId + ",'type':'onlineStatus'}";
-			for (Session s : session.getOpenSessions()) { // 循环发给所有在线的人
-				s.getAsyncRemote().sendText(jsonString); // 下线通知
-			}
 			mapUS.remove(userId);
 			mapSU.remove(session);
-			// logger.info("用户" + userId + "退出llws,当前在线人数为" + mapUS.size());
 		}
 	}
 
 	// 收到客户端消息后调用的方法
 	@OnMessage
-	public void onMessage(String message, Session session) throws IOException {
+	public void onMessage(String message, Session session, @PathParam("tenantId") String tenantId) throws IOException {
 
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode jsonObject = mapper.readTree(message);
+		String realSchema = tenantId + AppCommon.scheam;
 
-		String type = jsonObject.path("to").path("type").textValue();
-		if (type.equals("onlineStatus")) {
-			for (Session s : session.getOpenSessions()) { // 循环发给所有在线的人
-				ObjectNode toMessage = mapper.createObjectNode();
-				toMessage.put("id", jsonObject.path("mine").path("id").textValue());
-				toMessage.put("content", jsonObject.path("mine").path("content").textValue());
-				toMessage.put("type", type);
-				s.getAsyncRemote().sendText(toMessage.toString());
+		Chat chat = mapper.readValue(message, Chat.class);
+
+		this.buildFriend(chat, tenantId);
+
+		String type = chat.getTo().getType();
+		String toId = chat.getTo().getId();
+
+		Chat.SendMessage toMessage = new Chat.SendMessage();
+
+		toMessage.setSendId(chat.getMine().getId());
+		toMessage.setToId(toId);
+		toMessage.setAvatar(chat.getMine().getAvatar());
+		toMessage.setType(type);
+		toMessage.setContent(chat.getMine().getContent());
+		toMessage.setTimestamp((new Date()).getTime());
+		toMessage.setMine(false);
+		toMessage.setUsername(chat.getMine().getUsername());
+
+		switch (type) {
+		case "friend": // 单聊,记录到db
+			if (mapUS.containsKey(toId)) { // 如果在线，及时推送
+
+				FriendMessage friendMessage = new FriendMessage();
+
+				friendMessage.setFromUserId(chat.getMine().getId());
+				friendMessage.setToUserId(chat.getTo().getId());
+				friendMessage.setIsDel((short) 0);
+				friendMessage.setIsBack((short) 0);
+				friendMessage.setIsSend((short) 1);
+				friendMessage.setId(UUID.randomUUID());
+				friendMessage.setContent(toMessage.toString());
+
+				friendMessageService.insertEntity(realSchema, QFriendMessage.class, friendMessage);
+				mapUS.get(toId).getAsyncRemote().sendText(toMessage.toString()); // 发送消息给对方
+			} else { // 如果不在线 就记录到数据库，下次对方上线时推送给对方。
+
+				FriendMessage friendMessage = new FriendMessage();
+				friendMessage.setFromUserId(chat.getMine().getId());
+				friendMessage.setToUserId(chat.getTo().getId());
+				friendMessage.setIsDel((short) 0);
+				friendMessage.setIsBack((short) 0);
+				friendMessage.setIsSend((short) 0);
+				friendMessage.setSendTime(LocalDateTime.now());
+				friendMessage.setId(UUID.randomUUID());
+				friendMessage.setContent(toMessage.toString());
+
+				friendMessageService.insertEntity(realSchema, QFriendMessage.class, friendMessage);
+
 			}
-		} else {
-			String toId = jsonObject.path("to").path("id").asText();
-			SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
-			Date date = new Date();
-			String time = df.format(date);
-			((ObjectNode) jsonObject).put("time", time);
-			ObjectNode toMessage = mapper.createObjectNode();
-			toMessage.put("avatar", jsonObject.path("mine").path("avatar").textValue());
-			toMessage.put("type", type);
-			toMessage.put("content", jsonObject.path("mine").path("content").textValue());
-			toMessage.put("timestamp", date.getTime());
-			toMessage.put("time", time);
-			toMessage.put("mine", false);
-			toMessage.put("username", jsonObject.path("mine").path("username").textValue());
-			if (type.equals("friend") || type.equals("fankui")) {
-				toMessage.put("id", jsonObject.path("mine").path("id").textValue());
-			} else {
-				toMessage.put("id", jsonObject.path("to").path("id").textValue());
-			}
-			switch (type) {
-			case "friend": // 单聊,记录到mongo
-				if (mapUS.containsKey(toId + "")) { // 如果在线，及时推送
-
-					FriendMessage friendMessage = new FriendMessage();
-
-					friendMessage.setFromUserId(jsonObject.path("mine").path("id").textValue());
-					friendMessage.setToUserId(jsonObject.path("to").path("id").textValue());
-					friendMessage.setIsDel(0);
-					friendMessage.setIsBack(0);
-					friendMessage.setIsSend(1);
-					friendMessage.setId(null);
-					friendMessage.setContent(toMessage.toString());
-
-					if (friendMessage.getId() == null || friendMessage.getId().trim().equals("")) {
-						String id = "";// sysCodeBiz.getVoucherId("friendmessage");
-						friendMessage.setId(id);
-					}
-
-					// friendMessageService.insert(friendMessage);
-					mapUS.get(toId + "").getAsyncRemote().sendText(toMessage.toString()); // 发送消息给对方
-					// logger.info("单聊-来自客户端的消息:" + toMessage.toString());
-				} else { // 如果不在线 就记录到数据库，下次对方上线时推送给对方。
-
-					FriendMessage friendMessage = new FriendMessage();
-					friendMessage.setFromUserId(jsonObject.path("mine").path("id").textValue());
-					friendMessage.setToUserId(jsonObject.path("to").path("id").textValue());
-					friendMessage.setIsDel(0);
-					friendMessage.setIsBack(0);
-					friendMessage.setIsSend(0);
-					friendMessage.setSendTime(null);
-					friendMessage.setId(null);
-					friendMessage.setContent(toMessage.toString());
-
-					if (friendMessage.getId() == null || friendMessage.getId().trim().equals("")) {
-						String id = "";
-						friendMessage.setId(id);
-					}
-
-					try {
-						// friendMessageService.insert(friendMessage);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-					System.out.println(String.format("toId:%s\n%s:%s", toId, "_msg", toMessage.toString()));
-					// logger.info("单聊-对方不在线，消息已存入redis:" + toMessage.toString());
-				}
-				break;
-			default:
-				break;
-			}
+			break;
+		default:
+			break;
 		}
 
 	}
@@ -171,17 +214,9 @@ public class MyWebSocket {
 	public void onError(Session session, Throwable error) {
 		String userId = mapSU.get(session);
 		if (userId != null && userId != "") {
-			// 更新redis中的用户在线状态
-			// RedisUtils.set(userId+"_status","offline");
-			String jsonString = "{'content':'offline','id':" + userId + ",'type':'onlineStatus'}";
-			for (Session s : session.getOpenSessions()) { // 循环发给所有在线的人
-				s.getAsyncRemote().sendText(jsonString); // 下线通知
-			}
 			mapUS.remove(userId);
 			mapSU.remove(session);
-			// logger.info("用户" + userId + "退出llws！当前在线人数为" + mapUS.size());
 		}
-		// logger.error("llws发生错误!");
 		error.printStackTrace();
 	}
 

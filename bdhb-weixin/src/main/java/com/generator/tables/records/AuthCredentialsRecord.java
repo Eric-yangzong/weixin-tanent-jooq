@@ -31,31 +31,31 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AuthCredentialsRecord extends UpdatableRecordImpl<AuthCredentialsRecord> implements Record2<UUID, JsonNode> {
 
-    private static final long serialVersionUID = -420382377;
+    private static final long serialVersionUID = 724410007;
 
     /**
-     * Setter for <code>tat0003_mod_login.auth_credentials._id</code>.
+     * Setter for <code>tat0004_mod_login.auth_credentials._id</code>.
      */
     public void set_Id(UUID value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.auth_credentials._id</code>.
+     * Getter for <code>tat0004_mod_login.auth_credentials._id</code>.
      */
     public UUID get_Id() {
         return (UUID) get(0);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.auth_credentials.jsonb</code>.
+     * Setter for <code>tat0004_mod_login.auth_credentials.jsonb</code>.
      */
     public void setJsonb(JsonNode value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.auth_credentials.jsonb</code>.
+     * Getter for <code>tat0004_mod_login.auth_credentials.jsonb</code>.
      */
     public JsonNode getJsonb() {
         return (JsonNode) get(1);

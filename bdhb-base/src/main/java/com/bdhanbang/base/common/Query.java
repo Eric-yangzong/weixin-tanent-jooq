@@ -32,6 +32,12 @@ public class Query implements Serializable {
 
 	List<Query> querys = new ArrayList<Query>();
 
+	public Query() {}
+	
+	public Query(String field,Object value) {
+		this.field = field;
+		this.value = value;
+	}
 	public String getField() {
 		return field;
 	}

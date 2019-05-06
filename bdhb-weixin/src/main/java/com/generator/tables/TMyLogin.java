@@ -8,7 +8,7 @@ import com.bdhanbang.base.jooq.PostgresJsonBinding;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.generator.Indexes;
 import com.generator.Keys;
-import com.generator.Tat0003ModLogin;
+import com.generator.Tat0004ModLogin;
 import com.generator.tables.records.TMyLoginRecord;
 
 import java.time.LocalDateTime;
@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TMyLogin extends TableImpl<TMyLoginRecord> {
 
-    private static final long serialVersionUID = -2093418592;
+    private static final long serialVersionUID = 492791710;
 
     /**
-     * The reference instance of <code>tat0003_mod_login.t_my_login</code>
+     * The reference instance of <code>tat0004_mod_login.t_my_login</code>
      */
     public static final TMyLogin T_MY_LOGIN = new TMyLogin();
 
@@ -58,56 +58,56 @@ public class TMyLogin extends TableImpl<TMyLoginRecord> {
     }
 
     /**
-     * The column <code>tat0003_mod_login.t_my_login.id</code>.
+     * The column <code>tat0004_mod_login.t_my_login.id</code>.
      */
     public final TableField<TMyLoginRecord, UUID> ID = createField("id", org.jooq.impl.SQLDataType.UUID.nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_my_login.user_code</code>.
+     * The column <code>tat0004_mod_login.t_my_login.user_code</code>.
      */
     public final TableField<TMyLoginRecord, String> USER_CODE = createField("user_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_my_login.user_name</code>.
+     * The column <code>tat0004_mod_login.t_my_login.user_name</code>.
      */
     public final TableField<TMyLoginRecord, String> USER_NAME = createField("user_name", org.jooq.impl.SQLDataType.VARCHAR(300).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_my_login.login_type</code>.
+     * The column <code>tat0004_mod_login.t_my_login.login_type</code>.
      */
     public final TableField<TMyLoginRecord, String> LOGIN_TYPE = createField("login_type", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_my_login.login_time</code>.
+     * The column <code>tat0004_mod_login.t_my_login.login_time</code>.
      */
     public final TableField<TMyLoginRecord, LocalDateTime> LOGIN_TIME = createField("login_time", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_my_login.login_ip</code>.
+     * The column <code>tat0004_mod_login.t_my_login.login_ip</code>.
      */
     public final TableField<TMyLoginRecord, String> LOGIN_IP = createField("login_ip", org.jooq.impl.SQLDataType.VARCHAR(200), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_my_login.jsonb</code>.
+     * The column <code>tat0004_mod_login.t_my_login.jsonb</code>.
      */
     public final TableField<TMyLoginRecord, JsonNode> JSONB = createField("jsonb", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "", new PostgresJsonBinding());
 
     /**
-     * Create a <code>tat0003_mod_login.t_my_login</code> table reference
+     * Create a <code>tat0004_mod_login.t_my_login</code> table reference
      */
     public TMyLogin() {
         this(DSL.name("t_my_login"), null);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.t_my_login</code> table reference
+     * Create an aliased <code>tat0004_mod_login.t_my_login</code> table reference
      */
     public TMyLogin(String alias) {
         this(DSL.name(alias), T_MY_LOGIN);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.t_my_login</code> table reference
+     * Create an aliased <code>tat0004_mod_login.t_my_login</code> table reference
      */
     public TMyLogin(Name alias) {
         this(alias, T_MY_LOGIN);
@@ -126,7 +126,7 @@ public class TMyLogin extends TableImpl<TMyLoginRecord> {
      */
     @Override
     public Schema getSchema() {
-        return Tat0003ModLogin.TAT0003_MOD_LOGIN;
+        return Tat0004ModLogin.TAT0004_MOD_LOGIN;
     }
 
     /**

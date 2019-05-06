@@ -8,7 +8,7 @@ import com.bdhanbang.base.jooq.PostgresJsonBinding;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.generator.Indexes;
 import com.generator.Keys;
-import com.generator.Tat0003ModLogin;
+import com.generator.Tat0004ModLogin;
 import com.generator.tables.records.TWeXinOkapiRecord;
 
 import java.util.Arrays;
@@ -41,10 +41,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TWeXinOkapi extends TableImpl<TWeXinOkapiRecord> {
 
-    private static final long serialVersionUID = 37909257;
+    private static final long serialVersionUID = 688023048;
 
     /**
-     * The reference instance of <code>tat0003_mod_login.t_we_xin_okapi</code>
+     * The reference instance of <code>tat0004_mod_login.t_we_xin_okapi</code>
      */
     public static final TWeXinOkapi T_WE_XIN_OKAPI = new TWeXinOkapi();
 
@@ -57,61 +57,61 @@ public class TWeXinOkapi extends TableImpl<TWeXinOkapiRecord> {
     }
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_okapi.id</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_okapi.id</code>.
      */
     public final TableField<TWeXinOkapiRecord, UUID> ID = createField("id", org.jooq.impl.SQLDataType.UUID.nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_okapi.tanent_id</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_okapi.tanent_id</code>.
      */
     public final TableField<TWeXinOkapiRecord, String> TANENT_ID = createField("tanent_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_okapi.app_id</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_okapi.app_id</code>.
      */
     public final TableField<TWeXinOkapiRecord, String> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_okapi.app_secret</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_okapi.app_secret</code>.
      */
     public final TableField<TWeXinOkapiRecord, String> APP_SECRET = createField("app_secret", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_okapi.user_name</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_okapi.user_name</code>.
      */
     public final TableField<TWeXinOkapiRecord, String> USER_NAME = createField("user_name", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_okapi.password</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_okapi.password</code>.
      */
     public final TableField<TWeXinOkapiRecord, String> PASSWORD = createField("password", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_okapi.note</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_okapi.note</code>.
      */
     public final TableField<TWeXinOkapiRecord, String> NOTE = createField("note", org.jooq.impl.SQLDataType.VARCHAR(500), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_okapi.jsonb</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_okapi.jsonb</code>.
      */
     public final TableField<TWeXinOkapiRecord, JsonNode> JSONB = createField("jsonb", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "", new PostgresJsonBinding());
 
     /**
-     * Create a <code>tat0003_mod_login.t_we_xin_okapi</code> table reference
+     * Create a <code>tat0004_mod_login.t_we_xin_okapi</code> table reference
      */
     public TWeXinOkapi() {
         this(DSL.name("t_we_xin_okapi"), null);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.t_we_xin_okapi</code> table reference
+     * Create an aliased <code>tat0004_mod_login.t_we_xin_okapi</code> table reference
      */
     public TWeXinOkapi(String alias) {
         this(DSL.name(alias), T_WE_XIN_OKAPI);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.t_we_xin_okapi</code> table reference
+     * Create an aliased <code>tat0004_mod_login.t_we_xin_okapi</code> table reference
      */
     public TWeXinOkapi(Name alias) {
         this(alias, T_WE_XIN_OKAPI);
@@ -130,7 +130,7 @@ public class TWeXinOkapi extends TableImpl<TWeXinOkapiRecord> {
      */
     @Override
     public Schema getSchema() {
-        return Tat0003ModLogin.TAT0003_MOD_LOGIN;
+        return Tat0004ModLogin.TAT0004_MOD_LOGIN;
     }
 
     /**

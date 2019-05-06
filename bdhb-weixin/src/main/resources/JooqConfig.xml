@@ -53,7 +53,7 @@
 			<!--<excludes></excludes> -->
 
 			<!--数据库名称 -->
-			<inputSchema>tat0003_mod_login</inputSchema>
+			<inputSchema>tat0004_mod_login</inputSchema>
 		</database>
 
 		<generate>

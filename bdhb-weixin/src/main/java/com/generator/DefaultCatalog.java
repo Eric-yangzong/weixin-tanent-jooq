@@ -27,7 +27,7 @@ import org.jooq.impl.CatalogImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultCatalog extends CatalogImpl {
 
-    private static final long serialVersionUID = -1822275406;
+    private static final long serialVersionUID = 27250349;
 
     /**
      * The reference instance of <code></code>
@@ -35,9 +35,9 @@ public class DefaultCatalog extends CatalogImpl {
     public static final DefaultCatalog DEFAULT_CATALOG = new DefaultCatalog();
 
     /**
-     * The schema <code>tat0003_mod_login</code>.
+     * The schema <code>tat0004_mod_login</code>.
      */
-    public final Tat0003ModLogin TAT0003_MOD_LOGIN = com.generator.Tat0003ModLogin.TAT0003_MOD_LOGIN;
+    public final Tat0004ModLogin TAT0004_MOD_LOGIN = com.generator.Tat0004ModLogin.TAT0004_MOD_LOGIN;
 
     /**
      * No further instances allowed
@@ -55,6 +55,6 @@ public class DefaultCatalog extends CatalogImpl {
 
     private final List<Schema> getSchemas0() {
         return Arrays.<Schema>asList(
-            Tat0003ModLogin.TAT0003_MOD_LOGIN);
+            Tat0004ModLogin.TAT0004_MOD_LOGIN);
     }
 }

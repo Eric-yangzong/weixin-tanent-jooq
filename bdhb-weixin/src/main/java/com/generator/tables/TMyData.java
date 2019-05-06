@@ -8,7 +8,7 @@ import com.bdhanbang.base.jooq.PostgresJsonBinding;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.generator.Indexes;
 import com.generator.Keys;
-import com.generator.Tat0003ModLogin;
+import com.generator.Tat0004ModLogin;
 import com.generator.tables.records.TMyDataRecord;
 
 import java.util.Arrays;
@@ -41,10 +41,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TMyData extends TableImpl<TMyDataRecord> {
 
-    private static final long serialVersionUID = -324581628;
+    private static final long serialVersionUID = -953619032;
 
     /**
-     * The reference instance of <code>tat0003_mod_login.t_my_data</code>
+     * The reference instance of <code>tat0004_mod_login.t_my_data</code>
      */
     public static final TMyData T_MY_DATA = new TMyData();
 
@@ -57,36 +57,36 @@ public class TMyData extends TableImpl<TMyDataRecord> {
     }
 
     /**
-     * The column <code>tat0003_mod_login.t_my_data.id</code>.
+     * The column <code>tat0004_mod_login.t_my_data.id</code>.
      */
     public final TableField<TMyDataRecord, UUID> ID = createField("id", org.jooq.impl.SQLDataType.UUID.nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_my_data.data_type</code>.
+     * The column <code>tat0004_mod_login.t_my_data.data_type</code>.
      */
     public final TableField<TMyDataRecord, String> DATA_TYPE = createField("data_type", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_my_data.jsonb</code>.
+     * The column <code>tat0004_mod_login.t_my_data.jsonb</code>.
      */
     public final TableField<TMyDataRecord, JsonNode> JSONB = createField("jsonb", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "", new PostgresJsonBinding());
 
     /**
-     * Create a <code>tat0003_mod_login.t_my_data</code> table reference
+     * Create a <code>tat0004_mod_login.t_my_data</code> table reference
      */
     public TMyData() {
         this(DSL.name("t_my_data"), null);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.t_my_data</code> table reference
+     * Create an aliased <code>tat0004_mod_login.t_my_data</code> table reference
      */
     public TMyData(String alias) {
         this(DSL.name(alias), T_MY_DATA);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.t_my_data</code> table reference
+     * Create an aliased <code>tat0004_mod_login.t_my_data</code> table reference
      */
     public TMyData(Name alias) {
         this(alias, T_MY_DATA);
@@ -105,7 +105,7 @@ public class TMyData extends TableImpl<TMyDataRecord> {
      */
     @Override
     public Schema getSchema() {
-        return Tat0003ModLogin.TAT0003_MOD_LOGIN;
+        return Tat0004ModLogin.TAT0004_MOD_LOGIN;
     }
 
     /**

@@ -8,7 +8,7 @@ import com.bdhanbang.base.jooq.PostgresJsonBinding;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.generator.Indexes;
 import com.generator.Keys;
-import com.generator.Tat0003ModLogin;
+import com.generator.Tat0004ModLogin;
 import com.generator.tables.records.TWeXinUserinfoRecord;
 
 import java.util.Arrays;
@@ -41,10 +41,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TWeXinUserinfo extends TableImpl<TWeXinUserinfoRecord> {
 
-    private static final long serialVersionUID = 1889065066;
+    private static final long serialVersionUID = 1104528548;
 
     /**
-     * The reference instance of <code>tat0003_mod_login.t_we_xin_userinfo</code>
+     * The reference instance of <code>tat0004_mod_login.t_we_xin_userinfo</code>
      */
     public static final TWeXinUserinfo T_WE_XIN_USERINFO = new TWeXinUserinfo();
 
@@ -57,76 +57,76 @@ public class TWeXinUserinfo extends TableImpl<TWeXinUserinfoRecord> {
     }
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.id</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.id</code>.
      */
     public final TableField<TWeXinUserinfoRecord, UUID> ID = createField("id", org.jooq.impl.SQLDataType.UUID.nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.open_id</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.open_id</code>.
      */
     public final TableField<TWeXinUserinfoRecord, String> OPEN_ID = createField("open_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.nick_name</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.nick_name</code>.
      */
     public final TableField<TWeXinUserinfoRecord, String> NICK_NAME = createField("nick_name", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.gender</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.gender</code>.
      */
     public final TableField<TWeXinUserinfoRecord, Integer> GENDER = createField("gender", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.language</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.language</code>.
      */
     public final TableField<TWeXinUserinfoRecord, String> LANGUAGE = createField("language", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.city</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.city</code>.
      */
     public final TableField<TWeXinUserinfoRecord, String> CITY = createField("city", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.province</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.province</code>.
      */
     public final TableField<TWeXinUserinfoRecord, String> PROVINCE = createField("province", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.country</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.country</code>.
      */
     public final TableField<TWeXinUserinfoRecord, String> COUNTRY = createField("country", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.avatar_url</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.avatar_url</code>.
      */
     public final TableField<TWeXinUserinfoRecord, String> AVATAR_URL = createField("avatar_url", org.jooq.impl.SQLDataType.VARCHAR(500), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.watermark</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.watermark</code>.
      */
     public final TableField<TWeXinUserinfoRecord, JsonNode> WATERMARK = createField("watermark", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "", new PostgresJsonBinding());
 
     /**
-     * The column <code>tat0003_mod_login.t_we_xin_userinfo.jsonb</code>.
+     * The column <code>tat0004_mod_login.t_we_xin_userinfo.jsonb</code>.
      */
     public final TableField<TWeXinUserinfoRecord, JsonNode> JSONB = createField("jsonb", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "", new PostgresJsonBinding());
 
     /**
-     * Create a <code>tat0003_mod_login.t_we_xin_userinfo</code> table reference
+     * Create a <code>tat0004_mod_login.t_we_xin_userinfo</code> table reference
      */
     public TWeXinUserinfo() {
         this(DSL.name("t_we_xin_userinfo"), null);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.t_we_xin_userinfo</code> table reference
+     * Create an aliased <code>tat0004_mod_login.t_we_xin_userinfo</code> table reference
      */
     public TWeXinUserinfo(String alias) {
         this(DSL.name(alias), T_WE_XIN_USERINFO);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.t_we_xin_userinfo</code> table reference
+     * Create an aliased <code>tat0004_mod_login.t_we_xin_userinfo</code> table reference
      */
     public TWeXinUserinfo(Name alias) {
         this(alias, T_WE_XIN_USERINFO);
@@ -145,7 +145,7 @@ public class TWeXinUserinfo extends TableImpl<TWeXinUserinfoRecord> {
      */
     @Override
     public Schema getSchema() {
-        return Tat0003ModLogin.TAT0003_MOD_LOGIN;
+        return Tat0004ModLogin.TAT0004_MOD_LOGIN;
     }
 
     /**

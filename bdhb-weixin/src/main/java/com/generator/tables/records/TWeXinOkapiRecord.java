@@ -31,115 +31,115 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TWeXinOkapiRecord extends UpdatableRecordImpl<TWeXinOkapiRecord> implements Record8<UUID, String, String, String, String, String, String, JsonNode> {
 
-    private static final long serialVersionUID = 1849186841;
+    private static final long serialVersionUID = 1700103769;
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_okapi.id</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_okapi.id</code>.
      */
     public void setId(UUID value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_okapi.id</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_okapi.id</code>.
      */
     public UUID getId() {
         return (UUID) get(0);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_okapi.tanent_id</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_okapi.tanent_id</code>.
      */
     public void setTanentId(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_okapi.tanent_id</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_okapi.tanent_id</code>.
      */
     public String getTanentId() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_okapi.app_id</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_okapi.app_id</code>.
      */
     public void setAppId(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_okapi.app_id</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_okapi.app_id</code>.
      */
     public String getAppId() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_okapi.app_secret</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_okapi.app_secret</code>.
      */
     public void setAppSecret(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_okapi.app_secret</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_okapi.app_secret</code>.
      */
     public String getAppSecret() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_okapi.user_name</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_okapi.user_name</code>.
      */
     public void setUserName(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_okapi.user_name</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_okapi.user_name</code>.
      */
     public String getUserName() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_okapi.password</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_okapi.password</code>.
      */
     public void setPassword(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_okapi.password</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_okapi.password</code>.
      */
     public String getPassword() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_okapi.note</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_okapi.note</code>.
      */
     public void setNote(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_okapi.note</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_okapi.note</code>.
      */
     public String getNote() {
         return (String) get(6);
     }
 
     /**
-     * Setter for <code>tat0003_mod_login.t_we_xin_okapi.jsonb</code>.
+     * Setter for <code>tat0004_mod_login.t_we_xin_okapi.jsonb</code>.
      */
     public void setJsonb(JsonNode value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>tat0003_mod_login.t_we_xin_okapi.jsonb</code>.
+     * Getter for <code>tat0004_mod_login.t_we_xin_okapi.jsonb</code>.
      */
     public JsonNode getJsonb() {
         return (JsonNode) get(7);

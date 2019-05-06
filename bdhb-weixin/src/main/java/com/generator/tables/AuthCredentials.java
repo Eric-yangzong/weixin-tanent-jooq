@@ -8,7 +8,7 @@ import com.bdhanbang.base.jooq.PostgresJsonBinding;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.generator.Indexes;
 import com.generator.Keys;
-import com.generator.Tat0003ModLogin;
+import com.generator.Tat0004ModLogin;
 import com.generator.tables.records.AuthCredentialsRecord;
 
 import java.util.Arrays;
@@ -41,10 +41,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AuthCredentials extends TableImpl<AuthCredentialsRecord> {
 
-    private static final long serialVersionUID = -1529928663;
+    private static final long serialVersionUID = -52646648;
 
     /**
-     * The reference instance of <code>tat0003_mod_login.auth_credentials</code>
+     * The reference instance of <code>tat0004_mod_login.auth_credentials</code>
      */
     public static final AuthCredentials AUTH_CREDENTIALS = new AuthCredentials();
 
@@ -57,31 +57,31 @@ public class AuthCredentials extends TableImpl<AuthCredentialsRecord> {
     }
 
     /**
-     * The column <code>tat0003_mod_login.auth_credentials._id</code>.
+     * The column <code>tat0004_mod_login.auth_credentials._id</code>.
      */
     public final TableField<AuthCredentialsRecord, UUID> _ID = createField("_id", org.jooq.impl.SQLDataType.UUID.nullable(false).defaultValue(org.jooq.impl.DSL.field("gen_random_uuid()", org.jooq.impl.SQLDataType.UUID)), this, "");
 
     /**
-     * The column <code>tat0003_mod_login.auth_credentials.jsonb</code>.
+     * The column <code>tat0004_mod_login.auth_credentials.jsonb</code>.
      */
     public final TableField<AuthCredentialsRecord, JsonNode> JSONB = createField("jsonb", org.jooq.impl.DefaultDataType.getDefaultDataType("jsonb"), this, "", new PostgresJsonBinding());
 
     /**
-     * Create a <code>tat0003_mod_login.auth_credentials</code> table reference
+     * Create a <code>tat0004_mod_login.auth_credentials</code> table reference
      */
     public AuthCredentials() {
         this(DSL.name("auth_credentials"), null);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.auth_credentials</code> table reference
+     * Create an aliased <code>tat0004_mod_login.auth_credentials</code> table reference
      */
     public AuthCredentials(String alias) {
         this(DSL.name(alias), AUTH_CREDENTIALS);
     }
 
     /**
-     * Create an aliased <code>tat0003_mod_login.auth_credentials</code> table reference
+     * Create an aliased <code>tat0004_mod_login.auth_credentials</code> table reference
      */
     public AuthCredentials(Name alias) {
         this(alias, AUTH_CREDENTIALS);
@@ -100,7 +100,7 @@ public class AuthCredentials extends TableImpl<AuthCredentialsRecord> {
      */
     @Override
     public Schema getSchema() {
-        return Tat0003ModLogin.TAT0003_MOD_LOGIN;
+        return Tat0004ModLogin.TAT0004_MOD_LOGIN;
     }
 
     /**
