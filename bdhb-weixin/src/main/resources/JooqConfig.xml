@@ -70,7 +70,7 @@
 		<target>
 			<!--生成代码文件的包名及放置目录 -->
 			<packageName>com.generator</packageName>
-			<directory>src/main/java</directory>
+			<directory>target/generated-sources/java</directory>
 		</target>
 	</generator>
 </configuration>
