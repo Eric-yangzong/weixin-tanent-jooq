@@ -25,7 +25,7 @@ import com.bdhanbang.weixin.service.WeXinOkapiService;
  * @date 2018年9月6日 下午1:49:24
  * 
  */
-@Component
+//@Component
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired
