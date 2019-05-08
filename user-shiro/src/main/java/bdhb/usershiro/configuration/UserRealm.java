@@ -1,12 +1,13 @@
-package com.bdhanbang.weixin.configuration;
+package bdhb.usershiro.configuration;
 
 import com.bdhanbang.base.common.Query;
-import com.bdhanbang.weixin.jooq.tables.QSysPermission;
-import com.bdhanbang.weixin.jooq.tables.QSysUser;
-import com.bdhanbang.weixin.service.SysPermissionService;
-import com.bdhanbang.weixin.service.SysUserService;
 import com.generator.tables.pojos.SysPermission;
 import com.generator.tables.pojos.SysUser;
+
+import bdhb.usershiro.dao.QSysPermission;
+import bdhb.usershiro.dao.QSysUser;
+import bdhb.usershiro.service.SysPermissionService;
+import bdhb.usershiro.service.SysUserService;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserRealm extends AuthorizingRealm {
+	
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserRealm.class);
+	
 	@Autowired
 	private SysUserService sysUserService;
 

@@ -1,4 +1,4 @@
-package com.bdhanbang.weixin.jooq.tables;
+package bdhb.usershiro.dao;
 
 import org.jooq.Schema;
 

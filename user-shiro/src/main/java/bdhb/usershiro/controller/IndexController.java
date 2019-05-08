@@ -1,4 +1,4 @@
-package com.bdhanbang.weixin.controller;
+package bdhb.usershiro.controller;
 
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;

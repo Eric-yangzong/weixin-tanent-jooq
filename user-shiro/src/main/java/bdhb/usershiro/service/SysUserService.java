@@ -1,8 +1,9 @@
-package com.bdhanbang.weixin.service;
+package bdhb.usershiro.service;
 
 import com.bdhanbang.base.service.BaseService;
-import com.bdhanbang.weixin.jooq.tables.QSysUser;
 import com.generator.tables.pojos.SysUser;
+
+import bdhb.usershiro.dao.QSysUser;
 
 public interface SysUserService extends BaseService<QSysUser, SysUser> {
 
