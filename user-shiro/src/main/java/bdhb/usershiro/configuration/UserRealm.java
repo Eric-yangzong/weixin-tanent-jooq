@@ -1,15 +1,5 @@
 package bdhb.usershiro.configuration;
 
-import com.bdhanbang.base.common.Query;
-import com.generator.tables.pojos.SysPermission;
-import com.generator.tables.pojos.SysUser;
-
-import bdhb.usershiro.dao.QSysPermission;
-import bdhb.usershiro.dao.QSysUser;
-import bdhb.usershiro.service.SysPermissionService;
-import bdhb.usershiro.service.SysUserService;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -27,6 +17,15 @@ import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.bdhanbang.base.common.Query;
+import com.generator.tables.pojos.SysPermission;
+import com.generator.tables.pojos.SysUser;
+
+import bdhb.usershiro.dao.QSysPermission;
+import bdhb.usershiro.dao.QSysUser;
+import bdhb.usershiro.service.SysPermissionService;
+import bdhb.usershiro.service.SysUserService;
 
 public class UserRealm extends AuthorizingRealm {
 	

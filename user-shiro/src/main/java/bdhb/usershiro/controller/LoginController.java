@@ -60,7 +60,7 @@ public class LoginController {
 		} catch (Throwable e) {
 			model.addAttribute("message", "未知错误！");
 		}
-		return "login";
+		return "redirect:/page/login.html";
 	}
 
 	/**
