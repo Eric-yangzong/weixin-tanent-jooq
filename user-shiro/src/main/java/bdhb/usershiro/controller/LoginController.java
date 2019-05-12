@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @Description
- * @Author sgl
- * @Date 2018-06-11 17:51
+ * @Author yagxz
+ * @Date 2019-05-12 17:51
  */
 @Controller
 public class LoginController {
@@ -31,7 +31,7 @@ public class LoginController {
 		if (SecurityUtils.getSubject().isAuthenticated()) {
 			return "redirect:/index";
 		}
-		return "login";
+		return "login.html";
 	}
 
 	/**
@@ -39,7 +39,6 @@ public class LoginController {
 	 * 
 	 * @param username
 	 * @param password
-	 * @param model
 	 * @return
 	 */
 	@PostMapping("/login")
@@ -49,7 +48,7 @@ public class LoginController {
 		try {
 			// shiro帮我们匹配密码什么的，我们只需要把东西传给它，它会根据我们在UserRealm里认证方法设置的来验证
 			user.login(token);
-			return "redirect:/page/login.html";
+			return "redirect:/index";
 		} catch (UnknownAccountException e) {
 			// 账号不存在和下面密码错误一般都合并为一个账号或密码错误，这样可以增加暴力破解难度
 			model.addAttribute("message", "账号不存在！");
@@ -60,7 +59,7 @@ public class LoginController {
 		} catch (Throwable e) {
 			model.addAttribute("message", "未知错误！");
 		}
-		return "/page/login.html";
+		return "/login";
 	}
 
 	/**

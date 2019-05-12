@@ -19,6 +19,6 @@ public class IndexController {
     public String index(Model model) {
     	SysUserEntity sysUserEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         model.addAttribute("userName", sysUserEntity.getFullName());
-        return "index";
+        return "index.html";
     }
 }

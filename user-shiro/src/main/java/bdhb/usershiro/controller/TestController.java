@@ -1,10 +1,11 @@
 package bdhb.usershiro.controller;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class TestController {
 
 	/**
@@ -12,7 +13,7 @@ public class TestController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping("/test1")
+	@RequestMapping(value = "test1", method = RequestMethod.GET)
 	public String test1() {
 		return "test1";
 	}
@@ -22,9 +23,15 @@ public class TestController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping("/test2")
+	@RequestMapping(value = "test2", method = RequestMethod.GET)
 	@RequiresPermissions("systemUserAdd")
 	public String test2() {
 		return "test2";
+	}
+
+	@RequestMapping(value = "test3", method = RequestMethod.GET)
+	@RequiresPermissions("systemUserAdd1")
+	public String test3() {
+		return "test3";
 	}
 }

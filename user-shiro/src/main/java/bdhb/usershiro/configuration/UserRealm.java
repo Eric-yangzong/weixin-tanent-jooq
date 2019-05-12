@@ -1,17 +1,7 @@
 package bdhb.usershiro.configuration;
 
-import com.bdhanbang.base.common.Query;
-import com.generator.tables.SysPermission;
-import com.generator.tables.SysUser;
-import com.generator.tables.pojos.SysPermissionEntity;
-import com.generator.tables.pojos.SysUserEntity;
-
-import bdhb.usershiro.service.SysPermissionService;
-import bdhb.usershiro.service.SysUserService;
-
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -26,6 +16,13 @@ import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.bdhanbang.base.common.Query;
+import com.generator.tables.SysUser;
+import com.generator.tables.pojos.SysUserEntity;
+
+import bdhb.usershiro.service.SysPermissionService;
+import bdhb.usershiro.service.SysUserService;
 
 public class UserRealm extends AuthorizingRealm {
 
@@ -47,13 +44,8 @@ public class UserRealm extends AuthorizingRealm {
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		SysUserEntity sysUser = (SysUserEntity) principals.getPrimaryPrincipal();
 
-		Query query = new Query();
-
-		// query.add(new Query("",sysUser.getUserId()));
-
-		List<String> sysPermissions = sysPermissionService
-				.queryList("tat0004_mod_login", SysPermission.class, SysPermissionEntity.class, query.getQuerys())
-				.stream().map(x -> x.getId().toString()).collect(Collectors.toList());
+		List<String> sysPermissions = sysPermissionService.queryUserPermission(sysUser.getTanentId(),
+				sysUser.getUserId());
 
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		info.addStringPermissions(sysPermissions);
@@ -82,10 +74,6 @@ public class UserRealm extends AuthorizingRealm {
 			return null;
 		}
 		SysUserEntity sysUserEntity = sysUsers.get(0);
-
-		sysUserService.getEntity("tat0004_mod_login", SysUser.class, SysUserEntity.class, sysUserEntity.getUserId());
-
-		sysUserService.updateEntity("tat0004_mod_login", SysUser.class, sysUserEntity);
 
 		LOGGER.info("doGetAuthenticationInfo");
 		return new SimpleAuthenticationInfo(sysUserEntity, sysUserEntity.getPassword().toCharArray(),
