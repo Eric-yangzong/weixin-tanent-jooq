@@ -1,10 +1,10 @@
 package bdhb.usershiro.service;
 
 import com.bdhanbang.base.service.BaseService;
-import com.generator.tables.pojos.SysUser;
+import com.generator.tables.SysUser;
+import com.generator.tables.pojos.SysUserEntity;
 
-import bdhb.usershiro.dao.QSysUser;
 
-public interface SysUserService extends BaseService<QSysUser, SysUser> {
+public interface SysUserService extends BaseService<SysUser, SysUserEntity> {
 
 }

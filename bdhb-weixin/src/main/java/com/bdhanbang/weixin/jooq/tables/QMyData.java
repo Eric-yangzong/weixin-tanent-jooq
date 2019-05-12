@@ -2,11 +2,10 @@ package com.bdhanbang.weixin.jooq.tables;
 
 import org.jooq.Schema;
 
-import com.bdhanbang.base.jooq.IEntity;
 import com.bdhanbang.base.jooq.ISchemaSwitch;
 import com.generator.tables.TMyData;
 
-public class QMyData extends TMyData implements ISchemaSwitch, IEntity {
+public class QMyData extends TMyData implements ISchemaSwitch {
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,11 +21,6 @@ public class QMyData extends TMyData implements ISchemaSwitch, IEntity {
 	@Override
 	public void setSchema(Schema schema) {
 		this.schema = schema;
-	}
-
-	@Override
-	public String getEntityIdName() {
-		return idName;
 	}
 
 }

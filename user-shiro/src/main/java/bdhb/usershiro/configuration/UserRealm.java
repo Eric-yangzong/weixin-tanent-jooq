@@ -1,15 +1,14 @@
 package bdhb.usershiro.configuration;
 
 import com.bdhanbang.base.common.Query;
-import com.generator.tables.pojos.SysPermission;
-import com.generator.tables.pojos.SysUser;
+import com.generator.tables.SysPermission;
+import com.generator.tables.SysUser;
+import com.generator.tables.pojos.SysPermissionEntity;
+import com.generator.tables.pojos.SysUserEntity;
 
-import bdhb.usershiro.dao.QSysPermission;
-import bdhb.usershiro.dao.QSysUser;
 import bdhb.usershiro.service.SysPermissionService;
 import bdhb.usershiro.service.SysUserService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,10 +28,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserRealm extends AuthorizingRealm {
-	
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserRealm.class);
-	
+
 	@Autowired
 	private SysUserService sysUserService;
 
@@ -47,15 +45,15 @@ public class UserRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		SysUser sysUser = (SysUser) principals.getPrimaryPrincipal();
+		SysUserEntity sysUser = (SysUserEntity) principals.getPrimaryPrincipal();
 
 		Query query = new Query();
 
 		// query.add(new Query("",sysUser.getUserId()));
 
 		List<String> sysPermissions = sysPermissionService
-				.queryList("tat0004_mod_login", QSysPermission.class, SysPermission.class, query.getQuerys()).stream()
-				.map(x -> x.getId().toString()).collect(Collectors.toList());
+				.queryList("tat0004_mod_login", SysPermission.class, SysPermissionEntity.class, query.getQuerys())
+				.stream().map(x -> x.getId().toString()).collect(Collectors.toList());
 
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		info.addStringPermissions(sysPermissions);
@@ -77,16 +75,20 @@ public class UserRealm extends AuthorizingRealm {
 
 		Query query = new Query();
 		query.getQuerys().add(new Query("userName", token.getUsername()));
-		List<SysUser> sysUsers = sysUserService.queryList("tat0004_mod_login", QSysUser.class, SysUser.class,
+		List<SysUserEntity> sysUsers = sysUserService.queryList("tat0004_mod_login", SysUser.class, SysUserEntity.class,
 				query.getQuerys());
-		
+
 		if (Objects.isNull(sysUsers) || sysUsers.size() == 0) {
 			return null;
 		}
-		SysUser sysUser = sysUsers.get(0);
-		
+		SysUserEntity sysUserEntity = sysUsers.get(0);
+
+		sysUserService.getEntity("tat0004_mod_login", SysUser.class, SysUserEntity.class, sysUserEntity.getUserId());
+
+		sysUserService.updateEntity("tat0004_mod_login", SysUser.class, sysUserEntity);
+
 		LOGGER.info("doGetAuthenticationInfo");
-		return new SimpleAuthenticationInfo(sysUser, sysUser.getPassword().toCharArray(),
-				ByteSource.Util.bytes(sysUser.getSalt()), getName());
+		return new SimpleAuthenticationInfo(sysUserEntity, sysUserEntity.getPassword().toCharArray(),
+				ByteSource.Util.bytes(sysUserEntity.getSalt()), getName());
 	}
 }

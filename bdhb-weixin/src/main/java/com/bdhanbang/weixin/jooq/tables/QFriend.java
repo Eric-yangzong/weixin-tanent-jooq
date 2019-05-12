@@ -2,15 +2,12 @@ package com.bdhanbang.weixin.jooq.tables;
 
 import org.jooq.Schema;
 
-import com.bdhanbang.base.jooq.IEntity;
 import com.bdhanbang.base.jooq.ISchemaSwitch;
 import com.generator.tables.Friend;
 
-public class QFriend extends Friend implements ISchemaSwitch, IEntity {
+public class QFriend extends Friend implements ISchemaSwitch {
 
 	private static final long serialVersionUID = 1L;
-
-	public static String idName = "id";
 
 	Schema schema;
 
@@ -22,11 +19,6 @@ public class QFriend extends Friend implements ISchemaSwitch, IEntity {
 	@Override
 	public void setSchema(Schema schema) {
 		this.schema = schema;
-	}
-
-	@Override
-	public String getEntityIdName() {
-		return idName;
 	}
 
 }

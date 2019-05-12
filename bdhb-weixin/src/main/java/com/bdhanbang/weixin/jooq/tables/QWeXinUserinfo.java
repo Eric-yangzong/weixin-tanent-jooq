@@ -2,7 +2,6 @@ package com.bdhanbang.weixin.jooq.tables;
 
 import org.jooq.Schema;
 
-import com.bdhanbang.base.jooq.IEntity;
 import com.bdhanbang.base.jooq.ISchemaSwitch;
 import com.generator.tables.TWeXinUserinfo;
 
@@ -13,13 +12,13 @@ import com.generator.tables.TWeXinUserinfo;
  * @date 2018年8月4日 下午12:42:25
  * 
  */
-public class QWeXinUserinfo extends TWeXinUserinfo implements ISchemaSwitch, IEntity {
+public class QWeXinUserinfo extends TWeXinUserinfo implements ISchemaSwitch {
 
 	private static final long serialVersionUID = 1L;
 
-	public static String idName = "id";
-
 	Schema schema;
+	
+	
 
 	@Override
 	public Schema getSchema() {
@@ -31,9 +30,5 @@ public class QWeXinUserinfo extends TWeXinUserinfo implements ISchemaSwitch, IEn
 		this.schema = schema;
 	}
 
-	@Override
-	public String getEntityIdName() {
-		return idName;
-	}
 
 }

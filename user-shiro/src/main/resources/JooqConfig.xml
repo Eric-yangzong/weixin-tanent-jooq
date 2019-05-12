@@ -9,7 +9,7 @@
 
 	<generator>
 		<!-- 代码生成器 -->
-		<name>org.jooq.util.JavaGenerator</name>
+		<name>com.bdhanbang.base.jooq.util.JavaGenerator</name>
 		<database>
 
 			<forcedTypes>

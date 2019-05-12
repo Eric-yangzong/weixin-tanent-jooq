@@ -49,7 +49,7 @@ public class LoginController {
 		try {
 			// shiro帮我们匹配密码什么的，我们只需要把东西传给它，它会根据我们在UserRealm里认证方法设置的来验证
 			user.login(token);
-			return "redirect:/index";
+			return "redirect:/page/login.html";
 		} catch (UnknownAccountException e) {
 			// 账号不存在和下面密码错误一般都合并为一个账号或密码错误，这样可以增加暴力破解难度
 			model.addAttribute("message", "账号不存在！");
@@ -60,7 +60,7 @@ public class LoginController {
 		} catch (Throwable e) {
 			model.addAttribute("message", "未知错误！");
 		}
-		return "login";
+		return "/page/login.html";
 	}
 
 	/**

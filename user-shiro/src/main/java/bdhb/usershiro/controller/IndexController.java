@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.generator.tables.pojos.SysUser;
+import com.generator.tables.pojos.SysUserEntity;
 
 @Controller
 public class IndexController {
@@ -17,8 +17,8 @@ public class IndexController {
      */
     @RequestMapping(value = {"/", "/index"})
     public String index(Model model) {
-        SysUser sysUser = (SysUser) SecurityUtils.getSubject().getPrincipal();
-        model.addAttribute("userName", sysUser.getFullName());
+    	SysUserEntity sysUserEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+        model.addAttribute("userName", sysUserEntity.getFullName());
         return "index";
     }
 }
