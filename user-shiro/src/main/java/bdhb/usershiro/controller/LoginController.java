@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @Description
- * @Author sgl
- * @Date 2018-06-11 17:51
+ * @Author yagxz
+ * @Date 2019-05-12 17:51
  */
 @Controller
 public class LoginController {
@@ -31,7 +31,7 @@ public class LoginController {
 		if (SecurityUtils.getSubject().isAuthenticated()) {
 			return "redirect:/index";
 		}
-		return "login";
+		return "login.html";
 	}
 
 	/**
@@ -39,7 +39,6 @@ public class LoginController {
 	 * 
 	 * @param username
 	 * @param password
-	 * @param model
 	 * @return
 	 */
 	@PostMapping("/login")
@@ -60,7 +59,7 @@ public class LoginController {
 		} catch (Throwable e) {
 			model.addAttribute("message", "未知错误！");
 		}
-		return "redirect:/page/login.html";
+		return "/login";
 	}
 
 	/**

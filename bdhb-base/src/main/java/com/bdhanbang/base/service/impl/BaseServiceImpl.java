@@ -1,6 +1,5 @@
 package com.bdhanbang.base.service.impl;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.jooq.DeleteWhereStep;
 import org.jooq.Field;
 import org.jooq.InsertValuesStepN;
 import org.jooq.Record;
-import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -25,13 +23,10 @@ import com.bdhanbang.base.common.QueryPage;
 import com.bdhanbang.base.common.QueryResults;
 import com.bdhanbang.base.exception.CurdException;
 import com.bdhanbang.base.jooq.GenSchema;
-import com.bdhanbang.base.jooq.IEntity;
 import com.bdhanbang.base.jooq.ISchemaSwitch;
 import com.bdhanbang.base.message.ErrorMessage;
 import com.bdhanbang.base.service.BaseService;
 import com.bdhanbang.base.util.JOOQHelper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @ClassName: BaseServiceImpl
@@ -133,14 +128,15 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 		TableField<?, Object> tableIdField = getTableIdField(tableImpl);
 		Object idValue = getFieldIdValue(tableImpl, entity);
 
-		UpdateSetMoreStep<?> updateStep = dsl.update((Table) tableImpl).set(tableIdField, idValue);
-
 		Field<?>[] fields = tableImpl.fields();
 		List<Object> values = getValueList(fields, entity);
 
-		for (int i = 0; i < fields.length; i++) {
-			TableField<?, Object> tableField = (TableField<?, Object>) fields[i];
-			updateStep.set(tableField, values.get(i));
+		TableField<?, Object> tableField = (TableField<?, Object>) fields[0];
+		UpdateSetMoreStep<?> updateStep = dsl.update((Table) tableImpl).set(tableField, values.get(0));
+
+		for (int i = 1; i < fields.length; i++) {
+			tableField = (TableField<?, Object>) fields[i];
+			updateStep = updateStep.set(tableField, values.get(i));
 		}
 
 		updateStep.where(tableIdField.eq(idValue));
@@ -154,16 +150,14 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 
 		T tableImpl = createTableImpl(schema, clazz);
 
-		TableField<?, Object> tableIdField = getTableIdField(tableImpl);
-		Object idValue = getFieldIdValue(tableImpl, entity);
-
-		UpdateSetMoreStep<?> updateStep = dsl.update((Table) tableImpl).set(tableIdField, idValue);
-
 		Field<?>[] fields = tableImpl.fields();
 		List<Object> values = getValueList(fields, entity);
 
+		TableField<?, Object> tableField = (TableField<?, Object>) fields[0];
+		UpdateSetMoreStep<?> updateStep = dsl.update((Table) tableImpl).set(tableField, values.get(0));
+
 		for (int i = 0; i < fields.length; i++) {
-			TableField<?, Object> tableField = (TableField<?, Object>) fields[i];
+			tableField = (TableField<?, Object>) fields[i];
 			updateStep.set(tableField, values.get(i));
 		}
 
@@ -188,9 +182,8 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 
 		selectStep.where(tableIdField.eq(id));
 
-		Record record = selectStep.fetchOne();
+		return selectStep.fetchOne().into(entityClass);
 
-		return getNewEntity(record, fields, entityClass);
 	}
 
 	@Override
@@ -210,12 +203,7 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 			selectStep.where(condition);
 		}
 
-		List<E> list = new ArrayList<>();
-
-		selectStep.fetch().stream().forEach(x -> {
-			E entity = getNewEntity(x, fields, entityClass);
-			list.add(entity);
-		});
+		List<E> list = selectStep.fetch().into(entityClass);
 
 		return list;
 	}
@@ -235,93 +223,11 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 
 		JOOQHelper.analyzeOrder(tableImpl, selectStep, queryPage);
 
-		Result<Record> rs = selectStep.fetch();
-
-		List<E> list = new ArrayList<>();
-
-		rs.stream().forEach(x -> {
-			E entity = getNewEntity(x, fields, entityClass);
-			list.add(entity);
-		});
+		List<E> list = selectStep.fetch().into(entityClass);
 
 		return new QueryResults<E>(list, Long.valueOf(queryPage.getSize()),
 				Long.valueOf((queryPage.getPage() - 1) * queryPage.getSize()), Long.valueOf(rowCount));
 
-	}
-
-	/**
-	 * @Title: getNewEntity
-	 * @Description: 得到一个新实体内部有值
-	 * @param @param
-	 *            record
-	 * @param @param
-	 *            fields
-	 * @param @param
-	 *            entityClass
-	 * @param @return
-	 *            设定文件
-	 * @return E 返回类型
-	 * @throws:
-	 */
-	protected E getNewEntity(Record record, Field<?>[] fields, Class<E> entityClass) {
-
-		if (Objects.isNull(record)) {
-			return null;
-		}
-
-		E entity = getNewEntity(entityClass);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			for (int i = 0; i < fields.length; i++) {
-				Field<?> field = fields[i];
-				java.lang.reflect.Field fieldVal = entity.getClass()
-						.getDeclaredField(JOOQHelper.UnderlineToHump(field.getName()));
-				fieldVal.setAccessible(true);
-				Object obj = record.get(fields[i]);
-
-				if (obj instanceof JsonNode) {
-					if (!Objects.isNull(obj)) {
-						obj = mapper.readValue(mapper.writeValueAsString(obj), fieldVal.getType());
-						fieldVal.set(entity, obj);
-					}
-				} else {
-					fieldVal.set(entity, obj);
-				}
-
-			}
-
-			return entity;
-		} catch (IOException e) {
-			throw new CurdException(e, ErrorMessage.CURD_ERROR.getStatus(), ErrorMessage.CURD_ERROR.getMessage());
-		} catch (NoSuchFieldException | SecurityException e) {
-			throw new CurdException(e, ErrorMessage.CURD_ERROR.getStatus(), ErrorMessage.CURD_ERROR.getMessage());
-		} catch (IllegalArgumentException e) {
-			throw new CurdException(e, ErrorMessage.CURD_ERROR.getStatus(), ErrorMessage.CURD_ERROR.getMessage());
-		} catch (IllegalAccessException e) {
-			throw new CurdException(e, ErrorMessage.CURD_ERROR.getStatus(), ErrorMessage.CURD_ERROR.getMessage());
-		}
-
-	}
-
-	/**
-	 * @Title: getNewEntity
-	 * @Description: new一个新实体
-	 * @param @param
-	 *            entityClass
-	 * @param @return
-	 *            设定文件
-	 * @return E 返回类型
-	 * @throws:
-	 */
-	protected E getNewEntity(Class<E> entityClass) {
-		try {
-
-			return entityClass.newInstance();
-		} catch (InstantiationException e) {
-			throw new CurdException(e, ErrorMessage.CURD_ERROR.getStatus(), ErrorMessage.CURD_ERROR.getMessage());
-		} catch (IllegalAccessException e) {
-			throw new CurdException(e, ErrorMessage.CURD_ERROR.getStatus(), ErrorMessage.CURD_ERROR.getMessage());
-		}
 	}
 
 	/**
@@ -340,7 +246,7 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 
 		try {
 
-			String idName = ((IEntity) tableImpl).getEntityIdName();
+			String idName = tableImpl.getPrimaryKey().getFields().get(0).getName();
 
 			java.lang.reflect.Field fieldVal = entity.getClass().getDeclaredField(JOOQHelper.UnderlineToHump(idName));
 			fieldVal.setAccessible(true);
@@ -378,10 +284,8 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 	 */
 	@SuppressWarnings("unchecked")
 	protected TableField<?, Object> getTableIdField(T tableImpl) {
-		String idName = ((IEntity) tableImpl).getEntityIdName();
+		return (TableField<?, Object>) tableImpl.getPrimaryKey().getFields().get(0);
 
-		TableField<?, Object> tableIdField = (TableField<?, Object>) tableImpl.field(idName);
-		return tableIdField;
 	}
 
 	/**
