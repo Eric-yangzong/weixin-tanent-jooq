@@ -25,10 +25,10 @@ import com.bdhanbang.base.common.QueryResults;
 import com.bdhanbang.base.exception.CurdException;
 import com.bdhanbang.base.jooq.GenSchema;
 import com.bdhanbang.base.util.JOOQHelper;
+import bdhb.usershiro.service.TableService;
 import com.bdhanbang.base.jooq.ISchemaSwitch;
 import com.bdhanbang.base.message.ErrorMessage;
 
-import bdhb.usershiro.service.TableService;
 
 @Service
 public class TableServiceImpl implements TableService {

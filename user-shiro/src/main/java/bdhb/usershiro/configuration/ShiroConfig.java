@@ -1,82 +1,112 @@
 package bdhb.usershiro.configuration;
 
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import java.util.Arrays;
+import java.util.Map;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+
+import org.apache.shiro.authc.Authenticator;
+import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.mgt.SessionStorageEvaluator;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
+import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.mgt.DefaultWebSessionStorageEvaluator;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import bdhb.usershiro.filter.AnyRolesAuthorizationFilter;
+import bdhb.usershiro.filter.JwtAuthFilter;
+import bdhb.usershiro.service.SysUserService;
 
+/**
+ * shiro配置类
+ */
 @Configuration
 public class ShiroConfig {
 
-	/**
-	 * 凭证匹配器
-	 *
-	 * @return
-	 */
-	@Bean
-	public HashedCredentialsMatcher hashedCredentialsMatcher() {
-		HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-		// md5加密1次
-		hashedCredentialsMatcher.setHashAlgorithmName("md5");
-		hashedCredentialsMatcher.setHashIterations(1);
-		return hashedCredentialsMatcher;
-	}
 
-	/**
-	 * 自定义realm
-	 *
-	 * @return
-	 */
-	@Bean
-	public UserRealm userRealm() {
-		UserRealm userRealm = new UserRealm();
-		userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
-		return userRealm;
-	}
+    @Bean
+    public FilterRegistrationBean<Filter> filterRegistrationBean(SecurityManager securityManager,SysUserService userService) throws Exception{
+        FilterRegistrationBean<Filter> filterRegistration = new FilterRegistrationBean<Filter>();
+        filterRegistration.setFilter((Filter)shiroFilter(securityManager, userService).getObject());
+        filterRegistration.addInitParameter("targetFilterLifecycle", "true");
+        filterRegistration.setAsyncSupported(true);
+        filterRegistration.setEnabled(true);
+        filterRegistration.setDispatcherTypes(DispatcherType.REQUEST,DispatcherType.ASYNC);
 
-	/**
-	 * 安全管理器 注：使用shiro-spring-boot-starter
-	 * 1.4时，返回类型是SecurityManager会报错，直接引用shiro-spring则不报错
-	 *
-	 * @return
-	 */
-	@Bean
-	public DefaultWebSecurityManager securityManager() {
-		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-		securityManager.setRealm(userRealm());
-		return securityManager;
-	}
+        return filterRegistration;
+    }
 
-	/**
-	 * 设置过滤规则
-	 *
-	 * @param securityManager
-	 * @return
-	 */
-	@Bean
-	public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
-		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-		shiroFilterFactoryBean.setSecurityManager(securityManager);
-		shiroFilterFactoryBean.setLoginUrl("/login");
-		shiroFilterFactoryBean.setSuccessUrl("/");
-		shiroFilterFactoryBean.setUnauthorizedUrl("/unauth");
+    @Bean
+    public Authenticator authenticator(SysUserService userService) {
+        ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator();
+        authenticator.setRealms(Arrays.asList(jwtShiroRealm(userService), dbShiroRealm(userService)));
+        authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
+        return authenticator;
+    }
 
-		// 注意此处使用的是LinkedHashMap，是有顺序的，shiro会按从上到下的顺序匹配验证，匹配了就不再继续验证
-		// 所以上面的url要苛刻，宽松的url要放在下面，尤其是"/**"要放到最下面，如果放前面的话其后的验证规则就没作用了。
-		Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-		filterChainDefinitionMap.put("/static/**", "anon");
-		filterChainDefinitionMap.put("/login", "anon");
-		filterChainDefinitionMap.put("/captcha.jpg", "anon");
-		filterChainDefinitionMap.put("/favicon.ico", "anon");
-		filterChainDefinitionMap.put("/**", "authc");
+    @Bean
+    protected SessionStorageEvaluator sessionStorageEvaluator(){
+        DefaultWebSessionStorageEvaluator sessionStorageEvaluator = new DefaultWebSessionStorageEvaluator();
+        sessionStorageEvaluator.setSessionStorageEnabled(false);
+        return sessionStorageEvaluator;
+    }
 
-		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-		return shiroFilterFactoryBean;
-	}
+    @Bean("dbRealm")
+    public Realm dbShiroRealm(SysUserService userService) {
+        DbShiroRealm myShiroRealm = new DbShiroRealm(userService);
+        return myShiroRealm;
+    }
+
+    @Bean("jwtRealm")
+    public Realm jwtShiroRealm(SysUserService userService) {
+        JWTShiroRealm myShiroRealm = new JWTShiroRealm(userService);
+        return myShiroRealm;
+    }
+
+    /**
+     * 设置过滤器
+     */
+    @Bean("shiroFilter")
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, SysUserService userService) {
+    	ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
+        factoryBean.setSecurityManager(securityManager);
+        Map<String, Filter> filterMap = factoryBean.getFilters();
+        filterMap.put("authcToken", createAuthFilter(userService));
+        filterMap.put("anyRole", createRolesFilter());
+        factoryBean.setFilters(filterMap);
+        factoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition().getFilterChainMap());
+
+        return factoryBean;
+    }
+
+    @Bean
+    protected ShiroFilterChainDefinition shiroFilterChainDefinition() {
+        DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
+        chainDefinition.addPathDefinition("/login", "noSessionCreation,anon");
+        chainDefinition.addPathDefinition("/logout", "noSessionCreation,authcToken[permissive]");
+        chainDefinition.addPathDefinition("/image/**", "anon");
+        chainDefinition.addPathDefinition("/static/**", "anon");
+        chainDefinition.addPathDefinition("/swagger-ui.html", "anon");
+        chainDefinition.addPathDefinition("/swagger-resources", "noSessionCreation,authcToken[permissive]");
+        chainDefinition.addPathDefinition("/v2/api-docs", "noSessionCreation,authcToken[permissive]");
+        chainDefinition.addPathDefinition("/admin/**", "noSessionCreation,authcToken,anyRole[admin,manager]"); //只允许admin或manager角色的用户访问
+        chainDefinition.addPathDefinition("/**", "noSessionCreation,authcToken");
+        return chainDefinition;
+    }
+
+    protected JwtAuthFilter createAuthFilter(SysUserService userService){
+        return new JwtAuthFilter(userService);
+    }
+
+    protected AnyRolesAuthorizationFilter createRolesFilter(){
+        return new AnyRolesAuthorizationFilter();
+    }
 
 }

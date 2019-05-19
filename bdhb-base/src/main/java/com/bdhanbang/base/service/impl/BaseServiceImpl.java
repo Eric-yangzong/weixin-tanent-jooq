@@ -39,18 +39,6 @@ import com.bdhanbang.base.util.JOOQHelper;
  * @param <E>
  *            询用实体
  */
-
-/**
- * @ClassName: BaseServiceImpl
- * @Description: Service的基础实现类
- * @author yangxz
- * @date 2018年7月14日 上午10:51:16
- * 
- * @param <T>
- *            Q开头的查询用和tableImpl
- * @param <E>
- *            询用实体
- */
 public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Serializable>
 		implements BaseService<T, E> {
 

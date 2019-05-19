@@ -10,4 +10,6 @@ package bdhb.usershiro.configuration;
 public class AppCommon {
 
 	public static final String scheam = "_mod_login";
+	
+	public static final String X_WX_TENANT = "x-okapi-tenant";
 }

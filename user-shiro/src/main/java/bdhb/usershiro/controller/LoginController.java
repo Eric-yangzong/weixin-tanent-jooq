@@ -1,75 +1,73 @@
 package bdhb.usershiro.controller;
 
+
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.DisabledAccountException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
-/**
- * @Description
- * @Author yagxz
- * @Date 2019-05-12 17:51
- */
-@Controller
+import com.generator.tables.pojos.SysUserEntity;
+
+import bdhb.usershiro.service.SysUserService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@RestController
 public class LoginController {
+	
+	private Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-	/**
-	 * get请求，登录页面跳转
-	 * 
-	 * @return
-	 */
-	@GetMapping("/login")
-	public String login() {
-		// 如果已经认证通过，直接跳转到首页
-		if (SecurityUtils.getSubject().isAuthenticated()) {
-			return "redirect:/index";
-		}
-		return "login.html";
-	}
+    private SysUserService userService;
+    
+    public LoginController(SysUserService userService) {
+    	this.userService = userService;
+    }
 
-	/**
-	 * post表单提交，登录
-	 * 
-	 * @param username
-	 * @param password
-	 * @return
-	 */
-	@PostMapping("/login")
-	public Object login(String username, String password, Model model) {
-		Subject user = SecurityUtils.getSubject();
-		UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-		try {
-			// shiro帮我们匹配密码什么的，我们只需要把东西传给它，它会根据我们在UserRealm里认证方法设置的来验证
-			user.login(token);
-			return "redirect:/index";
-		} catch (UnknownAccountException e) {
-			// 账号不存在和下面密码错误一般都合并为一个账号或密码错误，这样可以增加暴力破解难度
-			model.addAttribute("message", "账号不存在！");
-		} catch (DisabledAccountException e) {
-			model.addAttribute("message", "账号未启用！");
-		} catch (IncorrectCredentialsException e) {
-			model.addAttribute("message", "密码错误！");
-		} catch (Throwable e) {
-			model.addAttribute("message", "未知错误！");
-		}
-		return "/login";
-	}
+    /**
+     * 用户名密码登录
+     * @param request
+     * @return token
+     */
+    @PostMapping(value = "/login")
+    public ResponseEntity<String> login(@RequestBody SysUserEntity loginInfo, HttpServletRequest request, HttpServletResponse response){      
+        Subject subject = SecurityUtils.getSubject();
+        try {
+            UsernamePasswordToken token = new UsernamePasswordToken(loginInfo.getUserName(), loginInfo.getPassword());
+            subject.login(token);
+            
+            SysUserEntity user = (SysUserEntity) subject.getPrincipal();
+            String newToken = userService.generateJwtToken(user.getUserName());
+            response.setHeader("x-auth-token", newToken);
+            
+            return ResponseEntity.ok(newToken);
+            
+            //return ResponseEntity.ok().build();
+        } catch (AuthenticationException e) {
+            logger.error("User {} login fail, Reason:{}", loginInfo.getUserName(), e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-	/**
-	 * 退出
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/logout")
-	public String logout() {
-		SecurityUtils.getSubject().logout();
-		return "login";
-	}
+    /**
+     * 退出登录
+     * @return
+     */
+    @GetMapping(value = "/logout")
+    public ResponseEntity<Void> logout() {
+    	Subject subject = SecurityUtils.getSubject();
+        if(subject.getPrincipals() != null) {
+        	SysUserEntity user = (SysUserEntity)subject.getPrincipals().getPrimaryPrincipal();
+            userService.deleteLoginInfo(user.getUserName());
+        }
+        SecurityUtils.getSubject().logout();
+        return ResponseEntity.ok().build();
+    }
+
 }
