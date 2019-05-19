@@ -50,7 +50,7 @@ public class ResponseHeaderAdvice implements ResponseBodyAdvice<Object> {
 
         String allowMethods = "Access-Control-Allow-Methods";
         if(!response.containsHeader(allowMethods))
-            response.setHeader(allowMethods, "GET,POST,OPTIONS,HEAD");
+            response.setHeader(allowMethods, "GET,POST,DELEE,PUT,OPTIONS,HEAD");
 
         String exposeHeaders = "access-control-expose-headers";
         if(!response.containsHeader(exposeHeaders))
