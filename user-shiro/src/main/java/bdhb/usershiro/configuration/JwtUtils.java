@@ -49,13 +49,13 @@ public class JwtUtils {
 	 *            过期时间s
 	 * @return 加密的token
 	 */
-	public static String sign(String username, String salt, long time) {
+	public static String sign(String tenant, String username, String salt, long time) {
 		try {
 			Date date = new Date(System.currentTimeMillis() + time * 1000);
 			Algorithm algorithm = Algorithm.HMAC256(salt);
 			// 附带username信息
-			return JWT.create().withClaim("username", username).withExpiresAt(date).withIssuedAt(new Date())
-					.sign(algorithm);
+			return JWT.create().withClaim("tenant", tenant).withClaim("username", username).withExpiresAt(date)
+					.withIssuedAt(new Date()).sign(algorithm);
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}

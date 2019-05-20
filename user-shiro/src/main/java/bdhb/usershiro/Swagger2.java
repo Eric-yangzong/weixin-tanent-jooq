@@ -25,22 +25,23 @@ public class Swagger2 {
 	public Docket createRestApi() {
 
 		// 添加head参数start
-//		ParameterBuilder tokenPar = new ParameterBuilder();
-//		List<Parameter> pars = new ArrayList<Parameter>();
-//		tokenPar.name(AppCommon.TOKEN).defaultValue(
-//				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwMDAwMDE1IiwidXNlcl9pZCI6InAwMDAwMTUiLCJ0ZW5hbnQiOiJwMDAwMDE1In0.QosbCv56mYVyNrWFwyZwsr7IXoqkuH4wD5t9GvT3FArCDBMO4m33eJUfGTERyhDCwcSYieml8s-2-aIjQb-Npw")
-//				.description("令牌").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
-//
-//		ParameterBuilder tenantPar = new ParameterBuilder();
-//
-//		tenantPar.name(AppCommon.TENANT_ID).defaultValue("p000015").description("租客id").modelRef(new ModelRef("string"))
-//				.parameterType("header").required(false).build();
-//
-//		pars.add(tokenPar.build());
-//		pars.add(tenantPar.build());
+		ParameterBuilder tokenPar = new ParameterBuilder();
+		List<Parameter> pars = new ArrayList<Parameter>();
+		tokenPar.name(AppCommon.TOKEN).defaultValue(
+				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwMDAwMDE1IiwidXNlcl9pZCI6InAwMDAwMTUiLCJ0ZW5hbnQiOiJwMDAwMDE1In0.QosbCv56mYVyNrWFwyZwsr7IXoqkuH4wD5t9GvT3FArCDBMO4m33eJUfGTERyhDCwcSYieml8s-2-aIjQb-Npw")
+				.description("令牌").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
+
+		ParameterBuilder tenantPar = new ParameterBuilder();
+
+		tenantPar.name(AppCommon.TENANT_ID).defaultValue("p000015").description("租客id").modelRef(new ModelRef("string"))
+				.parameterType("header").required(false).build();
+
+		pars.add(tokenPar.build());
+		pars.add(tenantPar.build());
 
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("bdhb.usershiro")).paths(PathSelectors.any()).build();
+				.apis(RequestHandlerSelectors.basePackage("bdhb.usershiro")).paths(PathSelectors.any()).build()
+				.globalOperationParameters(pars);
 	}
 
 	private ApiInfo apiInfo() {

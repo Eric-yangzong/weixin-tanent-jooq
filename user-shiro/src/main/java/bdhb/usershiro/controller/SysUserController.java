@@ -36,7 +36,7 @@ public class SysUserController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResult<SysUserEntity> insert(@RequestHeader(AppCommon.X_WX_TENANT) String tanentId,
+	public ApiResult<SysUserEntity> insert(@RequestHeader(AppCommon.TENANT_ID) String tanentId,
 			@Valid @RequestBody SysUserEntity SysUserEntity) {
 		String realSchema = tanentId + AppCommon.scheam;
 
@@ -57,7 +57,7 @@ public class SysUserController {
 
 	@RequestMapping(method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResult<SysUserEntity> update(@RequestHeader(AppCommon.X_WX_TENANT) String tanentId,
+	public ApiResult<SysUserEntity> update(@RequestHeader(AppCommon.TENANT_ID) String tanentId,
 			@RequestBody SysUserEntity SysUserEntity) {
 
 		String realSchema = tanentId + AppCommon.scheam;
@@ -76,7 +76,7 @@ public class SysUserController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@RequestHeader(AppCommon.X_WX_TENANT) String tanentId, @PathVariable("id") String id) {
+	public void delete(@RequestHeader(AppCommon.TENANT_ID) String tanentId, @PathVariable("id") String id) {
 		String realSchema = tanentId + AppCommon.scheam;
 		tableService.deleteEntity(realSchema, SysUser.class, id);
 
@@ -84,7 +84,7 @@ public class SysUserController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResult<SysUserEntity> getEntity(@RequestHeader(AppCommon.X_WX_TENANT) String tanentId,
+	public ApiResult<SysUserEntity> getEntity(@RequestHeader(AppCommon.TENANT_ID) String tanentId,
 			@PathVariable("id") String id) {
 
 		String realSchema = tanentId + AppCommon.scheam;
@@ -104,7 +104,7 @@ public class SysUserController {
 	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResult<QueryResults<SysUserEntity>> query(@RequestHeader(AppCommon.X_WX_TENANT) String tanentId,
+	public ApiResult<QueryResults<SysUserEntity>> query(@RequestHeader(AppCommon.TENANT_ID) String tanentId,
 			@RequestParam("queryPage") QueryPage queryPage) {
 		String realSchema = tanentId + AppCommon.scheam;
 

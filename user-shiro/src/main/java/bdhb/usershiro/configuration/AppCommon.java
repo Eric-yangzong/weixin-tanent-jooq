@@ -11,11 +11,10 @@ public class AppCommon {
 
 	public static final String scheam = "_mod_login";
 
-	public static final String X_WX_TENANT = "x-okapi-tenant";
-
 	// okapi中tenantId向后台传值的header信息
 	public final static String TENANT_ID = "x-okapi-tenant";
 
 	// okapi中tenantId向后台传值的header信息
-	public final static String TOKEN = "x-okapi-token";
+	// "x-okapi-token";
+	public final static String TOKEN = "x-auth-token";
 }

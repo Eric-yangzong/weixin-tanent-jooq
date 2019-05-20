@@ -21,7 +21,6 @@ import bdhb.usershiro.service.SysUserService;
 
 public class DbShiroRealm extends AuthorizingRealm {
 
-
 	private SysUserService userService;
 
 	private SysPermissionService sysPermissionService;
@@ -44,7 +43,8 @@ public class DbShiroRealm extends AuthorizingRealm {
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 		UsernamePasswordToken userpasswordToken = (UsernamePasswordToken) token;
 		String username = userpasswordToken.getUsername();
-		SysUserEntity user = userService.getUserInfo(username);
+		String tenant = userpasswordToken.getHost();
+		SysUserEntity user = userService.getUserInfo(tenant, username);
 		if (user == null)
 			throw new AuthenticationException("用户名或者密码错误");
 

@@ -22,113 +22,118 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.generator.tables.pojos.SysUserEntity;
+
+import bdhb.usershiro.configuration.AppCommon;
 import bdhb.usershiro.configuration.JWTToken;
 import bdhb.usershiro.configuration.JwtUtils;
 import bdhb.usershiro.service.SysUserService;
 
 public class JwtAuthFilter extends AuthenticatingFilter {
 	private final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
-	
-    private static final int tokenRefreshInterval = 300;
-    
-    private SysUserService userService;
 
-    public JwtAuthFilter(SysUserService userService){
-        this.userService = userService;
-        this.setLoginUrl("/login");
-    }
+	private static final int tokenRefreshInterval = 300;
 
-    @Override
-    protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-        HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
-        if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) //对于OPTION请求做拦截，不做token校验
-            return false;
+	private SysUserService userService;
 
-        return super.preHandle(request, response);
-    }
+	public JwtAuthFilter(SysUserService userService) {
+		this.userService = userService;
+		this.setLoginUrl("/login");
+	}
 
-    @Override
-    protected void postHandle(ServletRequest request, ServletResponse response){
-        this.fillCorsHeader(WebUtils.toHttp(request), WebUtils.toHttp(response));
-        request.setAttribute("jwtShiroFilter.FILTERED", true);
-    }
+	@Override
+	protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
+		HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
+		if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) // 对于OPTION请求做拦截，不做token校验
+			return false;
 
-    @Override
-    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        if(this.isLoginRequest(request, response))
-            return true;
-        Boolean afterFiltered = (Boolean)(request.getAttribute("jwtShiroFilter.FILTERED"));
-        if( BooleanUtils.isTrue(afterFiltered))
-        	return true;
+		return super.preHandle(request, response);
+	}
 
-        boolean allowed = false;
-        try {
-            allowed = executeLogin(request, response);
-        } catch(IllegalStateException e){ //not found any token
-            log.error("Not found any token");
-        }catch (Exception e) {
-            log.error("Error occurs when login", e);
-        }
-        return allowed || super.isPermissive(mappedValue);
-    }
+	@Override
+	protected void postHandle(ServletRequest request, ServletResponse response) {
+		this.fillCorsHeader(WebUtils.toHttp(request), WebUtils.toHttp(response));
+		request.setAttribute("jwtShiroFilter.FILTERED", true);
+	}
 
-    @Override
-    protected AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) {
-        String jwtToken = getAuthzHeader(servletRequest);
-        if(StringUtils.isNotBlank(jwtToken)&&!JwtUtils.isTokenExpired(jwtToken))
-            return new JWTToken(jwtToken);
+	@Override
+	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+		if (this.isLoginRequest(request, response))
+			return true;
+		Boolean afterFiltered = (Boolean) (request.getAttribute("jwtShiroFilter.FILTERED"));
+		if (BooleanUtils.isTrue(afterFiltered))
+			return true;
 
-        return null;
-    }
+		boolean allowed = false;
+		try {
+			allowed = executeLogin(request, response);
+		} catch (IllegalStateException e) { // not found any token
+			log.error("Not found any token");
+		} catch (Exception e) {
+			log.error("Error occurs when login", e);
+		}
+		return allowed || super.isPermissive(mappedValue);
+	}
 
-    @Override
-    protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
-        HttpServletResponse httpResponse = WebUtils.toHttp(servletResponse);
-        httpResponse.setCharacterEncoding("UTF-8");
-        httpResponse.setContentType("application/json;charset=UTF-8");
-        httpResponse.setStatus(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION);
-        fillCorsHeader(WebUtils.toHttp(servletRequest), httpResponse);
-        return false;
-    }
+	@Override
+	protected AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) {
+		String jwtToken = getAuthzHeader(servletRequest);
+		if (StringUtils.isNotBlank(jwtToken) && !JwtUtils.isTokenExpired(jwtToken))
+			return new JWTToken(jwtToken);
 
-    @Override
-    protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
-        HttpServletResponse httpResponse = WebUtils.toHttp(response);
-        String newToken = null;
-        if(token instanceof JWTToken){
-            JWTToken jwtToken = (JWTToken)token;
-            SysUserEntity user = (SysUserEntity) subject.getPrincipal();
-            boolean shouldRefresh = shouldTokenRefresh(JwtUtils.getIssuedAt(jwtToken.getToken()));
-            if(shouldRefresh) {
-                newToken = userService.generateJwtToken(user.getUserName());
-            }
-        }
-        if(StringUtils.isNotBlank(newToken))
-            httpResponse.setHeader("x-auth-token", newToken);
+		return null;
+	}
 
-        return true;
-    }
+	@Override
+	protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
+		HttpServletResponse httpResponse = WebUtils.toHttp(servletResponse);
+		httpResponse.setCharacterEncoding("UTF-8");
+		httpResponse.setContentType("application/json;charset=UTF-8");
+		httpResponse.setStatus(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION);
+		fillCorsHeader(WebUtils.toHttp(servletRequest), httpResponse);
+		return false;
+	}
 
-    @Override
-    protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
-        log.error("Validate token fail, token:{}, error:{}", token.toString(), e.getMessage());
-        return false;
-    }
+	@Override
+	protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request,
+			ServletResponse response) throws Exception {
+		HttpServletResponse httpResponse = WebUtils.toHttp(response);
+		String newToken = null;
+		if (token instanceof JWTToken) {
+			JWTToken jwtToken = (JWTToken) token;
+			SysUserEntity user = (SysUserEntity) subject.getPrincipal();
+			boolean shouldRefresh = shouldTokenRefresh(JwtUtils.getIssuedAt(jwtToken.getToken()));
+			if (shouldRefresh) {
+				newToken = userService.generateJwtToken(user.getTanentId(), user.getUserName());
+			}
+		}
+		if (StringUtils.isNotBlank(newToken))
+			httpResponse.setHeader(AppCommon.TOKEN, newToken);
 
-    protected String getAuthzHeader(ServletRequest request) {
-        HttpServletRequest httpRequest = WebUtils.toHttp(request);
-        String header = httpRequest.getHeader("x-auth-token");
-        return StringUtils.removeStart(header, "Bearer ");
-    }
+		return true;
+	}
 
-    protected boolean shouldTokenRefresh(Date issueAt){
-        LocalDateTime issueTime = LocalDateTime.ofInstant(issueAt.toInstant(), ZoneId.systemDefault());
-        return LocalDateTime.now().minusSeconds(tokenRefreshInterval).isAfter(issueTime);
-    }
+	@Override
+	protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request,
+			ServletResponse response) {
+		log.error("Validate token fail, token:{}, error:{}", token.toString(), e.getMessage());
+		return false;
+	}
 
-    protected void fillCorsHeader(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
-        httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
-        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,DELEE,PUT,OPTIONS,HEAD");
-        httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
-    }
+	protected String getAuthzHeader(ServletRequest request) {
+		HttpServletRequest httpRequest = WebUtils.toHttp(request);
+		String header = httpRequest.getHeader(AppCommon.TOKEN);
+		return StringUtils.removeStart(header, "Bearer ");
+	}
+
+	protected boolean shouldTokenRefresh(Date issueAt) {
+		LocalDateTime issueTime = LocalDateTime.ofInstant(issueAt.toInstant(), ZoneId.systemDefault());
+		return LocalDateTime.now().minusSeconds(tokenRefreshInterval).isAfter(issueTime);
+	}
+
+	protected void fillCorsHeader(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+		httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
+		httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,DELEE,PUT,OPTIONS,HEAD");
+		httpServletResponse.setHeader("Access-Control-Allow-Headers",
+				httpServletRequest.getHeader("Access-Control-Request-Headers"));
+	}
 }

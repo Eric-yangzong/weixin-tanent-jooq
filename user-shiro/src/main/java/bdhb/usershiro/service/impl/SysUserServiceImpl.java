@@ -13,6 +13,7 @@ import com.bdhanbang.base.service.impl.BaseServiceImpl;
 import com.generator.tables.SysUser;
 import com.generator.tables.pojos.SysUserEntity;
 
+import bdhb.usershiro.configuration.AppCommon;
 import bdhb.usershiro.configuration.JwtUtils;
 import bdhb.usershiro.service.SysUserService;
 
@@ -30,13 +31,13 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, SysUserEntity> 
 	 * 
 	 * @param userDto
 	 */
-	public String generateJwtToken(String username) {
+	public String generateJwtToken(String tenant, String username) {
 		String salt = JwtUtils.generateSalt();
 
 		// 将salt保存到数据库或者缓存中
-		redisTemplate.opsForValue().set("token:" + username, salt, 3600, TimeUnit.SECONDS);
+		redisTemplate.opsForValue().set(tenant + ":" + username, salt, 3600, TimeUnit.SECONDS);
 
-		return JwtUtils.sign(username, salt, 3600); // 生成jwt token，设置过期时间为1小时
+		return JwtUtils.sign(tenant, username, salt, 3600); // 生成jwt token，设置过期时间为1小时
 	}
 
 	/**
@@ -45,13 +46,13 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, SysUserEntity> 
 	 * @param username
 	 * @return
 	 */
-	public SysUserEntity getJwtTokenInfo(String username) {
+	public SysUserEntity getJwtTokenInfo(String tenant, String username) {
 		/**
 		 * @todo 从数据库或者缓存中取出jwt token生成时用的salt
 		 */
-		String salt = redisTemplate.opsForValue().get("token:" + username);
+		String salt = redisTemplate.opsForValue().get(tenant + ":" + username);
 
-		SysUserEntity user = getUserInfo(username);
+		SysUserEntity user = getUserInfo(tenant, username);
 		user.setSalt(salt);
 		return user;
 	}
@@ -64,12 +65,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, SysUserEntity> 
 	 * @param terminal
 	 *            登录终端
 	 */
-	public void deleteLoginInfo(String username) {
+	public void deleteLoginInfo(String tenant, String username) {
 		/**
 		 * @todo 删除数据库或者缓存中保存的salt
 		 */
 
-		redisTemplate.delete("token:" + username);
+		redisTemplate.delete(tenant + ":" + username);
 
 	}
 
@@ -79,14 +80,15 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser, SysUserEntity> 
 	 * @param userName
 	 * @return
 	 */
-	public SysUserEntity getUserInfo(String userName) {
+	public SysUserEntity getUserInfo(String tenant, String userName) {
+
+		String scheam = String.format("%s%s", tenant, AppCommon.scheam);
 
 		Query query = new Query();
 
 		query.add(new Query("userName", userName));
 
-		List<SysUserEntity> userList = this.queryList("tat0004_mod_login", SysUser.class, SysUserEntity.class,
-				query.getQuerys());
+		List<SysUserEntity> userList = this.queryList(scheam, SysUser.class, SysUserEntity.class, query.getQuerys());
 
 		if (Objects.isNull(userList) || userList.size() == 0) {
 			return null;
