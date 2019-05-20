@@ -1,9 +1,9 @@
 /.metadata/
 /.recommenders/
 
-*/.classpath
+**/.classpath
 */.project
-*/.settings
+**/.settings
 */logs
 **/target
 *.class

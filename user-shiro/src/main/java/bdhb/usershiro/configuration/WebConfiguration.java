@@ -12,7 +12,7 @@ public class WebConfiguration extends WebMvcConfigurationSupport {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// 将所有/static/** 访问都映射到classpath:/static/ 目录下
-		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/webjars/");
 		// swagger2
 		registry.addResourceHandler("/swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
 		super.addResourceHandlers(registry);
