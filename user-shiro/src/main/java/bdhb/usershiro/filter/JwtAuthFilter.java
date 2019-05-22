@@ -31,7 +31,7 @@ import bdhb.usershiro.service.SysUserService;
 public class JwtAuthFilter extends AuthenticatingFilter {
 	private final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
 
-	private static final int tokenRefreshInterval = 300;
+	private static final int tokenRefreshInterval = 30000;
 
 	private SysUserService userService;
 

@@ -1,6 +1,8 @@
 package bdhb.usershiro.configuration;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -16,14 +18,11 @@ import org.apache.shiro.util.ByteSource;
 
 import com.generator.tables.pojos.SysUserEntity;
 
-import bdhb.usershiro.service.SysPermissionService;
 import bdhb.usershiro.service.SysUserService;
 
 public class DbShiroRealm extends AuthorizingRealm {
 
 	private SysUserService userService;
-
-	private SysPermissionService sysPermissionService;
 
 	public DbShiroRealm(SysUserService userService) {
 		this.userService = userService;
@@ -55,10 +54,11 @@ public class DbShiroRealm extends AuthorizingRealm {
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
 		SysUserEntity user = (SysUserEntity) principals.getPrimaryPrincipal();
-		List<String> roles = sysPermissionService.queryUserPermission(user.getTanentId(), user.getUserId());
 
-		if (roles != null)
+		if (!Objects.isNull(user.getPermissions())) {
+			List<String> roles = Arrays.asList(user.getPermissions());
 			simpleAuthorizationInfo.addRoles(roles);
+		}
 
 		return simpleAuthorizationInfo;
 	}

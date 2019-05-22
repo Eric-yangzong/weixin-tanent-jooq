@@ -99,7 +99,7 @@ public class ShiroConfig {
 		chainDefinition.addPathDefinition("/configuration/ui", "anon");
 		chainDefinition.addPathDefinition("/v2/api-docs", "anon");
 		chainDefinition.addPathDefinition("/admin/**", "noSessionCreation,authcToken,anyRole[admin,manager]"); // 只允许admin或manager角色的用户访问
-		chainDefinition.addPathDefinition("/**", "noSessionCreation,authcToken");
+		chainDefinition.addPathDefinition("/**", "noSessionCreation,authcToken,anyRole[admin,manager]");
 		return chainDefinition;
 	}
 

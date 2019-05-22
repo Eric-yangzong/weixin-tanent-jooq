@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -102,7 +103,6 @@ public class SysUserController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResult<QueryResults<SysUserEntity>> query(@RequestHeader(AppCommon.TENANT_ID) String tanentId,
 			@RequestParam("queryPage") QueryPage queryPage) {
