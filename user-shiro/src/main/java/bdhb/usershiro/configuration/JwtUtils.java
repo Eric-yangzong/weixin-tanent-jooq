@@ -40,13 +40,20 @@ public class JwtUtils {
 		}
 	}
 
+	public static String getTenant(String token) {
+		try {
+			DecodedJWT jwt = JWT.decode(token);
+			return jwt.getClaim("tenant").asString();
+		} catch (JWTDecodeException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * 生成签名,expireTime后过期
 	 * 
-	 * @param username
-	 *            用户名
-	 * @param time
-	 *            过期时间s
+	 * @param username 用户名
+	 * @param time     过期时间s
 	 * @return 加密的token
 	 */
 	public static String sign(String tenant, String username, String salt, long time) {

@@ -33,7 +33,7 @@ public class Swagger2 {
 
 		ParameterBuilder tenantPar = new ParameterBuilder();
 
-		tenantPar.name(AppCommon.TENANT_ID).defaultValue("p000015").description("租客id").modelRef(new ModelRef("string"))
+		tenantPar.name(AppCommon.TENANT_ID).defaultValue("tat0004").description("租客id").modelRef(new ModelRef("string"))
 				.parameterType("header").required(false).build();
 
 		pars.add(tokenPar.build());
@@ -42,6 +42,7 @@ public class Swagger2 {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
 				.apis(RequestHandlerSelectors.basePackage("bdhb.usershiro")).paths(PathSelectors.any()).build()
 				.globalOperationParameters(pars);
+
 	}
 
 	private ApiInfo apiInfo() {

@@ -39,7 +39,7 @@ public class JWTShiroRealm extends AuthorizingRealm {
 		JWTToken jwtToken = (JWTToken) authcToken;
 		String token = jwtToken.getToken();
 
-		SysUserEntity user = userService.getJwtTokenInfo(JwtUtils.getUsername(token));
+		SysUserEntity user = userService.getJwtTokenInfo(JwtUtils.getTenant(token), JwtUtils.getUsername(token));
 		if (user == null)
 			throw new AuthenticationException("token过期，请重新登录");
 
