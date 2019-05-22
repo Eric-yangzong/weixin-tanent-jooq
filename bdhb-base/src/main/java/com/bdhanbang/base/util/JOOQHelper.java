@@ -259,6 +259,8 @@ public class JOOQHelper {
 			} else {
 				condition = analyzeOperation((Field<OffsetDateTime>) field, value.toString(), op);
 			}
+		}else if (field.getDataType().isArray()) {
+			condition = analyzeOperationList((Field<List<String>>) field, value.toString(), op);
 		} else {
 			if (op != Op.in) {
 				if (field.getDataType().isNumeric()) {
@@ -369,6 +371,21 @@ public class JOOQHelper {
 			break;
 		default:
 			condition = field.eq(value);
+			break;
+		}
+
+		return condition;
+	}
+	
+	public static Condition analyzeOperationList(Field<List<String>> field, String value, Integer op) {
+		Condition condition = null;
+
+		switch (op) {
+		case Op.equals:
+			condition = DSL.cast(value, String.class).eq(DSL.function("any", String.class, field));
+			break;
+		default:
+			condition = DSL.cast(value, String.class).eq(DSL.function("any", String.class, field));
 			break;
 		}
 
