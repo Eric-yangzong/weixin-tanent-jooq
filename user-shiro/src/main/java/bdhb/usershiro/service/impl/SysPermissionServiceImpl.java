@@ -13,7 +13,7 @@ import com.generator.tables.SysRolePermission;
 import com.generator.tables.SysUserRole;
 import com.generator.tables.pojos.SysPermissionEntity;
 
-import bdhb.usershiro.configuration.AppCommon;
+import bdhb.usershiro.common.AppCommon;
 import bdhb.usershiro.service.SysPermissionService;
 
 @Service
