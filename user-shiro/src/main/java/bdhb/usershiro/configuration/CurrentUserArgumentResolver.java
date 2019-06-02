@@ -12,13 +12,13 @@ import com.generator.tables.pojos.SysUserEntity;
 import bdhb.usershiro.common.CurrentUser;
 
 /**
- * @ClassName: CurrentUserMethodArgumentResolver
+ * @ClassName: CurrentUserArgumentResolver
  * @Description: 获取用户信息
  * @author yangxz
  * @date 2018年9月6日 下午3:21:42
  * 
  */
-public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentResolver {
+public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
@@ -28,7 +28,7 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-		SysUserEntity sysUserEntity = (SysUserEntity) webRequest.getAttribute("sysUserEntity",
+		SysUserEntity sysUserEntity = (SysUserEntity) webRequest.getAttribute("currentUser",
 				RequestAttributes.SCOPE_REQUEST);
 		return sysUserEntity;
 	}

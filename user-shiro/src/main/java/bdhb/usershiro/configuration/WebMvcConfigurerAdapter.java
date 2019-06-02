@@ -10,14 +10,14 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @ClassName: MyWebMvcConfigurerAdapter
+ * @ClassName: WebMvcConfigurerAdapter
  * @Description: 获取用户信息
  * @author yangxz
  * @date 2018年9月6日 下午3:22:00
  * 
  */
 @Configuration
-public class MyWebMvcConfigurerAdapter implements WebMvcConfigurer {
+public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
 	// 关键，将拦截器作为bean写入配置中
 	@Bean
 	public AuthInterceptor myAuthInterceptor() {
@@ -32,17 +32,23 @@ public class MyWebMvcConfigurerAdapter implements WebMvcConfigurer {
 		ir.addPathPatterns("/**");
 		// 配置不拦截的路径
 		ir.excludePathPatterns("**/swagger-ui.html");
+		ir.excludePathPatterns("/_/tenant");
+		ir.excludePathPatterns("/login");
+		ir.excludePathPatterns("/v2/api-docs");
+		ir.excludePathPatterns("/configuration/ui");
+		ir.excludePathPatterns("/error");
+
 		// 还可以在这里注册其它的拦截器
 		// registry.addInterceptor(new OtherInterceptor()).addPathPatterns("/**");
 	}
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-		argumentResolvers.add(currentUserMethodArgumentResolver());
+		argumentResolvers.add(currentUserArgumentResolver());
 	}
 
 	@Bean
-	public CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver() {
-		return new CurrentUserMethodArgumentResolver();
+	public CurrentUserArgumentResolver currentUserArgumentResolver() {
+		return new CurrentUserArgumentResolver();
 	}
 }

@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.bdhanbang.base.common.ApiResult;
 import com.bdhanbang.base.common.QueryPage;
 import com.bdhanbang.base.common.QueryPageEditor;
+import com.bdhanbang.base.exception.AuthenticationException;
 import com.bdhanbang.base.exception.BusinessException;
 import com.bdhanbang.base.exception.CurdException;
+import com.bdhanbang.base.exception.ForbiddenException;
 import com.bdhanbang.base.exception.ValidException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +46,46 @@ public class GlobalExceptionHandler {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(QueryPage.class, new QueryPageEditor());
+	}
+
+	@ExceptionHandler(value = ForbiddenException.class)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public ApiResult<String> forbiddenExceptionHandler(HttpServletRequest req, ForbiddenException e)
+			throws JsonProcessingException {
+
+		ApiResult<String> errorResult = new ApiResult<>();
+
+		errorResult.setError(e.getError());// 自定义的错误
+		errorResult.setMessage(e.getMessage());// 系统错误提示
+		errorResult.setStatus(e.getStatus());// 自定义的错误码
+		errorResult.setData(mapper.writeValueAsString(e));// 向前台返回详细错误信息
+		errorResult.setPath(req.getRequestURL().toString());// 请求路径
+		errorResult.setTimestamp(LocalDateTime.now());// 时间戳
+
+		log.error(mapper.writeValueAsString(e)); // 错误记录日志
+
+		return errorResult;
+	}
+
+	@ExceptionHandler(value = AuthenticationException.class)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ApiResult<String> authenticationExceptionHandler(HttpServletRequest req, AuthenticationException e)
+			throws JsonProcessingException {
+
+		ApiResult<String> errorResult = new ApiResult<>();
+
+		errorResult.setError(e.getError());// 自定义的错误
+		errorResult.setMessage(e.getMessage());// 系统错误提示
+		errorResult.setStatus(e.getStatus());// 自定义的错误码
+		errorResult.setData(mapper.writeValueAsString(e));// 向前台返回详细错误信息
+		errorResult.setPath(req.getRequestURL().toString());// 请求路径
+		errorResult.setTimestamp(LocalDateTime.now());// 时间戳
+
+		log.error(mapper.writeValueAsString(e)); // 错误记录日志
+
+		return errorResult;
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

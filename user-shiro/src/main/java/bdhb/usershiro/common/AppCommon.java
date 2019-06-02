@@ -14,4 +14,6 @@ public class AppCommon {
 	public static final String TENANT_ID = "x-okapi-tenant";
 
 	public static final String TOKEN = "x-okapi-token";
+
+	public static final String PAYLOAD_NAME = "username";
 }

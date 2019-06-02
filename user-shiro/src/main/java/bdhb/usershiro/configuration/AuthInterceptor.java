@@ -1,11 +1,29 @@
 package bdhb.usershiro.configuration;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
+import java.util.List;
+import java.util.Objects;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.bdhanbang.base.common.Query;
+import com.bdhanbang.base.exception.AuthenticationException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.generator.tables.SysUser;
+import com.generator.tables.pojos.SysUserEntity;
+
+import bdhb.usershiro.common.AppCommon;
+import bdhb.usershiro.service.SysUserService;
+import bdhb.usershiro.util.JwtUtils;
 
 /**
  * @ClassName: AuthInterceptor
@@ -17,33 +35,69 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 @Component
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
+	@Autowired
+	SysUserService sysUserService;
+
+	final Base64.Decoder decoder = Base64.getDecoder();
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// 如果不是映射到方法直接通过
-		if ("/_/tenant".equals(request.getRequestURI())) {
-			return true;
-		}
+
 		if (!(handler instanceof HandlerMethod)) {
 			return true;
 		}
 
-		String requestPath = request.getRequestURI();
+		String token = request.getHeader(AppCommon.TOKEN);
 
-		if (requestPath.contains("/v2/api-docs") || requestPath.contains("/swagger")
-				|| requestPath.contains("/configuration/ui")) {
-			return true;
-		}
+		String tenantId = request.getHeader(AppCommon.TENANT_ID);
 
-		if (requestPath.contains("/error")) {
-			return true;
-		}
+		JwtUtils.verifyToken(token);// 此处做鉴权
 
-		String currentUser = "";
+		SysUserEntity sysUserEntity = this.getCurrentUser(tenantId, token);// 得到用户信息
 
-		request.setAttribute("currentUser", currentUser);
+		request.setAttribute("currentUser", sysUserEntity);
 
 		return true;
+	}
+
+	private SysUserEntity getCurrentUser(String tenantId, String token) {
+
+		String schema = String.format("%s%s", tenantId, AppCommon.scheam);
+
+		String[] tokens = token.split("\\.");
+		String payload = tokens[1];
+
+		SysUserEntity sysUserEntity = new SysUserEntity();
+
+		try {
+			String json = new String(decoder.decode(payload), "UTF-8");
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode jsonNode = mapper.readTree(json);
+
+			String userName = jsonNode.path(AppCommon.PAYLOAD_NAME).asText();
+
+			Query query = new Query();
+
+			query.add(new Query("userName", userName));
+
+			List<SysUserEntity> sysUserEntitys = sysUserService.queryList(schema, SysUser.class, SysUserEntity.class,
+					query.getQuerys());
+
+			if (Objects.isNull(sysUserEntitys) || sysUserEntitys.size() == 0) {
+				throw new AuthenticationException(String.format("【%s】存在问题", userName));
+			}
+
+			sysUserEntity = sysUserEntitys.get(0);
+
+		} catch (UnsupportedEncodingException e) {
+			throw new AuthenticationException("token编码问题", e);
+		} catch (IOException e) {
+			throw new AuthenticationException("payload存在问题", e);
+		}
+
+		return sysUserEntity;
+
 	}
 
 }
