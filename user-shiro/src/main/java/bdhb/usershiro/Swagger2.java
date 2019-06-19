@@ -28,7 +28,7 @@ public class Swagger2 {
 		ParameterBuilder tokenPar = new ParameterBuilder();
 		List<Parameter> pars = new ArrayList<Parameter>();
 		tokenPar.name(AppCommon.TOKEN).defaultValue(
-				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwMDAwMDE1IiwidXNlcl9pZCI6InAwMDAwMTUiLCJ0ZW5hbnQiOiJwMDAwMDE1In0.QosbCv56mYVyNrWFwyZwsr7IXoqkuH4wD5t9GvT3FArCDBMO4m33eJUfGTERyhDCwcSYieml8s-2-aIjQb-Npw")
+				"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzeXMubmFtZSIsImV4cCI6MTU2MDk1OTM0MiwidXNlcm5hbWUiOiJ6aGFuZ3NhbiJ9.bRP5axO7DivdQnigC9Fgbz6xzkOPr5S6xcDKINSYgJo")
 				.description("令牌").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
 
 		ParameterBuilder tenantPar = new ParameterBuilder();

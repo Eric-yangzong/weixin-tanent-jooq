@@ -9,7 +9,7 @@ package bdhb.usershiro.common;
  */
 public class AppCommon {
 
-	public static final String scheam = "_mod_login";
+	public static final String scheam = "_mod_shiro";
 
 	public static final String TENANT_ID = "x-okapi-tenant";
 

@@ -32,6 +32,9 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
 		ir.addPathPatterns("/**");
 		// 配置不拦截的路径
 		ir.excludePathPatterns("**/swagger-ui.html");
+		ir.excludePathPatterns("/swagger-resources");
+		ir.excludePathPatterns("/images/**");
+		
 		ir.excludePathPatterns("/_/tenant");
 		ir.excludePathPatterns("/login");
 		ir.excludePathPatterns("/v2/api-docs");
