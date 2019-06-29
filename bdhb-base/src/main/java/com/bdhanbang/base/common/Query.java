@@ -7,6 +7,9 @@ import java.util.List;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import com.bdhanbang.base.util.query.Operate;
+import com.bdhanbang.base.util.query.Relation;
+
 /**
  * @ClassName: Query
  * @Description: 查询信息
@@ -32,12 +35,33 @@ public class Query implements Serializable {
 
 	List<Query> querys = new ArrayList<Query>();
 
-	public Query() {}
-	
-	public Query(String field,Object value) {
+	public Query() {
+	}
+
+	public Query(String field, Object value) {
 		this.field = field;
 		this.value = value;
 	}
+
+	public Query(String field, Object value, Operate operate) {
+		this.field = field;
+		this.value = value;
+		this.op = operate.get();
+	}
+
+	public Query(String field, Object value, Relation relation) {
+		this.field = field;
+		this.value = value;
+		this.relation = relation.get();
+	}
+
+	public Query(String field, Object value, Operate operate, Relation relation) {
+		this.field = field;
+		this.value = value;
+		this.op = operate.get();
+		this.relation = relation.get();
+	}
+
 	public String getField() {
 		return field;
 	}
@@ -80,8 +104,27 @@ public class Query implements Serializable {
 
 	public Query add(Query query) {
 		this.querys.add(query);
-
 		return this;
-	};
+	}
+
+	public Query add(String field, Object value) {
+		this.querys.add(new Query(field, value));
+		return this;
+	}
+
+	public Query add(String field, Object value, Operate operate) {
+		this.querys.add(new Query(field, value, operate));
+		return this;
+	}
+
+	public Query add(String field, Object value, Relation relation) {
+		this.querys.add(new Query(field, value, relation));
+		return this;
+	}
+
+	public Query add(String field, Object value, Operate operate, Relation relation) {
+		this.querys.add(new Query(field, value, operate, relation));
+		return this;
+	}
 
 }
