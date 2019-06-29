@@ -41,7 +41,7 @@ public class SysPermissionController {
 	public ApiResult<SysPermissionEntity> insert(@Valid @RequestBody SysPermissionEntity sysPermissionEntity,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<SysPermissionEntity> apiResult = new ApiResult<>();
 
@@ -63,7 +63,7 @@ public class SysPermissionController {
 	public ApiResult<SysPermissionEntity> update(@RequestBody SysPermissionEntity sysPermissionEntity,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<SysPermissionEntity> apiResult = new ApiResult<>();
 
@@ -81,7 +81,7 @@ public class SysPermissionController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable("id") String id, @ApiIgnore @CurrentUser SysUserEntity currentUser) {
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 		SysUserService.deleteEntity(realSchema, SysPermission.class, id);
 
 	}
@@ -91,7 +91,7 @@ public class SysPermissionController {
 	public ApiResult<SysPermissionEntity> getEntity(@PathVariable("id") String id,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 		ApiResult<SysPermissionEntity> apiResult = new ApiResult<>();
 
 		SysPermissionEntity sysPermissionEntity = SysUserService.getEntity(realSchema, SysPermission.class,
@@ -111,7 +111,7 @@ public class SysPermissionController {
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResult<QueryResults<SysPermissionEntity>> query(@RequestParam("queryPage") QueryPage queryPage,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<QueryResults<SysPermissionEntity>> apiResult = new ApiResult<>();
 

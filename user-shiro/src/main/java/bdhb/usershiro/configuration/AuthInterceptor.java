@@ -20,6 +20,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.bdhanbang.base.common.Query;
 import com.bdhanbang.base.exception.AuthenticationException;
+import com.bdhanbang.base.util.query.Relation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.generator.tables.SysUser;
@@ -83,7 +84,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
 			Query query = new Query();
 
-			query.add(new Query("userName", userName));
+			query.add("userName", userName, Relation.or);
+			query.add("openId", userName);
 
 			List<SysUserEntity> sysUserEntitys = sysUserService.queryList(schema, SysUser.class, SysUserEntity.class,
 					query.getQuerys());

@@ -14,6 +14,7 @@ import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,6 @@ import com.bdhanbang.base.util.JOOQHelper;
 import bdhb.usershiro.service.TableService;
 import com.bdhanbang.base.jooq.ISchemaSwitch;
 import com.bdhanbang.base.message.ErrorMessage;
-
 
 @Service
 public class TableServiceImpl implements TableService {
@@ -105,14 +105,19 @@ public class TableServiceImpl implements TableService {
 		TableField<?, Object> tableIdField = getTableIdField(tableImpl);
 		Object idValue = getFieldIdValue(getTableIdField(tableImpl).getName(), entity);
 
-		UpdateSetMoreStep<?> updateStep = dsl.update((Table) tableImpl).set(tableIdField, idValue);
+		UpdateSetFirstStep updateFirstStep = dsl.update((Table) tableImpl);
+		UpdateSetMoreStep<?> updateStep = null;
 
 		Field<?>[] fields = tableImpl.fields();
 		List<Object> values = getValueList(fields, entity);
 
 		for (int i = 0; i < fields.length; i++) {
 			TableField<?, Object> tableField = (TableField<?, Object>) fields[i];
-			updateStep.set(tableField, values.get(i));
+			if (Objects.isNull(updateStep)) {
+				updateStep = updateFirstStep.set(tableField, values.get(i));
+			} else {
+				updateStep.set(tableField, values.get(i));
+			}
 		}
 
 		updateStep.where(tableIdField.eq(idValue));
@@ -182,12 +187,9 @@ public class TableServiceImpl implements TableService {
 	/**
 	 * @Title: createTableImpl
 	 * @Description: 生成jooq的tableImpl
-	 * @param @param
-	 *            schema
-	 * @param @param
-	 *            clazz
-	 * @param @return
-	 *            设定文件
+	 * @param @param schema
+	 * @param @param clazz
+	 * @param @return 设定文件
 	 * @return T 返回类型
 	 * @throws:
 	 */

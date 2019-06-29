@@ -1,5 +1,8 @@
 package bdhb.usershiro.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -17,9 +20,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bdhanbang.base.common.ApiResult;
+import com.bdhanbang.base.common.Query;
 import com.bdhanbang.base.common.QueryPage;
 import com.bdhanbang.base.common.QueryResults;
+import com.bdhanbang.base.exception.BusinessException;
 import com.bdhanbang.base.message.CommonMessage;
+import com.bdhanbang.base.util.query.Operate;
 import com.generator.tables.SysRole;
 import com.generator.tables.pojos.SysRoleEntity;
 import com.generator.tables.pojos.SysUserEntity;
@@ -34,20 +40,32 @@ import springfox.documentation.annotations.ApiIgnore;
 public class SysRoleController {
 
 	@Autowired
-	private TableService SysRoleService;
+	private TableService sysRoleService;
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public ApiResult<SysRoleEntity> insert(@Valid @RequestBody SysRoleEntity sysRoleEntity,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<SysRoleEntity> apiResult = new ApiResult<>();
 
-		sysRoleEntity.setRoleId(UUID.randomUUID());// 设置系统的UUID
+		Query query = new Query();
 
-		SysRoleService.insertEntity(realSchema, SysRole.class, sysRoleEntity);
+		query.add("roleCode", sysRoleEntity.getRoleCode());
+
+		List<SysRoleEntity> queryList = sysRoleService.queryList(realSchema, SysRole.class, SysRoleEntity.class, query);
+
+		if (!Objects.isNull(queryList) && queryList.size() > 0) {
+			throw new BusinessException("20000", String.format("【%s】角色编码已存在。", sysRoleEntity.getRoleCode()));
+		}
+
+		sysRoleEntity.setRoleId(UUID.randomUUID());// 设置系统的UUID
+		sysRoleEntity.setUpdateFullName(currentUser.getFullName());
+		sysRoleEntity.setUpdateTime(LocalDateTime.now());
+
+		sysRoleService.insertEntity(realSchema, SysRole.class, sysRoleEntity);
 
 		apiResult.setData(sysRoleEntity);
 
@@ -63,11 +81,25 @@ public class SysRoleController {
 	public ApiResult<SysRoleEntity> update(@RequestBody SysRoleEntity sysRoleEntity,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<SysRoleEntity> apiResult = new ApiResult<>();
 
-		SysRoleService.updateEntity(realSchema, SysRole.class, sysRoleEntity);
+		Query query = new Query();
+
+		query.add("roleCode", sysRoleEntity.getRoleCode());
+		query.add("roleId", sysRoleEntity.getRoleId(), Operate.notEquals);
+
+		List<SysRoleEntity> queryList = sysRoleService.queryList(realSchema, SysRole.class, SysRoleEntity.class, query);
+
+		if (!Objects.isNull(queryList) && queryList.size() > 0) {
+			throw new BusinessException("20000", String.format("【%s】角色编码已存在。", sysRoleEntity.getRoleCode()));
+		}
+
+		sysRoleEntity.setUpdateFullName(currentUser.getFullName());
+		sysRoleEntity.setUpdateTime(LocalDateTime.now());
+
+		sysRoleService.updateEntity(realSchema, SysRole.class, sysRoleEntity);
 
 		apiResult.setData(sysRoleEntity);
 
@@ -81,8 +113,8 @@ public class SysRoleController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable("id") String id, @ApiIgnore @CurrentUser SysUserEntity currentUser) {
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
-		SysRoleService.deleteEntity(realSchema, SysRole.class, id);
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
+		sysRoleService.deleteEntity(realSchema, SysRole.class, id);
 
 	}
 
@@ -91,10 +123,10 @@ public class SysRoleController {
 	public ApiResult<SysRoleEntity> getEntity(@PathVariable("id") String id,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 		ApiResult<SysRoleEntity> apiResult = new ApiResult<>();
 
-		SysRoleEntity sysRoleEntity = SysRoleService.getEntity(realSchema, SysRole.class, SysRoleEntity.class, id);
+		SysRoleEntity sysRoleEntity = sysRoleService.getEntity(realSchema, SysRole.class, SysRoleEntity.class, id);
 
 		apiResult.setData(sysRoleEntity);
 
@@ -110,11 +142,11 @@ public class SysRoleController {
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResult<QueryResults<SysRoleEntity>> query(@RequestParam("queryPage") QueryPage queryPage,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<QueryResults<SysRoleEntity>> apiResult = new ApiResult<>();
 
-		QueryResults<SysRoleEntity> queryResults = SysRoleService.queryPage(realSchema, SysRole.class,
+		QueryResults<SysRoleEntity> queryResults = sysRoleService.queryPage(realSchema, SysRole.class,
 				SysRoleEntity.class, queryPage);
 
 		apiResult.setData(queryResults);

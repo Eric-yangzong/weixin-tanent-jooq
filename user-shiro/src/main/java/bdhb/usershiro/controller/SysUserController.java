@@ -1,9 +1,13 @@
 package bdhb.usershiro.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,15 +21,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bdhanbang.base.common.ApiResult;
+import com.bdhanbang.base.common.Query;
 import com.bdhanbang.base.common.QueryPage;
 import com.bdhanbang.base.common.QueryResults;
+import com.bdhanbang.base.exception.BusinessException;
 import com.bdhanbang.base.message.CommonMessage;
 import com.generator.tables.SysUser;
+import com.generator.tables.WxUserInfo;
 import com.generator.tables.pojos.SysUserEntity;
+import com.generator.tables.pojos.WxUserInfoEntity;
 
 import bdhb.usershiro.common.AppCommon;
 import bdhb.usershiro.common.CurrentUser;
 import bdhb.usershiro.service.SysUserService;
+import bdhb.usershiro.service.TableService;
+import bdhb.usershiro.vo.NewPassword;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
@@ -33,20 +43,43 @@ import springfox.documentation.annotations.ApiIgnore;
 public class SysUserController {
 
 	@Autowired
-	private SysUserService SysUserService;
+	private SysUserService sysUserService;
+
+	@Autowired
+	private TableService tableService;
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public ApiResult<SysUserEntity> insert(@Valid @RequestBody SysUserEntity sysUserEntity,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<SysUserEntity> apiResult = new ApiResult<>();
 
-		sysUserEntity.setUserId(UUID.randomUUID());// 设置系统的UUID
+		Query query = new Query();
 
-		SysUserService.insertEntity(realSchema, SysUser.class, sysUserEntity);
+		query.add("userName", sysUserEntity.getUserName());
+
+		List<SysUserEntity> queryList = sysUserService.queryList(realSchema, SysUser.class, SysUserEntity.class,
+				query.getQuerys());
+
+		if (!Objects.isNull(queryList) && queryList.size() > 0) {
+			throw new BusinessException("20000", String.format("【%s】用户名已存在。", sysUserEntity.getUserName()));
+		}
+
+		sysUserEntity.setUserId(UUID.randomUUID());// 设置系统的UUID
+		sysUserEntity.setUpdateFullName(currentUser.getFullName());
+		sysUserEntity.setUpdateTime(LocalDateTime.now());
+		sysUserEntity.setPassword(AppCommon.DEFAULT_PASSWORD);
+		sysUserEntity.setSalt(String.valueOf(((Double) (Math.random() * 100)).intValue()));
+		String inPassword = DigestUtils.md5Hex(sysUserEntity.getPassword() + sysUserEntity.getSalt());
+		sysUserEntity.setPassword(inPassword);
+
+		sysUserService.insertEntity(realSchema, SysUser.class, sysUserEntity);
+
+		sysUserEntity.setPassword("");
+		sysUserEntity.setSalt("");
 
 		apiResult.setData(sysUserEntity);
 
@@ -62,13 +95,103 @@ public class SysUserController {
 	public ApiResult<SysUserEntity> update(@RequestBody SysUserEntity sysUserEntity,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<SysUserEntity> apiResult = new ApiResult<>();
 
-		SysUserService.updateEntity(realSchema, SysUser.class, sysUserEntity);
+		Query query = new Query();
+
+		query.add("userName", sysUserEntity.getUserName());
+
+		List<SysUserEntity> queryList = sysUserService.queryList(realSchema, SysUser.class, SysUserEntity.class,
+				query.getQuerys());
+
+		if (!Objects.isNull(queryList) && queryList.size() > 0) {
+			queryList.forEach(x -> {
+				if (!sysUserEntity.getUserId().equals(x.getUserId())) {
+					throw new BusinessException("20000", String.format("【%s】用户名已存在。", sysUserEntity.getUserName()));
+				}
+			});
+		}
+
+		sysUserEntity.setUpdateFullName(currentUser.getFullName());
+		sysUserEntity.setUpdateTime(LocalDateTime.now());
+		sysUserEntity.setPassword(queryList.get(0).getPassword());
+		sysUserEntity.setSalt(queryList.get(0).getSalt());
+
+		sysUserService.updateEntity(realSchema, SysUser.class, sysUserEntity);
 
 		apiResult.setData(sysUserEntity);
+
+		apiResult.setStatus(CommonMessage.UPDATE.getStatus());
+		apiResult.setMessage(CommonMessage.UPDATE.getMessage());
+
+		return apiResult;
+
+	}
+
+	@RequestMapping(value = "/password", method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResult<NewPassword> updatePassword(@RequestBody NewPassword newPassword,
+			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
+
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
+
+		ApiResult<NewPassword> apiResult = new ApiResult<>();
+
+		SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class, SysUserEntity.class,
+				newPassword.getUserId());
+
+		if (sysUserEntity.getPassword()
+				.equals(DigestUtils.md5Hex(newPassword.getOldPassword() + sysUserEntity.getSalt()))) {
+
+			sysUserEntity.setUpdateFullName(currentUser.getFullName());
+			sysUserEntity.setUpdateTime(LocalDateTime.now());
+			sysUserEntity.setPassword(newPassword.getNewPassword());
+			sysUserEntity.setSalt(String.valueOf(((Double) (Math.random() * 100)).intValue()));
+			String inPassword = DigestUtils.md5Hex(sysUserEntity.getPassword() + sysUserEntity.getSalt());
+			sysUserEntity.setPassword(inPassword);
+
+			sysUserService.updateEntity(realSchema, SysUser.class, sysUserEntity);
+		} else {
+			throw new BusinessException("20000", "原密码不正确。");
+		}
+
+		apiResult.setData(newPassword);
+
+		apiResult.setStatus(CommonMessage.UPDATE.getStatus());
+		apiResult.setMessage(CommonMessage.UPDATE.getMessage());
+
+		return apiResult;
+
+	}
+
+	@RequestMapping(value = "wx", method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResult<WxUserInfoEntity> updateWx(@RequestBody WxUserInfoEntity wxUserInfo,
+			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
+
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
+
+		ApiResult<WxUserInfoEntity> apiResult = new ApiResult<>();
+
+		tableService.updateEntity(realSchema, WxUserInfo.class, wxUserInfo);
+
+		Query query = new Query();
+
+		query.add("openId", wxUserInfo.getOpenId());
+
+		List<SysUserEntity> queryList = sysUserService.queryList(realSchema, SysUser.class, SysUserEntity.class,
+				query.getQuerys());
+
+		if (!Objects.isNull(queryList) && queryList.size() > 0) {
+			SysUserEntity sysUserEntity = queryList.get(0);
+			sysUserEntity.setFullName(wxUserInfo.getNickName());
+
+			sysUserService.updateEntity(realSchema, SysUser.class, sysUserEntity);
+		}
+
+		apiResult.setData(wxUserInfo);
 
 		apiResult.setStatus(CommonMessage.UPDATE.getStatus());
 		apiResult.setMessage(CommonMessage.UPDATE.getMessage());
@@ -80,8 +203,8 @@ public class SysUserController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable("id") String id, @ApiIgnore @CurrentUser SysUserEntity currentUser) {
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
-		SysUserService.deleteEntity(realSchema, SysUser.class, id);
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
+		sysUserService.deleteEntity(realSchema, SysUser.class, id);
 
 	}
 
@@ -90,10 +213,13 @@ public class SysUserController {
 	public ApiResult<SysUserEntity> getEntity(@PathVariable("id") String id,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 		ApiResult<SysUserEntity> apiResult = new ApiResult<>();
 
-		SysUserEntity sysUserEntity = SysUserService.getEntity(realSchema, SysUser.class, SysUserEntity.class, id);
+		SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class, SysUserEntity.class, id);
+
+		sysUserEntity.setSalt("");
+		sysUserEntity.setPassword("");
 
 		apiResult.setData(sysUserEntity);
 
@@ -109,12 +235,17 @@ public class SysUserController {
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResult<QueryResults<SysUserEntity>> query(@RequestParam("queryPage") QueryPage queryPage,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
-		String realSchema = currentUser.getTanentId() + AppCommon.scheam;
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<QueryResults<SysUserEntity>> apiResult = new ApiResult<>();
 
-		QueryResults<SysUserEntity> queryResults = SysUserService.queryPage(realSchema, SysUser.class,
+		QueryResults<SysUserEntity> queryResults = sysUserService.queryPage(realSchema, SysUser.class,
 				SysUserEntity.class, queryPage);
+
+		queryResults.getResults().forEach(x -> {
+			x.setPassword("");
+			x.setSalt("");
+		});
 
 		apiResult.setData(queryResults);
 

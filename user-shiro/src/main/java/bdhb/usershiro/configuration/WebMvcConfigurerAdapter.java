@@ -34,9 +34,10 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
 		ir.excludePathPatterns("**/swagger-ui.html");
 		ir.excludePathPatterns("/swagger-resources");
 		ir.excludePathPatterns("/images/**");
-		
+
 		ir.excludePathPatterns("/_/tenant");
 		ir.excludePathPatterns("/login");
+		ir.excludePathPatterns("/login/wx");
 		ir.excludePathPatterns("/v2/api-docs");
 		ir.excludePathPatterns("/configuration/ui");
 		ir.excludePathPatterns("/error");
