@@ -114,10 +114,13 @@ public class SysUserController {
 			});
 		}
 
+		SysUserEntity entity = sysUserService.getEntity(realSchema, SysUser.class, SysUserEntity.class,
+				sysUserEntity.getUserId());
+
 		sysUserEntity.setUpdateFullName(currentUser.getFullName());
 		sysUserEntity.setUpdateTime(LocalDateTime.now());
-		sysUserEntity.setPassword(queryList.get(0).getPassword());
-		sysUserEntity.setSalt(queryList.get(0).getSalt());
+		sysUserEntity.setPassword(entity.getPassword());
+		sysUserEntity.setSalt(entity.getSalt());
 
 		sysUserService.updateEntity(realSchema, SysUser.class, sysUserEntity);
 
