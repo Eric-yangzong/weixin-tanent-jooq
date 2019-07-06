@@ -43,9 +43,11 @@ import com.generator.tables.pojos.WxConfigEntity;
 import com.generator.tables.pojos.WxUserInfoEntity;
 
 import bdhb.usershiro.common.AppCommon;
+import bdhb.usershiro.service.SysPermissionService;
 import bdhb.usershiro.service.SysUserService;
 import bdhb.usershiro.service.TableService;
 import bdhb.usershiro.util.JwtUtils;
+import bdhb.usershiro.vo.Menu;
 import bdhb.usershiro.vo.SysUserVo;
 import bdhb.usershiro.vo.WeXinDataVo;
 import bdhb.usershiro.vo.WeXinLogin;
@@ -57,6 +59,9 @@ public class LoginController {
 
 	@Autowired
 	SysUserService sysUserService;
+
+	@Autowired
+	SysPermissionService sysPermissionService;
 
 	@Autowired
 	TableService tableService;
@@ -213,11 +218,11 @@ public class LoginController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ApiResult<String> login(@Valid @RequestBody SysUserVo sysUserEntity, HttpServletResponse response) {
+	public ApiResult<List<Menu>> login(@Valid @RequestBody SysUserVo sysUserEntity, HttpServletResponse response) {
 
-		String schema = String.format("%s%s", sysUserEntity.getTanentId(), AppCommon.scheam);
+		String schema = String.format("%s%s", sysUserEntity.getTenantId(), AppCommon.scheam);
 
-		ApiResult<String> apiResult = new ApiResult<>();
+		ApiResult<List<Menu>> apiResult = new ApiResult<>();
 
 		Query query = new Query();
 
@@ -235,15 +240,17 @@ public class LoginController {
 		String inPassword = DigestUtils.md5Hex(sysUserEntity.getPassword() + sysUser.getSalt());
 
 		if (inPassword.equals(sysUser.getPassword())) {
-			apiResult.setData("登录成功");
-
 			Map<String, String> claims = new HashMap<>();
 
 			claims.put(AppCommon.PAYLOAD_NAME, sysUserEntity.getUserName());
 
+			// 生成token
 			String token = JwtUtils.createToken(claims);
 			response.setHeader(AppCommon.TOKEN, token);
-			// 生成token
+
+			// 生成左侧导航
+			apiResult.setData(sysPermissionService.getMenus(sysUserEntity.getTenantId(), sysUser.getRoles()));
+
 		} else {
 			throw new AuthenticationException("用户名或密码错误。");
 		}

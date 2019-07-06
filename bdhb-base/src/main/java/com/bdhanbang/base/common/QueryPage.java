@@ -48,7 +48,7 @@ public class QueryPage implements Serializable {
 		return orders;
 	}
 
-	public void setOrder(List<Order> orders) {
+	public void setOrders(List<Order> orders) {
 		this.orders = orders;
 	}
 

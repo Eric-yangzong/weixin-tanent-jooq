@@ -1,5 +1,7 @@
 package bdhb.usershiro.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bdhanbang.base.common.ApiResult;
+import com.bdhanbang.base.common.Order;
 import com.bdhanbang.base.common.QueryPage;
 import com.bdhanbang.base.common.QueryResults;
 import com.bdhanbang.base.message.CommonMessage;
@@ -114,6 +117,12 @@ public class SysPermissionController {
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<QueryResults<SysPermissionEntity>> apiResult = new ApiResult<>();
+
+		List<Order> orders = new ArrayList<>();
+
+		orders.add(new Order("qsort"));
+
+		queryPage.setOrders(orders);
 
 		QueryResults<SysPermissionEntity> queryResults = SysUserService.queryPage(realSchema, SysPermission.class,
 				SysPermissionEntity.class, queryPage);

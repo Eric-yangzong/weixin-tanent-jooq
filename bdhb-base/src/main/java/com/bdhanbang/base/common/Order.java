@@ -25,6 +25,13 @@ public class Order implements Serializable {
 
 	String fieldName = "";// 排序字段
 
+	public Order() {
+	}
+
+	public Order(String fieldName) {
+		this.fieldName = fieldName;
+	}
+
 	public Integer getOrder() {
 		return order;
 	}

@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 public class SysUserVo {
 
 	@NotNull
-	private String tanentId;
+	private String tenantId;
 
 	@NotNull
 	private String userName;
@@ -13,12 +13,12 @@ public class SysUserVo {
 	@NotNull
 	private String password;
 
-	public String getTanentId() {
-		return tanentId;
+	public String getTenantId() {
+		return tenantId;
 	}
 
-	public void setTanentId(String tanentId) {
-		this.tanentId = tanentId;
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
 	}
 
 	public String getUserName() {
