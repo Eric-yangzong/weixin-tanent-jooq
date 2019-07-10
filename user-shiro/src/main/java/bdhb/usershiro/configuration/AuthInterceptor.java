@@ -2,6 +2,7 @@ package bdhb.usershiro.configuration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -113,6 +114,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		corsConfiguration.addAllowedOrigin("*"); // 1允许任何域名使用
 		corsConfiguration.addAllowedHeader("*"); // 2允许任何头
 		corsConfiguration.addAllowedMethod("*"); // 3允许任何方法（post、get等）
+		// 前台取不到token可以这样解决
+		corsConfiguration.setExposedHeaders(Arrays.asList(AppCommon.TOKEN));
+
 		return corsConfiguration;
 	}
 

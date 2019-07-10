@@ -45,6 +45,7 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermission, Sys
 			menu.setParentId(x.getParentId());
 			menu.setResName(x.getResName());
 			menu.setUrl(x.getUrl());
+			menu.setIcon(x.getIcon());
 			menu.setQsort(Objects.isNull(x.getQsort()) ? 0 : x.getQsort());
 
 			return menu;
@@ -62,6 +63,7 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermission, Sys
 						menu.setParentId(m.getParentId());
 						menu.setResName(m.getResName());
 						menu.setUrl(m.getUrl());
+						menu.setIcon(m.getIcon());
 						menu.setQsort(Objects.isNull(m.getQsort()) ? 0 : m.getQsort());
 
 						return menu;

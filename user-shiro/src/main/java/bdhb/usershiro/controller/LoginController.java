@@ -20,6 +20,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -218,11 +219,12 @@ public class LoginController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ApiResult<List<Menu>> login(@Valid @RequestBody SysUserVo sysUserEntity, HttpServletResponse response) {
+	public ApiResult<Pair<SysUserEntity, List<Menu>>> login(@Valid @RequestBody SysUserVo sysUserEntity,
+			HttpServletResponse response) {
 
 		String schema = String.format("%s%s", sysUserEntity.getTenantId(), AppCommon.scheam);
 
-		ApiResult<List<Menu>> apiResult = new ApiResult<>();
+		ApiResult<Pair<SysUserEntity, List<Menu>>> apiResult = new ApiResult<>();
 
 		Query query = new Query();
 
@@ -248,8 +250,15 @@ public class LoginController {
 			String token = JwtUtils.createToken(claims);
 			response.setHeader(AppCommon.TOKEN, token);
 
+			// 去掉敏感信息
+			sysUser.setPassword("");
+			sysUser.setSalt("");
+
+			Pair<SysUserEntity, List<Menu>> pair = new Pair<>(sysUser,
+					sysPermissionService.getMenus(sysUserEntity.getTenantId(), sysUser.getRoles()));
+
 			// 生成左侧导航
-			apiResult.setData(sysPermissionService.getMenus(sysUserEntity.getTenantId(), sysUser.getRoles()));
+			apiResult.setData(pair);
 
 		} else {
 			throw new AuthenticationException("用户名或密码错误。");

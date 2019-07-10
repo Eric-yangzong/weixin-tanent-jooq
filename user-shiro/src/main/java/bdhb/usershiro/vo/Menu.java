@@ -16,6 +16,8 @@ public class Menu {
 
 	private Integer qsort;
 
+	private String icon;
+
 	private List<Menu> children = new ArrayList<>();
 
 	public UUID getId() {
@@ -64,6 +66,14 @@ public class Menu {
 
 	public void setChildren(List<Menu> children) {
 		this.children = children;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 }
