@@ -1,6 +1,6 @@
 package bdhb.usershiro.controller;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -70,7 +70,7 @@ public class SysUserController {
 
 		sysUserEntity.setUserId(UUID.randomUUID());// 设置系统的UUID
 		sysUserEntity.setUpdateFullName(currentUser.getFullName());
-		sysUserEntity.setUpdateTime(LocalDateTime.now());
+		sysUserEntity.setUpdateTime(OffsetDateTime.now());
 		sysUserEntity.setPassword(AppCommon.DEFAULT_PASSWORD);
 		sysUserEntity.setSalt(String.valueOf(((Double) (Math.random() * 100)).intValue()));
 		String inPassword = DigestUtils.md5Hex(sysUserEntity.getPassword() + sysUserEntity.getSalt());
@@ -118,7 +118,7 @@ public class SysUserController {
 				sysUserEntity.getUserId());
 
 		sysUserEntity.setUpdateFullName(currentUser.getFullName());
-		sysUserEntity.setUpdateTime(LocalDateTime.now());
+		sysUserEntity.setUpdateTime(OffsetDateTime.now());
 		sysUserEntity.setPassword(entity.getPassword());
 		sysUserEntity.setSalt(entity.getSalt());
 
@@ -149,7 +149,7 @@ public class SysUserController {
 				.equals(DigestUtils.md5Hex(newPassword.getOldPassword() + sysUserEntity.getSalt()))) {
 
 			sysUserEntity.setUpdateFullName(currentUser.getFullName());
-			sysUserEntity.setUpdateTime(LocalDateTime.now());
+			sysUserEntity.setUpdateTime(OffsetDateTime.now());
 			sysUserEntity.setPassword(newPassword.getNewPassword());
 			sysUserEntity.setSalt(String.valueOf(((Double) (Math.random() * 100)).intValue()));
 			String inPassword = DigestUtils.md5Hex(sysUserEntity.getPassword() + sysUserEntity.getSalt());

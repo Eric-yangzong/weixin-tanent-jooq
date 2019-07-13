@@ -16,6 +16,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
+import org.jooq.impl.AbstractRoutine;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -138,6 +139,12 @@ public class TableServiceImpl implements TableService {
 
 		selectStep.where(tableIdField.eq(id));
 
+		int fetchCount = dsl.fetchCount(selectStep);
+
+		if (fetchCount == 0) {
+			return null;
+		}
+
 		return selectStep.fetchOne().into(entityClass);
 
 	}
@@ -258,6 +265,12 @@ public class TableServiceImpl implements TableService {
 			throw new CurdException(e, ErrorMessage.CURD_ERROR.getStatus(), ErrorMessage.CURD_ERROR.getMessage());
 		}
 
+	}
+
+	@Override
+	public <T> T getFunctionValue(AbstractRoutine<T> routine, Class<T> clazz) {
+		T fetchOneInto = dsl.select(routine.asField()).fetchOneInto(clazz);
+		return fetchOneInto;
 	}
 
 }

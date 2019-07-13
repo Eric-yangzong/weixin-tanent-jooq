@@ -2,7 +2,7 @@ package bdhb.usershiro.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -69,7 +69,7 @@ public class SysImageController {
 		sysImageEntity.setImagePath(imageSavePath);
 		sysImageEntity.setGraph(UUID.randomUUID());
 		sysImageEntity.setUpdateFullName(currentUser.getFullName());
-		sysImageEntity.setUpdateTime(LocalDateTime.now());
+		sysImageEntity.setUpdateTime(OffsetDateTime.now());
 		sysImageEntity.setImageType(fileType);
 
 		String saveFileName = String.format("%s/%s%s", imageSavePath, sysImageEntity.getGraph(), fileType);

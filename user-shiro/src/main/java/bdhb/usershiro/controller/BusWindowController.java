@@ -1,8 +1,6 @@
 package bdhb.usershiro.controller;
 
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -20,54 +18,51 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bdhanbang.base.common.ApiResult;
-import com.bdhanbang.base.common.Query;
 import com.bdhanbang.base.common.QueryPage;
 import com.bdhanbang.base.common.QueryResults;
-import com.bdhanbang.base.exception.BusinessException;
+import com.bdhanbang.base.jooq.GenSchema;
 import com.bdhanbang.base.message.CommonMessage;
-import com.bdhanbang.base.util.query.Operate;
-import com.generator.tables.SysRole;
-import com.generator.tables.pojos.SysRoleEntity;
+import com.bdhanbang.base.util.BeanUtils;
+import com.generator.tables.BusWindow;
+import com.generator.tables.pojos.BusWindowEntity;
 import com.generator.tables.pojos.SysUserEntity;
 
 import bdhb.usershiro.common.AppCommon;
 import bdhb.usershiro.common.CurrentUser;
 import bdhb.usershiro.service.TableService;
+import bdhb.usershiro.service.impl.FWindowInfoCode;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
-@RequestMapping("/sys_role")
-public class SysRoleController {
+@RequestMapping("/bus_window")
+public class BusWindowController {
 
 	@Autowired
-	private TableService sysRoleService;
+	private TableService busWindowService;
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResult<SysRoleEntity> insert(@Valid @RequestBody SysRoleEntity sysRoleEntity,
+	public ApiResult<BusWindowEntity> insert(@Valid @RequestBody BusWindowEntity busWindowEntity,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
-		ApiResult<SysRoleEntity> apiResult = new ApiResult<>();
+		GenSchema s = new GenSchema(realSchema);
+		FWindowInfoCode fCode = new FWindowInfoCode(s);
+		fCode.setTenant(currentUser.getTenantId().toUpperCase());
 
-		Query query = new Query();
+		String code = busWindowService.getFunctionValue(fCode, String.class);
 
-		query.add("roleCode", sysRoleEntity.getRoleCode());
+		ApiResult<BusWindowEntity> apiResult = new ApiResult<>();
 
-		List<SysRoleEntity> queryList = sysRoleService.queryList(realSchema, SysRole.class, SysRoleEntity.class, query);
+		busWindowEntity.setId(UUID.randomUUID());
+		busWindowEntity.setWindowCode(code);
+		busWindowEntity.setUpdateFullName(currentUser.getFullName());
+		busWindowEntity.setUpdateTime(OffsetDateTime.now());
 
-		if (!Objects.isNull(queryList) && queryList.size() > 0) {
-			throw new BusinessException("20000", String.format("【%s】角色编码已存在。", sysRoleEntity.getRoleCode()));
-		}
+		busWindowService.insertEntity(realSchema, BusWindow.class, busWindowEntity);
 
-		sysRoleEntity.setRoleId(UUID.randomUUID());// 设置系统的UUID
-		sysRoleEntity.setUpdateFullName(currentUser.getFullName());
-		sysRoleEntity.setUpdateTime(OffsetDateTime.now());
-
-		sysRoleService.insertEntity(realSchema, SysRole.class, sysRoleEntity);
-
-		apiResult.setData(sysRoleEntity);
+		apiResult.setData(busWindowEntity);
 
 		apiResult.setStatus(CommonMessage.CREATE.getStatus());
 		apiResult.setMessage(CommonMessage.CREATE.getMessage());
@@ -78,30 +73,24 @@ public class SysRoleController {
 
 	@RequestMapping(method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResult<SysRoleEntity> update(@RequestBody SysRoleEntity sysRoleEntity,
+	public ApiResult<BusWindowEntity> update(@RequestBody BusWindowEntity busWindowEntity,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
-		ApiResult<SysRoleEntity> apiResult = new ApiResult<>();
+		ApiResult<BusWindowEntity> apiResult = new ApiResult<>();
 
-		Query query = new Query();
+		BusWindowEntity ibusWindowEntity = busWindowService.getEntity(realSchema, BusWindow.class,
+				BusWindowEntity.class, busWindowEntity.getId());
 
-		query.add("roleCode", sysRoleEntity.getRoleCode());
-		query.add("roleId", sysRoleEntity.getRoleId(), Operate.notEquals);
+		BeanUtils.copyProperties(busWindowEntity, ibusWindowEntity);
 
-		List<SysRoleEntity> queryList = sysRoleService.queryList(realSchema, SysRole.class, SysRoleEntity.class, query);
+		ibusWindowEntity.setUpdateFullName(currentUser.getFullName());
+		ibusWindowEntity.setUpdateTime(OffsetDateTime.now());
 
-		if (!Objects.isNull(queryList) && queryList.size() > 0) {
-			throw new BusinessException("20000", String.format("【%s】角色编码已存在。", sysRoleEntity.getRoleCode()));
-		}
+		busWindowService.updateEntity(realSchema, BusWindow.class, ibusWindowEntity);
 
-		sysRoleEntity.setUpdateFullName(currentUser.getFullName());
-		sysRoleEntity.setUpdateTime(OffsetDateTime.now());
-
-		sysRoleService.updateEntity(realSchema, SysRole.class, sysRoleEntity);
-
-		apiResult.setData(sysRoleEntity);
+		apiResult.setData(ibusWindowEntity);
 
 		apiResult.setStatus(CommonMessage.UPDATE.getStatus());
 		apiResult.setMessage(CommonMessage.UPDATE.getMessage());
@@ -114,21 +103,22 @@ public class SysRoleController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable("id") String id, @ApiIgnore @CurrentUser SysUserEntity currentUser) {
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
-		sysRoleService.deleteEntity(realSchema, SysRole.class, id);
+		busWindowService.deleteEntity(realSchema, BusWindow.class, id);
 
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResult<SysRoleEntity> getEntity(@PathVariable("id") String id,
+	public ApiResult<BusWindowEntity> getEntity(@PathVariable("id") String id,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
-		ApiResult<SysRoleEntity> apiResult = new ApiResult<>();
+		ApiResult<BusWindowEntity> apiResult = new ApiResult<>();
 
-		SysRoleEntity sysRoleEntity = sysRoleService.getEntity(realSchema, SysRole.class, SysRoleEntity.class, id);
+		BusWindowEntity busWindowEntity = busWindowService.getEntity(realSchema, BusWindow.class, BusWindowEntity.class,
+				id);
 
-		apiResult.setData(sysRoleEntity);
+		apiResult.setData(busWindowEntity);
 
 		apiResult.setStatus(CommonMessage.SUCCESS.getStatus());
 		apiResult.setMessage(CommonMessage.SUCCESS.getMessage());
@@ -140,14 +130,14 @@ public class SysRoleController {
 	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResult<QueryResults<SysRoleEntity>> query(@RequestParam("queryPage") QueryPage queryPage,
+	public ApiResult<QueryResults<BusWindowEntity>> query(@RequestParam("queryPage") QueryPage queryPage,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
-		ApiResult<QueryResults<SysRoleEntity>> apiResult = new ApiResult<>();
+		ApiResult<QueryResults<BusWindowEntity>> apiResult = new ApiResult<>();
 
-		QueryResults<SysRoleEntity> queryResults = sysRoleService.queryPage(realSchema, SysRole.class,
-				SysRoleEntity.class, queryPage);
+		QueryResults<BusWindowEntity> queryResults = busWindowService.queryPage(realSchema, BusWindow.class,
+				BusWindowEntity.class, queryPage);
 
 		apiResult.setData(queryResults);
 

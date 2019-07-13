@@ -1,5 +1,6 @@
 package bdhb.usershiro.controller;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -52,6 +53,9 @@ public class SysPermissionController {
 
 		SysUserService.insertEntity(realSchema, SysPermission.class, sysPermissionEntity);
 
+		sysPermissionEntity.setUpdateFullName(currentUser.getFullName());
+		sysPermissionEntity.setUpdateTime(OffsetDateTime.now());
+
 		apiResult.setData(sysPermissionEntity);
 
 		apiResult.setStatus(CommonMessage.CREATE.getStatus());
@@ -69,6 +73,9 @@ public class SysPermissionController {
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<SysPermissionEntity> apiResult = new ApiResult<>();
+
+		sysPermissionEntity.setUpdateFullName(currentUser.getFullName());
+		sysPermissionEntity.setUpdateTime(OffsetDateTime.now());
 
 		SysUserService.updateEntity(realSchema, SysPermission.class, sysPermissionEntity);
 

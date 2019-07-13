@@ -6,6 +6,7 @@ D:\src\studay\jooq\weixin-jooq\bdhb-base\src\main\java\com\bdhanbang\base\common
 D:\src\studay\jooq\weixin-jooq\bdhb-base\src\main\java\com\bdhanbang\base\jooq\util\KeepNamesGeneratorStrategy.java
 D:\src\studay\jooq\weixin-jooq\bdhb-base\src\main\java\com\bdhanbang\base\jooq\PostgresJsonNodeConverter.java
 D:\src\studay\jooq\weixin-jooq\bdhb-base\src\main\java\com\bdhanbang\base\jooq\util\GeneratorWriter.java
+D:\src\studay\jooq\weixin-jooq\bdhb-base\src\main\java\com\bdhanbang\base\util\BeanUtils.java
 D:\src\studay\jooq\weixin-jooq\bdhb-base\src\main\java\com\bdhanbang\base\jooq\util\ConstantSchemaVersionProvider.java
 D:\src\studay\jooq\weixin-jooq\bdhb-base\src\main\java\com\bdhanbang\base\jooq\util\GeneratorStrategyWrapper.java
 D:\src\studay\jooq\weixin-jooq\bdhb-base\src\main\java\com\bdhanbang\base\jooq\ISchemaSwitch.java
