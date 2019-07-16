@@ -117,10 +117,14 @@ public class SysUserController {
 		SysUserEntity entity = sysUserService.getEntity(realSchema, SysUser.class, SysUserEntity.class,
 				sysUserEntity.getUserId());
 
+		if (Objects.isNull(sysUserEntity)) {
+			sysUserEntity.setTenantId(currentUser.getTenantId());
+		}
 		sysUserEntity.setUpdateFullName(currentUser.getFullName());
 		sysUserEntity.setUpdateTime(OffsetDateTime.now());
 		sysUserEntity.setPassword(entity.getPassword());
 		sysUserEntity.setSalt(entity.getSalt());
+		sysUserEntity.setOpenId(entity.getOpenId());
 
 		sysUserService.updateEntity(realSchema, SysUser.class, sysUserEntity);
 

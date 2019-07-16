@@ -1,10 +1,12 @@
 package bdhb.usershiro.controller;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bdhanbang.base.common.ApiResult;
+import com.bdhanbang.base.common.Query;
 import com.bdhanbang.base.common.QueryPage;
 import com.bdhanbang.base.common.QueryResults;
 import com.bdhanbang.base.jooq.GenSchema;
@@ -127,14 +129,66 @@ public class BusWindowController {
 
 	}
 
+	@RequestMapping(value = "/wx", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResult<Pair<String, QueryResults<BusWindowEntity>>> wxQuery(
+			@RequestParam("queryPage") QueryPage queryPage, @ApiIgnore @CurrentUser SysUserEntity currentUser) {
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
+
+		ApiResult<Pair<String, QueryResults<BusWindowEntity>>> apiResult = new ApiResult<>();
+
+		String[] roles = currentUser.getRoles();
+		String role = "";
+		List<Query> querys = queryPage.getQuerys();
+
+		for (int i = 0; i < roles.length; i++) {
+			if (AppCommon.master.equals(roles[i])) {
+				querys.add(new Query("master", currentUser.getUserId()));
+				role = roles[i];
+				break;
+			} else if (AppCommon.worker.equals(roles[i])) {
+				querys.add(new Query("worker", currentUser.getUserId()));
+				role = roles[i];
+				break;
+			}
+		}
+
+		QueryResults<BusWindowEntity> queryResults = busWindowService.queryPage(realSchema, BusWindow.class,
+				BusWindowEntity.class, queryPage);
+
+		Pair<String, QueryResults<BusWindowEntity>> pair = new Pair<String, QueryResults<BusWindowEntity>>(role,
+				queryResults);
+
+		apiResult.setData(pair);
+
+		apiResult.setStatus(CommonMessage.SUCCESS.getStatus());
+		apiResult.setMessage(CommonMessage.SUCCESS.getMessage());
+
+		return apiResult;
+
+	}
+
 	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResult<QueryResults<BusWindowEntity>> query(@RequestParam("queryPage") QueryPage queryPage,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		ApiResult<QueryResults<BusWindowEntity>> apiResult = new ApiResult<>();
+
+		// 权限过滤
+		String[] roles = currentUser.getRoles();
+		List<Query> querys = queryPage.getQuerys();
+
+		for (int i = 0; i < roles.length; i++) {
+			if (AppCommon.master.equals(roles[i])) {
+				querys.add(new Query("master", currentUser.getUserId()));
+				break;
+			} else if (AppCommon.worker.equals(roles[i])) {
+				querys.add(new Query("worker", currentUser.getUserId()));
+				break;
+			}
+		}
 
 		QueryResults<BusWindowEntity> queryResults = busWindowService.queryPage(realSchema, BusWindow.class,
 				BusWindowEntity.class, queryPage);

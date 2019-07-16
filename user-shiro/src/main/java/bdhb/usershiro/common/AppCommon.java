@@ -24,4 +24,8 @@ public class AppCommon {
 	public static final String X_WX_IV = "X-WX-IV";
 
 	public static final String DEFAULT_PASSWORD = "123456";
+
+	public static final String worker = "worker";
+
+	public static final String master = "master";
 }
