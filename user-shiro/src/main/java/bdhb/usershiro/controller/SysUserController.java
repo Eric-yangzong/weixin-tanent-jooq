@@ -173,6 +173,30 @@ public class SysUserController {
 
 	}
 
+	@RequestMapping(value = "/reset/{id}", method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResult<String> resetPassword(@PathVariable("id") String id,
+			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
+
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
+
+		ApiResult<String> apiResult = new ApiResult<>();
+
+		SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class, SysUserEntity.class, id);
+
+		sysUserEntity.setSalt(String.valueOf(((Double) (Math.random() * 100)).intValue()));
+		String inPassword = DigestUtils.md5Hex(AppCommon.DEFAULT_PASSWORD + sysUserEntity.getSalt());
+		sysUserEntity.setPassword(inPassword);
+
+		apiResult.setData("密码重置成功！");
+
+		apiResult.setStatus(CommonMessage.UPDATE.getStatus());
+		apiResult.setMessage(CommonMessage.UPDATE.getMessage());
+
+		return apiResult;
+
+	}
+
 	@RequestMapping(value = "wx", method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResult<WxUserInfoEntity> updateWx(@RequestBody WxUserInfoEntity wxUserInfo,

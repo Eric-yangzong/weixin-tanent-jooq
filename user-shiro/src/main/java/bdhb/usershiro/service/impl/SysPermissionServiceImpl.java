@@ -32,10 +32,11 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermission, Sys
 		sysRole.setSchema(schema);
 		sysPermission.setSchema(schema);
 
-		List<SysPermissionEntity> sysPermissionEntitys = dsl.select(sysPermission.fields()).from(sysRole, sysPermission)
-				.where(sysRole.ROLE_CODE.in(roles)
-						.and(DSL.cast(sysPermission.ID, String.class)
-								.eq(DSL.function("any", String.class, sysRole.PERMISSIONS))))
+		List<SysPermissionEntity> sysPermissionEntitys = dsl.select(sysPermission.fields()).from(sysPermission)
+				.where(DSL.exists(dsl.select(sysRole.fields()).from(sysRole)
+						.where(DSL.cast(sysPermission.ID, String.class)
+								.eq(DSL.function("any", String.class, sysRole.PERMISSIONS)))
+						.and(sysRole.ROLE_CODE.in(roles))))
 				.fetchInto(SysPermissionEntity.class);
 
 		List<Menu> menus = sysPermissionEntitys.stream().filter(x -> Objects.isNull(x.getParentId())).map(x -> {

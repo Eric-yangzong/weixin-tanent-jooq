@@ -35,6 +35,7 @@ import com.bdhanbang.base.exception.BusinessException;
 import com.bdhanbang.base.message.CommonMessage;
 import com.bdhanbang.base.util.AES;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.generator.tables.SysUser;
 import com.generator.tables.WxConfig;
@@ -44,6 +45,7 @@ import com.generator.tables.pojos.WxConfigEntity;
 import com.generator.tables.pojos.WxUserInfoEntity;
 
 import bdhb.usershiro.common.AppCommon;
+import bdhb.usershiro.common.CurrentUser;
 import bdhb.usershiro.service.SysPermissionService;
 import bdhb.usershiro.service.SysUserService;
 import bdhb.usershiro.service.TableService;
@@ -53,6 +55,7 @@ import bdhb.usershiro.vo.SysUserVo;
 import bdhb.usershiro.vo.WeXinDataVo;
 import bdhb.usershiro.vo.WeXinLogin;
 import bdhb.usershiro.vo.WeXinResoult;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping("/login")
@@ -73,7 +76,8 @@ public class LoginController {
 	public WeXinResoult login(@RequestHeader(AppCommon.TENANT_ID) String tenantId,
 			@RequestHeader(AppCommon.X_WX_CODE) String wxCode,
 			@RequestHeader(AppCommon.X_WX_ENCRYPTED_DATA) String wxEncryptedData,
-			@RequestHeader(AppCommon.X_WX_IV) String wxIv) throws JsonProcessingException {
+			@RequestHeader(AppCommon.X_WX_IV) String wxIv, HttpServletResponse response)
+			throws JsonProcessingException {
 
 		String schema = String.format("%s%s", tenantId, AppCommon.scheam);
 		WeXinResoult rt = new WeXinResoult();
@@ -110,6 +114,8 @@ public class LoginController {
 			data.setToken(token);
 			data.setUserinfo(userinfo);
 			data.setSkey(openId);
+
+			response.setHeader(AppCommon.TOKEN, token);
 
 		} catch (Exception e) {
 			// 设置错误信息
@@ -211,11 +217,36 @@ public class LoginController {
 		InputStream inputStream = h.getContent();
 
 		ObjectMapper mapper = new ObjectMapper();
+		// 没有的值不要
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		
 		WeXinLogin w = mapper.readValue(inputStream, WeXinLogin.class);
 		inputStream.close();
 		httpClient.close();
 
 		return w;
+	}
+
+	@RequestMapping(value = "/token", method = RequestMethod.PUT)
+	public ApiResult<String> token(@ApiIgnore @CurrentUser SysUserEntity currentUser, HttpServletResponse response) {
+
+		ApiResult<String> apiResult = new ApiResult<>();
+
+		Map<String, String> claims = new HashMap<>();
+
+		claims.put(AppCommon.PAYLOAD_NAME, currentUser.getUserName());
+
+		// 生成token
+		String token = JwtUtils.createToken(claims);
+		response.setHeader(AppCommon.TOKEN, token);
+
+		apiResult.setData("置换成功");
+
+		apiResult.setStatus(CommonMessage.SUCCESS.getStatus());
+		apiResult.setMessage(CommonMessage.SUCCESS.getMessage());
+
+		return apiResult;
+
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
