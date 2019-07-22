@@ -37,6 +37,8 @@ public class WebMvcConfigurerAdapter implements WebMvcConfigurer {
 
 		ir.excludePathPatterns("/_/tenant");
 		ir.excludePathPatterns("/login");
+		ir.excludePathPatterns("/bus_markdown");
+		ir.excludePathPatterns("/bus_markdown/*");
 		ir.excludePathPatterns("/login/wx");
 		ir.excludePathPatterns("/v2/api-docs");
 		ir.excludePathPatterns("/configuration/ui");

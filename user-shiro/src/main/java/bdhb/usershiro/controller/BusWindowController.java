@@ -2,6 +2,7 @@ package bdhb.usershiro.controller;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ import com.bdhanbang.base.common.ApiResult;
 import com.bdhanbang.base.common.Query;
 import com.bdhanbang.base.common.QueryPage;
 import com.bdhanbang.base.common.QueryResults;
+import com.bdhanbang.base.exception.BusinessException;
 import com.bdhanbang.base.jooq.GenSchema;
 import com.bdhanbang.base.message.CommonMessage;
 import com.bdhanbang.base.util.BeanUtils;
@@ -141,6 +143,10 @@ public class BusWindowController {
 		String role = "";
 		List<Query> querys = queryPage.getQuerys();
 
+		if (Objects.isNull(roles)) {
+			throw new BusinessException("20000", "权限为空不可查询业务数据");
+		}
+
 		for (int i = 0; i < roles.length; i++) {
 			if (AppCommon.master.equals(roles[i])) {
 				querys.add(new Query("master", currentUser.getUserId()));
@@ -179,6 +185,10 @@ public class BusWindowController {
 		// 权限过滤
 		String[] roles = currentUser.getRoles();
 		List<Query> querys = queryPage.getQuerys();
+
+		if (Objects.isNull(roles)) {
+			throw new BusinessException("20000", "权限为空不可查询业务数据");
+		}
 
 		for (int i = 0; i < roles.length; i++) {
 			if (AppCommon.master.equals(roles[i])) {

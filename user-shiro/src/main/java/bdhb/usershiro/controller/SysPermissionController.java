@@ -38,7 +38,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class SysPermissionController {
 
 	@Autowired
-	private SysPermissionService SysUserService;
+	private SysPermissionService sysPermissionService;
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -51,7 +51,7 @@ public class SysPermissionController {
 
 		sysPermissionEntity.setId(UUID.randomUUID());// 设置系统的UUID
 
-		SysUserService.insertEntity(realSchema, SysPermission.class, sysPermissionEntity);
+		sysPermissionService.insertEntity(realSchema, SysPermission.class, sysPermissionEntity);
 
 		sysPermissionEntity.setUpdateFullName(currentUser.getFullName());
 		sysPermissionEntity.setUpdateTime(OffsetDateTime.now());
@@ -77,7 +77,7 @@ public class SysPermissionController {
 		sysPermissionEntity.setUpdateFullName(currentUser.getFullName());
 		sysPermissionEntity.setUpdateTime(OffsetDateTime.now());
 
-		SysUserService.updateEntity(realSchema, SysPermission.class, sysPermissionEntity);
+		sysPermissionService.updateEntity(realSchema, SysPermission.class, sysPermissionEntity);
 
 		apiResult.setData(sysPermissionEntity);
 
@@ -92,7 +92,7 @@ public class SysPermissionController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable("id") String id, @ApiIgnore @CurrentUser SysUserEntity currentUser) {
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
-		SysUserService.deleteEntity(realSchema, SysPermission.class, id);
+		sysPermissionService.deleteEntity(realSchema, SysPermission.class, id);
 
 	}
 
@@ -104,7 +104,7 @@ public class SysPermissionController {
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 		ApiResult<SysPermissionEntity> apiResult = new ApiResult<>();
 
-		SysPermissionEntity sysPermissionEntity = SysUserService.getEntity(realSchema, SysPermission.class,
+		SysPermissionEntity sysPermissionEntity = sysPermissionService.getEntity(realSchema, SysPermission.class,
 				SysPermissionEntity.class, id);
 
 		apiResult.setData(sysPermissionEntity);
@@ -131,7 +131,7 @@ public class SysPermissionController {
 
 		queryPage.setOrders(orders);
 
-		QueryResults<SysPermissionEntity> queryResults = SysUserService.queryPage(realSchema, SysPermission.class,
+		QueryResults<SysPermissionEntity> queryResults = sysPermissionService.queryPage(realSchema, SysPermission.class,
 				SysPermissionEntity.class, queryPage);
 
 		apiResult.setData(queryResults);
