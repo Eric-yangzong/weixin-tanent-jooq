@@ -72,4 +72,15 @@ public enum Operate {
 	public Integer get() {
 		return operate;
 	}
+
+	public static Operate get(Integer operate) {
+
+		for (Operate op : Operate.values()) {
+			if (operate == op.get()) {
+				return op;
+			}
+		}
+		
+		return Operate.equals;
+	}
 }

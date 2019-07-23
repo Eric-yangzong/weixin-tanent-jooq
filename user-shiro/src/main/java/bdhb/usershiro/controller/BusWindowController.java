@@ -27,12 +27,14 @@ import com.bdhanbang.base.exception.BusinessException;
 import com.bdhanbang.base.jooq.GenSchema;
 import com.bdhanbang.base.message.CommonMessage;
 import com.bdhanbang.base.util.BeanUtils;
+import com.bdhanbang.base.util.query.Operate;
 import com.generator.tables.BusWindow;
 import com.generator.tables.pojos.BusWindowEntity;
 import com.generator.tables.pojos.SysUserEntity;
 
 import bdhb.usershiro.common.AppCommon;
 import bdhb.usershiro.common.CurrentUser;
+import bdhb.usershiro.service.SysUserService;
 import bdhb.usershiro.service.TableService;
 import bdhb.usershiro.service.impl.FWindowInfoCode;
 import springfox.documentation.annotations.ApiIgnore;
@@ -43,6 +45,9 @@ public class BusWindowController {
 
 	@Autowired
 	private TableService busWindowService;
+
+	@Autowired
+	private SysUserService sysUserService;
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -159,6 +164,22 @@ public class BusWindowController {
 			}
 		}
 
+		// 支持子查询
+		querys.forEach(x -> {
+			if (!Objects.isNull(x.getField())
+					&& (x.getField().indexOf("worker.") >= 0 || x.getField().indexOf("master.") >= 0)) {
+
+				String field = x.getField().substring(0, x.getField().indexOf("."));
+
+				Query query = new Query();
+				query.add(x.getField().substring(x.getField().indexOf(".") + 1), x.getValue(), Operate.get(x.getOp()));
+
+				x.setField(field);
+				x.setValue(sysUserService.getUserCondition(realSchema, query));
+				x.setOp(Operate.in.get());
+			}
+		});
+
 		QueryResults<BusWindowEntity> queryResults = busWindowService.queryPage(realSchema, BusWindow.class,
 				BusWindowEntity.class, queryPage);
 
@@ -199,6 +220,22 @@ public class BusWindowController {
 				break;
 			}
 		}
+
+		// 支持子查询
+		querys.forEach(x -> {
+			if (!Objects.isNull(x.getField())
+					&& (x.getField().indexOf("worker.") >= 0 || x.getField().indexOf("master.") >= 0)) {
+
+				String field = x.getField().substring(0, x.getField().indexOf("."));
+
+				Query query = new Query();
+				query.add(x.getField().substring(x.getField().indexOf(".") + 1), x.getValue(), Operate.get(x.getOp()));
+
+				x.setField(field);
+				x.setValue(sysUserService.getUserCondition(realSchema, query));
+				x.setOp(Operate.in.get());
+			}
+		});
 
 		QueryResults<BusWindowEntity> queryResults = busWindowService.queryPage(realSchema, BusWindow.class,
 				BusWindowEntity.class, queryPage);

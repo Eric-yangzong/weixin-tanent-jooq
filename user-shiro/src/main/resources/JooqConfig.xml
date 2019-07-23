@@ -2,9 +2,9 @@
 <configuration>
 	<jdbc>
 		<driver>org.postgresql.Driver</driver>
-		<url>jdbc:postgresql://10.10.168.250:5432/jiahhdb</url>
-		<user>postgres</user>
-		<password>calis@123</password>
+		<url>jdbc:postgresql://47.104.205.37:5432/eric</url>
+		<user>okapi</user>
+		<password>okapi@123</password>
 	</jdbc>
 
 	<generator>

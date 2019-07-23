@@ -71,6 +71,7 @@ public class SysUserController {
 		sysUserEntity.setUserId(UUID.randomUUID());// 设置系统的UUID
 		sysUserEntity.setUpdateFullName(currentUser.getFullName());
 		sysUserEntity.setUpdateTime(OffsetDateTime.now());
+		sysUserEntity.setTenantId(currentUser.getTenantId());
 		sysUserEntity.setPassword(AppCommon.DEFAULT_PASSWORD);
 		sysUserEntity.setSalt(String.valueOf(((Double) (Math.random() * 100)).intValue()));
 		String inPassword = DigestUtils.md5Hex(sysUserEntity.getPassword() + sysUserEntity.getSalt());
@@ -120,6 +121,8 @@ public class SysUserController {
 		if (Objects.isNull(sysUserEntity)) {
 			sysUserEntity.setTenantId(currentUser.getTenantId());
 		}
+		
+		sysUserEntity.setTenantId(currentUser.getTenantId());
 		sysUserEntity.setUpdateFullName(currentUser.getFullName());
 		sysUserEntity.setUpdateTime(OffsetDateTime.now());
 		sysUserEntity.setPassword(entity.getPassword());
