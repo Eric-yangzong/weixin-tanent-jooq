@@ -9,9 +9,6 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.javatuples.Pair;
-import org.javatuples.Tuple;
-import org.javatuples.valueintf.IValue0;
-import org.javatuples.valueintf.IValue1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -90,33 +87,34 @@ public class BusWindowController {
 
 	/**
 	 * @ClassName: PairAvatar
-	 * @Description: 接受两个值
+	 * @Description: 接受三个值
 	 * @author yangxz
 	 * @date 2019年6月6日 下午3:58:19
 	 * 
 	 * @param <A>
 	 * @param <B>
+	 * @param <C>
 	 */
-	public static class PairAvatar<A, B> extends Tuple implements IValue0<A>, IValue1<B> {
-
-		private static final long serialVersionUID = 1L;
+	public static class PairAvatar<A, B, C> {
 
 		private A value0;
 		private B value1;
+		private C value2;
 
-		@Override
+		public C getValue2() {
+			return value2;
+		}
+
+		public void setValue2(C value2) {
+			this.value2 = value2;
+		}
+
 		public B getValue1() {
 			return value1;
 		}
 
-		@Override
 		public A getValue0() {
 			return value0;
-		}
-
-		@Override
-		public int getSize() {
-			return 2;
 		}
 
 		public void setValue0(A value0) {
@@ -129,43 +127,27 @@ public class BusWindowController {
 
 	}
 
-	@RequestMapping(value = "/worker", method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/batch", method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResult<PairAvatar<UUID, List<UUID>>> updateWoker(@RequestBody PairAvatar<UUID, List<UUID>> pair,
-			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
-		ApiResult<PairAvatar<UUID, List<UUID>>> apiResult = new ApiResult<>();
+	public ApiResult<PairAvatar<UUID, UUID, List<UUID>>> updateWoker(
+			@RequestBody PairAvatar<UUID, UUID, List<UUID>> pair, @ApiIgnore @CurrentUser SysUserEntity currentUser) {
+		ApiResult<PairAvatar<UUID, UUID, List<UUID>>> apiResult = new ApiResult<>();
 
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
 		UUID workerId = pair.getValue0();
-		List<UUID> windowIds = pair.getValue1();
+		UUID masterId = pair.getValue1();
+
+		List<UUID> windowIds = pair.getValue2();
 
 		Query query = new Query();
 		query.add("id", windowIds, Operate.in);
 
-		busWindowService.updateColumn(realSchema, BusWindow.class, "worker", workerId, query);
+		Pair<String, Object> workerPairs = new Pair<String, Object>("worker", workerId);
+		Pair<String, Object> masterPairs = new Pair<String, Object>("master", masterId);
 
-		apiResult.setData(pair);
-
-		return apiResult;
-	}
-
-	@RequestMapping(value = "/master", method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
-	@ResponseStatus(HttpStatus.OK)
-	public ApiResult<PairAvatar<UUID, List<UUID>>> updateMaster(@RequestBody PairAvatar<UUID, List<UUID>> pair,
-			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
-
-		ApiResult<PairAvatar<UUID, List<UUID>>> apiResult = new ApiResult<>();
-
-		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
-
-		UUID workerId = pair.getValue0();
-		List<UUID> windowIds = pair.getValue1();
-
-		Query query = new Query();
-		query.add("id", windowIds, Operate.in);
-
-		busWindowService.updateColumn(realSchema, BusWindow.class, "master", workerId, query);
+		busWindowService.updateColumn(realSchema, BusWindow.class, query, workerPairs, masterPairs);
 
 		apiResult.setData(pair);
 
@@ -350,8 +332,10 @@ public class BusWindowController {
 	/**
 	 * @Title: addUserMessage
 	 * @Description: 增加用户信息
-	 * @param @param realSchema
-	 * @param @param busWindowEntitys 设定文件
+	 * @param @param
+	 *            realSchema
+	 * @param @param
+	 *            busWindowEntitys 设定文件
 	 * @return void 返回类型
 	 * @throws:
 	 */
@@ -369,12 +353,26 @@ public class BusWindowController {
 					SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class,
 							SysUserEntity.class, x.getWorker());
 
-					JsonNode jsonNode = x.getJsonb();
+					if (!Objects.isNull(sysUserEntity)) {
+						JsonNode jsonNode = x.getJsonb();
 
-					((ObjectNode) jsonNode).put("workerFullName", sysUserEntity.getFullName());
-					((ObjectNode) jsonNode).put("workerPhone", sysUserEntity.getPhone());
-
+						((ObjectNode) jsonNode).put("workerFullName", sysUserEntity.getFullName());
+						((ObjectNode) jsonNode).put("workerPhone", sysUserEntity.getPhone());
+					}
 				}
+
+				if (!Objects.isNull(x.getMaster())) {
+					SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class,
+							SysUserEntity.class, x.getMaster());
+
+					if (!Objects.isNull(sysUserEntity)) {
+						JsonNode jsonNode = x.getJsonb();
+
+						((ObjectNode) jsonNode).put("masterFullName", sysUserEntity.getFullName());
+						((ObjectNode) jsonNode).put("masterPhone", sysUserEntity.getPhone());
+					}
+				}
+
 			} catch (IOException e) {
 				throw new BusinessException(e, "20000", "数据转换错误");
 			}

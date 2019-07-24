@@ -3,6 +3,7 @@ package bdhb.usershiro.service;
 import java.io.Serializable;
 import java.util.List;
 
+import org.javatuples.Pair;
 import org.jooq.impl.AbstractRoutine;
 import org.jooq.impl.TableImpl;
 
@@ -22,9 +23,12 @@ public interface TableService {
 	/**
 	 * @Title: getFunctionValue
 	 * @Description: TODO(这里用一句话描述这个方法的作用)
-	 * @param @param  routine
-	 * @param @param  clazz
-	 * @param @return 设定文件
+	 * @param @param
+	 *            routine
+	 * @param @param
+	 *            clazz
+	 * @param @return
+	 *            设定文件
 	 * @return T 返回类型
 	 * @throws:
 	 */
@@ -33,10 +37,14 @@ public interface TableService {
 	/**
 	 * @Title: deleteEntity
 	 * @Description: 根据id删除数据
-	 * @param @param  schema
-	 * @param @param  clazz
-	 * @param @param  id
-	 * @param @return 设定文件
+	 * @param @param
+	 *            schema
+	 * @param @param
+	 *            clazz
+	 * @param @param
+	 *            id
+	 * @param @return
+	 *            设定文件
 	 * @return int 返回类型
 	 * @throws:
 	 */
@@ -45,10 +53,14 @@ public interface TableService {
 	/**
 	 * @Title: deleteEntitysByQuery
 	 * @Description: 根据查询结果删除
-	 * @param @param  schema
-	 * @param @param  clazz
-	 * @param @param  query
-	 * @param @return 设定文件
+	 * @param @param
+	 *            schema
+	 * @param @param
+	 *            clazz
+	 * @param @param
+	 *            query
+	 * @param @return
+	 *            设定文件
 	 * @return int 返回类型
 	 * @throws:
 	 */
@@ -57,10 +69,14 @@ public interface TableService {
 	/**
 	 * @Title: insertEntity
 	 * @Description: 写入数据库实体
-	 * @param @param  schema
-	 * @param @param  clazz
-	 * @param @param  entity
-	 * @param @return 设定文件
+	 * @param @param
+	 *            schema
+	 * @param @param
+	 *            clazz
+	 * @param @param
+	 *            entity
+	 * @param @return
+	 *            设定文件
 	 * @return int 返回类型
 	 * @throws:
 	 */
@@ -69,11 +85,15 @@ public interface TableService {
 	/**
 	 * @Title: insertEntityBatch
 	 * @Description: 批量插入实体信息
-	 * @param schema  模式
-	 * @param clazz   Q开头实体类.class
-	 * @param entitys 要插入的生成的实体类集合
+	 * @param schema
+	 *            模式
+	 * @param clazz
+	 *            Q开头实体类.class
+	 * @param entitys
+	 *            要插入的生成的实体类集合
 	 * @return int 影响行数
-	 * @throws @author guomh
+	 * @throws @author
+	 *             guomh
 	 * @date 2018年9月13日 上午9:59:58
 	 */
 	<T extends TableImpl<?>, E extends Serializable> int insertEntityBatch(String schema, Class<T> clazz,
@@ -82,26 +102,35 @@ public interface TableService {
 	/**
 	 * @Title: updateEntity
 	 * @Description: 跟新
-	 * @param @param  schema
-	 * @param @param  clazz
-	 * @param @param  entity
-	 * @param @return 设定文件
+	 * @param @param
+	 *            schema
+	 * @param @param
+	 *            clazz
+	 * @param @param
+	 *            entity
+	 * @param @return
+	 *            设定文件
 	 * @return int 返回类型
 	 * @throws:
 	 */
 	<T extends TableImpl<?>, E extends Serializable> int updateEntity(String schema, Class<T> clazz, E entity);
 
-	<T extends TableImpl<?>, E extends Serializable> int updateColumn(String schema, Class<T> clazz, String column,
-			Object value, Query query);
+	<T extends TableImpl<?>, E extends Serializable> int updateColumn(String schema, Class<T> clazz, Query query,
+			@SuppressWarnings("unchecked") Pair<String, Object>... pairs);
 
 	/**
 	 * @Title: getEntity
 	 * @Description: 得到单个实体
-	 * @param @param  schema
-	 * @param @param  clazz
-	 * @param @param  entityClass
-	 * @param @param  id
-	 * @param @return 设定文件
+	 * @param @param
+	 *            schema
+	 * @param @param
+	 *            clazz
+	 * @param @param
+	 *            entityClass
+	 * @param @param
+	 *            id
+	 * @param @return
+	 *            设定文件
 	 * @return E 返回类型
 	 * @throws:
 	 */
@@ -111,11 +140,16 @@ public interface TableService {
 	/**
 	 * @Title: queryList
 	 * @Description: 查询不分页
-	 * @param @param  schema
-	 * @param @param  clazz
-	 * @param @param  entityClass
-	 * @param @param  query
-	 * @param @return 设定文件
+	 * @param @param
+	 *            schema
+	 * @param @param
+	 *            clazz
+	 * @param @param
+	 *            entityClass
+	 * @param @param
+	 *            query
+	 * @param @return
+	 *            设定文件
 	 * @return List<E> 返回类型
 	 * @throws:
 	 */
@@ -125,11 +159,16 @@ public interface TableService {
 	/**
 	 * @Title: queryPage
 	 * @Description: 分页查询
-	 * @param @param  schema
-	 * @param @param  clazz
-	 * @param @param  entityClass
-	 * @param @param  queryPage
-	 * @param @return 设定文件
+	 * @param @param
+	 *            schema
+	 * @param @param
+	 *            clazz
+	 * @param @param
+	 *            entityClass
+	 * @param @param
+	 *            queryPage
+	 * @param @return
+	 *            设定文件
 	 * @return QueryResults<E> 返回类型
 	 * @throws:
 	 */

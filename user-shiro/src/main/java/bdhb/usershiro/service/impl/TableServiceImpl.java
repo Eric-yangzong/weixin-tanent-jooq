@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.javatuples.Pair;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.DeleteWhereStep;
@@ -26,10 +27,11 @@ import com.bdhanbang.base.common.QueryPage;
 import com.bdhanbang.base.common.QueryResults;
 import com.bdhanbang.base.exception.CurdException;
 import com.bdhanbang.base.jooq.GenSchema;
-import com.bdhanbang.base.util.JOOQHelper;
-import bdhb.usershiro.service.TableService;
 import com.bdhanbang.base.jooq.ISchemaSwitch;
 import com.bdhanbang.base.message.ErrorMessage;
+import com.bdhanbang.base.util.JOOQHelper;
+
+import bdhb.usershiro.service.TableService;
 
 @Service
 public class TableServiceImpl implements TableService {
@@ -128,15 +130,28 @@ public class TableServiceImpl implements TableService {
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T extends TableImpl<?>, E extends Serializable> int updateColumn(String schema, Class<T> clazz,
-			String column, Object value, Query query) {
+	public <T extends TableImpl<?>, E extends Serializable> int updateColumn(String schema, Class<T> clazz, Query query,
+			Pair<String, Object>... pairs) {
 		T tableImpl = createTableImpl(schema, clazz);
 
-		Field<Object> field = (Field<Object>) tableImpl.field(column);
-
 		Condition condition = JOOQHelper.analyzeQuery(tableImpl, query.getQuerys());
+		UpdateSetFirstStep updateFirstStep = dsl.update((Table) tableImpl);
+		UpdateSetMoreStep<?> updateStep = null;
+		for (int i = 0; i < pairs.length; i++) {
+			Field<Object> field = (Field<Object>) tableImpl.field(pairs[i].getValue0());
 
-		return dsl.update((Table) tableImpl).set(field, value).where(condition).execute();
+			if (Objects.isNull(updateStep)) {
+				updateStep = updateFirstStep.set(field, pairs[i].getValue1());
+			} else {
+				updateStep.set(field, pairs[i].getValue1());
+			}
+		}
+
+		if (Objects.isNull(updateStep)) {
+			return 0;
+		}
+
+		return updateStep.where(condition).execute();
 	}
 
 	@Override
@@ -207,9 +222,12 @@ public class TableServiceImpl implements TableService {
 	/**
 	 * @Title: createTableImpl
 	 * @Description: 生成jooq的tableImpl
-	 * @param @param  schema
-	 * @param @param  clazz
-	 * @param @return 设定文件
+	 * @param @param
+	 *            schema
+	 * @param @param
+	 *            clazz
+	 * @param @return
+	 *            设定文件
 	 * @return T 返回类型
 	 * @throws:
 	 */
