@@ -19,23 +19,23 @@ import com.bdhanbang.base.common.QueryResults;
  */
 public interface TableService {
 
-	/** 
-	* @Title: getFunctionValue 
-	* @Description: TODO(这里用一句话描述这个方法的作用) 
-	* @param @param routine
-	* @param @param clazz
-	* @param @return    设定文件 
-	* @return T    返回类型 
-	* @throws: 
-	*/
+	/**
+	 * @Title: getFunctionValue
+	 * @Description: TODO(这里用一句话描述这个方法的作用)
+	 * @param @param  routine
+	 * @param @param  clazz
+	 * @param @return 设定文件
+	 * @return T 返回类型
+	 * @throws:
+	 */
 	<T> T getFunctionValue(AbstractRoutine<T> routine, Class<T> clazz);
 
 	/**
 	 * @Title: deleteEntity
 	 * @Description: 根据id删除数据
-	 * @param @param schema
-	 * @param @param clazz
-	 * @param @param id
+	 * @param @param  schema
+	 * @param @param  clazz
+	 * @param @param  id
 	 * @param @return 设定文件
 	 * @return int 返回类型
 	 * @throws:
@@ -45,9 +45,9 @@ public interface TableService {
 	/**
 	 * @Title: deleteEntitysByQuery
 	 * @Description: 根据查询结果删除
-	 * @param @param schema
-	 * @param @param clazz
-	 * @param @param query
+	 * @param @param  schema
+	 * @param @param  clazz
+	 * @param @param  query
 	 * @param @return 设定文件
 	 * @return int 返回类型
 	 * @throws:
@@ -57,9 +57,9 @@ public interface TableService {
 	/**
 	 * @Title: insertEntity
 	 * @Description: 写入数据库实体
-	 * @param @param schema
-	 * @param @param clazz
-	 * @param @param entity
+	 * @param @param  schema
+	 * @param @param  clazz
+	 * @param @param  entity
 	 * @param @return 设定文件
 	 * @return int 返回类型
 	 * @throws:
@@ -82,22 +82,25 @@ public interface TableService {
 	/**
 	 * @Title: updateEntity
 	 * @Description: 跟新
-	 * @param @param schema
-	 * @param @param clazz
-	 * @param @param entity
+	 * @param @param  schema
+	 * @param @param  clazz
+	 * @param @param  entity
 	 * @param @return 设定文件
 	 * @return int 返回类型
 	 * @throws:
 	 */
 	<T extends TableImpl<?>, E extends Serializable> int updateEntity(String schema, Class<T> clazz, E entity);
 
+	<T extends TableImpl<?>, E extends Serializable> int updateColumn(String schema, Class<T> clazz, String column,
+			Object value, Query query);
+
 	/**
 	 * @Title: getEntity
 	 * @Description: 得到单个实体
-	 * @param @param schema
-	 * @param @param clazz
-	 * @param @param entityClass
-	 * @param @param id
+	 * @param @param  schema
+	 * @param @param  clazz
+	 * @param @param  entityClass
+	 * @param @param  id
 	 * @param @return 设定文件
 	 * @return E 返回类型
 	 * @throws:
@@ -108,10 +111,10 @@ public interface TableService {
 	/**
 	 * @Title: queryList
 	 * @Description: 查询不分页
-	 * @param @param schema
-	 * @param @param clazz
-	 * @param @param entityClass
-	 * @param @param query
+	 * @param @param  schema
+	 * @param @param  clazz
+	 * @param @param  entityClass
+	 * @param @param  query
 	 * @param @return 设定文件
 	 * @return List<E> 返回类型
 	 * @throws:
@@ -122,10 +125,10 @@ public interface TableService {
 	/**
 	 * @Title: queryPage
 	 * @Description: 分页查询
-	 * @param @param schema
-	 * @param @param clazz
-	 * @param @param entityClass
-	 * @param @param queryPage
+	 * @param @param  schema
+	 * @param @param  clazz
+	 * @param @param  entityClass
+	 * @param @param  queryPage
 	 * @param @return 设定文件
 	 * @return QueryResults<E> 返回类型
 	 * @throws:

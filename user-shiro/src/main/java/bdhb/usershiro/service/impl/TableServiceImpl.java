@@ -127,6 +127,19 @@ public class TableServiceImpl implements TableService {
 	}
 
 	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T extends TableImpl<?>, E extends Serializable> int updateColumn(String schema, Class<T> clazz,
+			String column, Object value, Query query) {
+		T tableImpl = createTableImpl(schema, clazz);
+
+		Field<Object> field = (Field<Object>) tableImpl.field(column);
+
+		Condition condition = JOOQHelper.analyzeQuery(tableImpl, query.getQuerys());
+
+		return dsl.update((Table) tableImpl).set(field, value).where(condition).execute();
+	}
+
+	@Override
 	public <T extends TableImpl<?>, E extends Serializable> E getEntity(String schema, Class<T> clazz,
 			Class<E> entityClass, Object id) {
 		T tableImpl = createTableImpl(schema, clazz);
@@ -194,8 +207,8 @@ public class TableServiceImpl implements TableService {
 	/**
 	 * @Title: createTableImpl
 	 * @Description: 生成jooq的tableImpl
-	 * @param @param schema
-	 * @param @param clazz
+	 * @param @param  schema
+	 * @param @param  clazz
 	 * @param @return 设定文件
 	 * @return T 返回类型
 	 * @throws:
