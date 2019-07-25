@@ -201,6 +201,8 @@ public class BusWindowController {
 		BusWindowEntity busWindowEntity = busWindowService.getEntity(realSchema, BusWindow.class, BusWindowEntity.class,
 				id);
 
+		this.addUserMessage(realSchema, busWindowEntity);
+
 		apiResult.setData(busWindowEntity);
 
 		apiResult.setStatus(CommonMessage.SUCCESS.getStatus());
@@ -258,7 +260,9 @@ public class BusWindowController {
 				BusWindowEntity.class, queryPage);
 
 		// 添加用户相关信息
-		this.addUserMessage(realSchema, queryResults.getResults());
+		queryResults.getResults().forEach(x -> {
+			this.addUserMessage(realSchema, x);
+		});
 
 		Pair<String, QueryResults<BusWindowEntity>> pair = new Pair<String, QueryResults<BusWindowEntity>>(role,
 				queryResults);
@@ -318,7 +322,9 @@ public class BusWindowController {
 				BusWindowEntity.class, queryPage);
 
 		// 添加用户相关信息
-		this.addUserMessage(realSchema, queryResults.getResults());
+		queryResults.getResults().forEach(x -> {
+			this.addUserMessage(realSchema, x);
+		});
 
 		apiResult.setData(queryResults);
 
@@ -332,51 +338,48 @@ public class BusWindowController {
 	/**
 	 * @Title: addUserMessage
 	 * @Description: 增加用户信息
-	 * @param @param
-	 *            realSchema
-	 * @param @param
-	 *            busWindowEntitys 设定文件
+	 * @param @param realSchema
+	 * @param @param x 设定文件
 	 * @return void 返回类型
 	 * @throws:
 	 */
-	private void addUserMessage(String realSchema, List<BusWindowEntity> busWindowEntitys) {
+	private void addUserMessage(String realSchema, BusWindowEntity busWindowEntity) {
+
 		ObjectMapper mapper = new ObjectMapper();
 
-		busWindowEntitys.forEach(x -> {
-			try {
+		try {
 
-				if (Objects.isNull(x.getJsonb()) || x.getJsonb().isNull()) {
-					x.setJsonb(mapper.readTree("{}"));
-				}
-
-				if (!Objects.isNull(x.getWorker())) {
-					SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class,
-							SysUserEntity.class, x.getWorker());
-
-					if (!Objects.isNull(sysUserEntity)) {
-						JsonNode jsonNode = x.getJsonb();
-
-						((ObjectNode) jsonNode).put("workerFullName", sysUserEntity.getFullName());
-						((ObjectNode) jsonNode).put("workerPhone", sysUserEntity.getPhone());
-					}
-				}
-
-				if (!Objects.isNull(x.getMaster())) {
-					SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class,
-							SysUserEntity.class, x.getMaster());
-
-					if (!Objects.isNull(sysUserEntity)) {
-						JsonNode jsonNode = x.getJsonb();
-
-						((ObjectNode) jsonNode).put("masterFullName", sysUserEntity.getFullName());
-						((ObjectNode) jsonNode).put("masterPhone", sysUserEntity.getPhone());
-					}
-				}
-
-			} catch (IOException e) {
-				throw new BusinessException(e, "20000", "数据转换错误");
+			if (Objects.isNull(busWindowEntity.getJsonb()) || busWindowEntity.getJsonb().isNull()) {
+				busWindowEntity.setJsonb(mapper.readTree("{}"));
 			}
-		});
+
+			if (!Objects.isNull(busWindowEntity.getWorker())) {
+				SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class, SysUserEntity.class,
+						busWindowEntity.getWorker());
+
+				if (!Objects.isNull(sysUserEntity)) {
+					JsonNode jsonNode = busWindowEntity.getJsonb();
+
+					((ObjectNode) jsonNode).put("workerFullName", sysUserEntity.getFullName());
+					((ObjectNode) jsonNode).put("workerPhone", sysUserEntity.getPhone());
+				}
+			}
+
+			if (!Objects.isNull(busWindowEntity.getMaster())) {
+				SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class, SysUserEntity.class,
+						busWindowEntity.getMaster());
+
+				if (!Objects.isNull(sysUserEntity)) {
+					JsonNode jsonNode = busWindowEntity.getJsonb();
+
+					((ObjectNode) jsonNode).put("masterFullName", sysUserEntity.getFullName());
+					((ObjectNode) jsonNode).put("masterPhone", sysUserEntity.getPhone());
+				}
+			}
+
+		} catch (IOException e) {
+			throw new BusinessException(e, "20000", "数据转换错误");
+		}
 	}
 
 }
