@@ -121,7 +121,7 @@ public class SysUserController {
 		if (Objects.isNull(sysUserEntity)) {
 			sysUserEntity.setTenantId(currentUser.getTenantId());
 		}
-		
+
 		sysUserEntity.setTenantId(currentUser.getTenantId());
 		sysUserEntity.setUpdateFullName(currentUser.getFullName());
 		sysUserEntity.setUpdateTime(OffsetDateTime.now());
@@ -251,6 +251,38 @@ public class SysUserController {
 		ApiResult<SysUserEntity> apiResult = new ApiResult<>();
 
 		SysUserEntity sysUserEntity = sysUserService.getEntity(realSchema, SysUser.class, SysUserEntity.class, id);
+
+		sysUserEntity.setSalt("");
+		sysUserEntity.setPassword("");
+
+		apiResult.setData(sysUserEntity);
+
+		apiResult.setStatus(CommonMessage.SUCCESS.getStatus());
+		apiResult.setMessage(CommonMessage.SUCCESS.getMessage());
+
+		return apiResult;
+
+	}
+
+	@RequestMapping(value = "wx/{openId}", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResult<SysUserEntity> getWxEntity(@PathVariable("openId") String openId,
+			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
+
+		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
+		ApiResult<SysUserEntity> apiResult = new ApiResult<>();
+
+		Query query = new Query();
+		query.add("openId", openId);
+
+		List<SysUserEntity> queryList = sysUserService.queryList(realSchema, SysUser.class, SysUserEntity.class,
+				query.getQuerys());
+
+		SysUserEntity sysUserEntity = new SysUserEntity();
+
+		if (!Objects.isNull(queryList) && queryList.size() > 0) {
+			sysUserEntity = queryList.get(0);
+		}
 
 		sysUserEntity.setSalt("");
 		sysUserEntity.setPassword("");
