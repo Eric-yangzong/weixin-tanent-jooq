@@ -15,6 +15,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UpdateSetMoreStep;
+import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,10 +35,8 @@ import com.bdhanbang.base.util.JOOQHelper;
  * @author yangxz
  * @date 2018年7月14日 上午10:51:16
  * 
- * @param <T>
- *            Q开头的查询用和tableImpl
- * @param <E>
- *            询用实体
+ * @param <T> Q开头的查询用和tableImpl
+ * @param <E> 询用实体
  */
 public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Serializable>
 		implements BaseService<T, E> {
@@ -170,6 +169,13 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 
 		selectStep.where(tableIdField.eq(id));
 
+		Integer count = dsl.select(DSL.count()).from(tableImpl).where(tableIdField.eq(id)).fetchOne()
+				.into(Integer.class);
+
+		if (count == 0) {
+			return null;
+		}
+
 		return selectStep.fetchOne().into(entityClass);
 
 	}
@@ -221,12 +227,9 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 	/**
 	 * @Title: getFieldIdValue
 	 * @Description: 得到实体的ID值
-	 * @param @param
-	 *            tableImpl
-	 * @param @param
-	 *            entity
-	 * @param @return
-	 *            设定文件
+	 * @param @param  tableImpl
+	 * @param @param  entity
+	 * @param @return 设定文件
 	 * @return Object 返回类型
 	 * @throws:
 	 */
@@ -263,10 +266,8 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 	/**
 	 * @Title: getTableIdField
 	 * @Description: 得到table的ID
-	 * @param @param
-	 *            tableImpl
-	 * @param @return
-	 *            设定文件
+	 * @param @param  tableImpl
+	 * @param @return 设定文件
 	 * @return TableField<?,Object> 返回类型
 	 * @throws:
 	 */
@@ -279,12 +280,9 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 	/**
 	 * @Title: getValueList
 	 * @Description: 得到实体的值列表
-	 * @param @param
-	 *            fields
-	 * @param @param
-	 *            entity
-	 * @param @return
-	 *            设定文件
+	 * @param @param  fields
+	 * @param @param  entity
+	 * @param @return 设定文件
 	 * @return List<Object> 返回类型
 	 * @throws:
 	 */
@@ -311,12 +309,9 @@ public class BaseServiceImpl<T extends TableImpl<? extends Record>, E extends Se
 	/**
 	 * @Title: createTableImpl
 	 * @Description: 生成jooq的tableImpl
-	 * @param @param
-	 *            schema
-	 * @param @param
-	 *            clazz
-	 * @param @return
-	 *            设定文件
+	 * @param @param  schema
+	 * @param @param  clazz
+	 * @param @return 设定文件
 	 * @return T 返回类型
 	 * @throws:
 	 */
