@@ -37,6 +37,7 @@ import com.bdhanbang.base.util.AES;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.generator.tables.SysUser;
 import com.generator.tables.WxConfig;
 import com.generator.tables.WxUserInfo;
@@ -109,7 +110,19 @@ public class LoginController {
 			String token = JwtUtils.createToken(claims);
 
 			// 保存用户信息
-			saveUserinfo(tenantId, userinfo);
+			SysUserEntity sysUserEntity = saveUserinfo(tenantId, userinfo);
+
+			ObjectMapper mapper = new ObjectMapper();
+
+			if (Objects.isNull(userinfo.getJsonb()) || userinfo.getJsonb().isNull()) {
+				userinfo.setJsonb(mapper.readTree("{}"));
+			}
+
+			if (Objects.isNull(sysUserEntity.getRoles()) || sysUserEntity.getRoles().length == 0) {
+				((ObjectNode) userinfo.getJsonb()).put("roles", "");
+			} else {
+				((ObjectNode) userinfo.getJsonb()).put("roles", sysUserEntity.getRoles()[0]);
+			}
 
 			data.setToken(token);
 			data.setUserinfo(userinfo);
@@ -131,7 +144,7 @@ public class LoginController {
 
 	}
 
-	private void saveUserinfo(String tenantId, WxUserInfoEntity userinfo) {
+	private SysUserEntity saveUserinfo(String tenantId, WxUserInfoEntity userinfo) {
 
 		String realSchema = tenantId + AppCommon.scheam;
 
@@ -145,9 +158,10 @@ public class LoginController {
 		List<SysUserEntity> sysUsers = sysUserService.queryList(realSchema, SysUser.class, SysUserEntity.class,
 				query.getQuerys());
 
+		SysUserEntity sysUser = new SysUserEntity();
+
 		// 把微信用户和系统用户关联
 		if (Objects.isNull(sysUsers) || sysUsers.size() == 0) {
-			SysUserEntity sysUser = new SysUserEntity();
 
 			sysUser.setUserId(UUID.randomUUID());
 			sysUser.setTenantId(tenantId);
@@ -161,6 +175,8 @@ public class LoginController {
 
 			tableService.insertEntity(realSchema, SysUser.class, sysUser);
 
+		} else {
+			sysUser = sysUsers.get(0);
 		}
 
 		// 保存用户信息
@@ -178,6 +194,8 @@ public class LoginController {
 			tableService.updateEntity(realSchema, WxUserInfo.class, userinfo);
 
 		}
+
+		return sysUser;
 
 	}
 
@@ -219,7 +237,7 @@ public class LoginController {
 		ObjectMapper mapper = new ObjectMapper();
 		// 没有的值不要
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		
+
 		WeXinLogin w = mapper.readValue(inputStream, WeXinLogin.class);
 		inputStream.close();
 		httpClient.close();

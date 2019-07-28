@@ -190,6 +190,8 @@ public class SysUserController {
 		sysUserEntity.setSalt(String.valueOf(((Double) (Math.random() * 100)).intValue()));
 		String inPassword = DigestUtils.md5Hex(AppCommon.DEFAULT_PASSWORD + sysUserEntity.getSalt());
 		sysUserEntity.setPassword(inPassword);
+		
+		sysUserService.updateEntity(realSchema, SysUser.class, sysUserEntity);
 
 		apiResult.setData("密码重置成功！");
 
