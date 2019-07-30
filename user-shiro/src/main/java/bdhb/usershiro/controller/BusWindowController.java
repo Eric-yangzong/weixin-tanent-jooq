@@ -12,6 +12,7 @@ import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -130,6 +131,7 @@ public class BusWindowController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/batch", method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
 	@ResponseStatus(HttpStatus.OK)
+	@Transactional
 	public ApiResult<PairAvatar<UUID, UUID, List<UUID>>> updateWoker(
 			@RequestBody PairAvatar<UUID, UUID, List<UUID>> pair, @ApiIgnore @CurrentUser SysUserEntity currentUser) {
 		ApiResult<PairAvatar<UUID, UUID, List<UUID>>> apiResult = new ApiResult<>();
@@ -147,7 +149,13 @@ public class BusWindowController {
 		Pair<String, Object> workerPairs = new Pair<String, Object>("worker", workerId);
 		Pair<String, Object> masterPairs = new Pair<String, Object>("master", masterId);
 
-		busWindowService.updateColumn(realSchema, BusWindow.class, query, workerPairs, masterPairs);
+		if (!Objects.isNull(workerId)) {
+			busWindowService.updateColumn(realSchema, BusWindow.class, query, workerPairs);
+		}
+
+		if (!Objects.isNull(masterId)) {
+			busWindowService.updateColumn(realSchema, BusWindow.class, query, masterPairs);
+		}
 
 		apiResult.setData(pair);
 
@@ -224,19 +232,23 @@ public class BusWindowController {
 		String role = "";
 		List<Query> querys = queryPage.getQuerys();
 
-		if (Objects.isNull(roles)) {
-			throw new BusinessException("20000", "权限为空不可查询业务数据");
-		}
+		if (Objects.isNull(roles) || roles.length == 0) {
+			querys.add(new Query("worker", currentUser.getUserId()));
+		} else {
 
-		for (int i = 0; i < roles.length; i++) {
-			if (AppCommon.master.equals(roles[i])) {
-				querys.add(new Query("master", currentUser.getUserId()));
-				role = roles[i];
-				break;
-			} else if (AppCommon.worker.equals(roles[i])) {
-				querys.add(new Query("worker", currentUser.getUserId()));
-				role = roles[i];
-				break;
+			for (int i = 0; i < roles.length; i++) {
+				if (AppCommon.master.equals(roles[i])) {
+					querys.add(new Query("master", currentUser.getUserId()));
+					role = roles[i];
+					break;
+				} else if (AppCommon.worker.equals(roles[i])) {
+					querys.add(new Query("worker", currentUser.getUserId()));
+					role = roles[i];
+					break;
+				} else if ("".equals(roles[i])) {
+					querys.add(new Query("worker", currentUser.getUserId()));
+					break;
+				}
 			}
 		}
 
@@ -288,17 +300,21 @@ public class BusWindowController {
 		String[] roles = currentUser.getRoles();
 		List<Query> querys = queryPage.getQuerys();
 
-		if (Objects.isNull(roles)) {
-			throw new BusinessException("20000", "权限为空不可查询业务数据");
-		}
+		if (Objects.isNull(roles) || roles.length == 0) {
+			querys.add(new Query("worker", currentUser.getUserId()));
+		} else {
 
-		for (int i = 0; i < roles.length; i++) {
-			if (AppCommon.master.equals(roles[i])) {
-				querys.add(new Query("master", currentUser.getUserId()));
-				break;
-			} else if (AppCommon.worker.equals(roles[i])) {
-				querys.add(new Query("worker", currentUser.getUserId()));
-				break;
+			for (int i = 0; i < roles.length; i++) {
+				if (AppCommon.master.equals(roles[i])) {
+					querys.add(new Query("master", currentUser.getUserId()));
+					break;
+				} else if (AppCommon.worker.equals(roles[i])) {
+					querys.add(new Query("worker", currentUser.getUserId()));
+					break;
+				} else if ("".equals(roles[i])) {
+					querys.add(new Query("worker", currentUser.getUserId()));
+					break;
+				}
 			}
 		}
 
@@ -338,8 +354,10 @@ public class BusWindowController {
 	/**
 	 * @Title: addUserMessage
 	 * @Description: 增加用户信息
-	 * @param @param realSchema
-	 * @param @param x 设定文件
+	 * @param @param
+	 *            realSchema
+	 * @param @param
+	 *            x 设定文件
 	 * @return void 返回类型
 	 * @throws:
 	 */
