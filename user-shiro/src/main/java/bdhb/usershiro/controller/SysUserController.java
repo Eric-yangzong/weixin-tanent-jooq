@@ -11,6 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,14 +28,11 @@ import com.bdhanbang.base.common.QueryResults;
 import com.bdhanbang.base.exception.BusinessException;
 import com.bdhanbang.base.message.CommonMessage;
 import com.generator.tables.SysUser;
-import com.generator.tables.WxUserInfo;
 import com.generator.tables.pojos.SysUserEntity;
-import com.generator.tables.pojos.WxUserInfoEntity;
 
 import bdhb.usershiro.common.AppCommon;
 import bdhb.usershiro.common.CurrentUser;
 import bdhb.usershiro.service.SysUserService;
-import bdhb.usershiro.service.TableService;
 import bdhb.usershiro.vo.NewPassword;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -44,9 +42,6 @@ public class SysUserController {
 
 	@Autowired
 	private SysUserService sysUserService;
-
-	@Autowired
-	private TableService tableService;
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -190,7 +185,7 @@ public class SysUserController {
 		sysUserEntity.setSalt(String.valueOf(((Double) (Math.random() * 100)).intValue()));
 		String inPassword = DigestUtils.md5Hex(AppCommon.DEFAULT_PASSWORD + sysUserEntity.getSalt());
 		sysUserEntity.setPassword(inPassword);
-		
+
 		sysUserService.updateEntity(realSchema, SysUser.class, sysUserEntity);
 
 		apiResult.setData("密码重置成功！");
@@ -204,30 +199,43 @@ public class SysUserController {
 
 	@RequestMapping(value = "wx", method = RequestMethod.PUT, produces = { "application/json;charset=UTF-8" })
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResult<WxUserInfoEntity> updateWx(@RequestBody WxUserInfoEntity wxUserInfo,
+	@Transactional
+	public ApiResult<SysUserEntity> updateWx(@RequestBody SysUserEntity sysUserEntity,
 			@ApiIgnore @CurrentUser SysUserEntity currentUser) {
 
 		String realSchema = currentUser.getTenantId() + AppCommon.scheam;
 
-		ApiResult<WxUserInfoEntity> apiResult = new ApiResult<>();
+		ApiResult<SysUserEntity> apiResult = new ApiResult<>();
 
-		tableService.updateEntity(realSchema, WxUserInfo.class, wxUserInfo);
+		// 说明是微信更新
+		if (currentUser.getUserName().equals(currentUser.getOpenId())) {
+			Query query = new Query();
 
-		Query query = new Query();
+			query.add("userName", sysUserEntity.getUserName());
 
-		query.add("openId", wxUserInfo.getOpenId());
+			List<SysUserEntity> queryList = sysUserService.queryList(realSchema, SysUser.class, SysUserEntity.class,
+					query.getQuerys());
 
-		List<SysUserEntity> queryList = sysUserService.queryList(realSchema, SysUser.class, SysUserEntity.class,
-				query.getQuerys());
+			if (!Objects.isNull(queryList) && queryList.size() == 1) {
+				currentUser.setRoles(queryList.get(0).getRoles());
+				currentUser.setUserName(sysUserEntity.getUserName());
+				currentUser.setPhone(sysUserEntity.getPhone());
 
-		if (!Objects.isNull(queryList) && queryList.size() > 0) {
-			SysUserEntity sysUserEntity = queryList.get(0);
-			sysUserEntity.setFullName(wxUserInfo.getNickName());
+				// 更新当前用户信息
+				sysUserService.updateEntity(realSchema, SysUser.class, currentUser);
 
-			sysUserService.updateEntity(realSchema, SysUser.class, sysUserEntity);
+				// 并删除管理员录入的信息
+				sysUserService.deleteEntity(realSchema, SysUser.class, queryList.get(0).getUserId());
+			} else {
+				throw new BusinessException("20000", "数据存在问题请联系管理员！");
+			}
 		}
 
-		apiResult.setData(wxUserInfo);
+		// 数据脱敏
+		currentUser.setPassword("");
+		currentUser.setSalt("");
+
+		apiResult.setData(currentUser);
 
 		apiResult.setStatus(CommonMessage.UPDATE.getStatus());
 		apiResult.setMessage(CommonMessage.UPDATE.getMessage());
