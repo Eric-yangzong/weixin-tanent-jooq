@@ -207,10 +207,6 @@ public class SysUserController {
 
 		ApiResult<SysUserEntity> apiResult = new ApiResult<>();
 
-		if (sysUserEntity.getUserId().equals(currentUser.getUserId())) {
-			throw new BusinessException("20000", "请录入有效的用户名！");
-		}
-
 		// 说明是微信更新
 		if (currentUser.getUserName().equals(currentUser.getOpenId())) {
 			Query query = new Query();
@@ -221,7 +217,13 @@ public class SysUserController {
 					query.getQuerys());
 
 			if (!Objects.isNull(queryList) && queryList.size() == 1) {
-				currentUser.setRoles(queryList.get(0).getRoles());
+				SysUserEntity sysUserEntityAdmin = queryList.get(0);
+
+				if (sysUserEntityAdmin.getUserId().equals(currentUser.getUserId())) {
+					throw new BusinessException("20000", "请录入有效的用户名！");
+				}
+
+				currentUser.setRoles(sysUserEntityAdmin.getRoles());
 				currentUser.setUserName(sysUserEntity.getUserName());
 				currentUser.setPhone(sysUserEntity.getPhone());
 
@@ -229,7 +231,7 @@ public class SysUserController {
 				sysUserService.updateEntity(realSchema, SysUser.class, currentUser);
 
 				// 并删除管理员录入的信息
-				sysUserService.deleteEntity(realSchema, SysUser.class, queryList.get(0).getUserId());
+				sysUserService.deleteEntity(realSchema, SysUser.class, sysUserEntityAdmin.getUserId());
 			} else {
 				throw new BusinessException("20000", "数据存在问题请联系管理员！");
 			}
