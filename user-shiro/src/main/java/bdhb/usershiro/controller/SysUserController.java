@@ -207,6 +207,10 @@ public class SysUserController {
 
 		ApiResult<SysUserEntity> apiResult = new ApiResult<>();
 
+		if (sysUserEntity.getUserId().equals(currentUser.getUserId())) {
+			throw new BusinessException("20000", "请录入有效的用户名！");
+		}
+
 		// 说明是微信更新
 		if (currentUser.getUserName().equals(currentUser.getOpenId())) {
 			Query query = new Query();
