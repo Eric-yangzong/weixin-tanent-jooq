@@ -6,5 +6,6 @@
 **/.settings
 */logs
 **/target
-*.class
+**/*.class
+**/*.jar
 **/generator
