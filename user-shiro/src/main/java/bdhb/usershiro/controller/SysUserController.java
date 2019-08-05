@@ -219,10 +219,6 @@ public class SysUserController {
 			if (!Objects.isNull(queryList) && queryList.size() == 1) {
 				SysUserEntity sysUserEntityAdmin = queryList.get(0);
 
-				if (sysUserEntityAdmin.getUserId().equals(currentUser.getUserId())) {
-					throw new BusinessException("20000", "请录入有效的用户名!");
-				}
-
 				currentUser.setRoles(sysUserEntityAdmin.getRoles());
 				currentUser.setUserName(sysUserEntity.getUserName());
 				currentUser.setPhone(sysUserEntity.getPhone());
@@ -230,11 +226,24 @@ public class SysUserController {
 				// 更新当前用户信息
 				sysUserService.updateEntity(realSchema, SysUser.class, currentUser);
 
-				// 并删除管理员录入的信息
-				sysUserService.deleteEntity(realSchema, SysUser.class, sysUserEntityAdmin.getUserId());
+				if (!sysUserEntityAdmin.getUserId().equals(currentUser.getUserId())) {
+					// 并删除管理员录入的信息
+					sysUserService.deleteEntity(realSchema, SysUser.class, sysUserEntityAdmin.getUserId());
+					apiResult.setMessage("请重新登录小程序以获管理员分配的角色权限!");
+				} else {
+					apiResult.setMessage("请联系管理员并提供账号信息，以便分配角色，待角色分配后，重新登录小程序!");
+				}
+
 			} else {
-				throw new BusinessException("20000", "请联系管理员并提供账号信息，以便分配角色，待角色分配后，重新登录小程序!");
+
+				currentUser.setUserName(sysUserEntity.getUserName());
+				currentUser.setPhone(sysUserEntity.getPhone());
+				sysUserService.updateEntity(realSchema, SysUser.class, currentUser);
+
+				apiResult.setMessage("请联系管理员并提供账号信息，以便分配角色，待角色分配后，重新登录小程序!");
 			}
+		} else {
+			apiResult.setMessage("请联系管理员并提供账号信息，以便分配角色，待角色分配后，重新登录小程序!");
 		}
 
 		// 数据脱敏
@@ -244,7 +253,6 @@ public class SysUserController {
 		apiResult.setData(currentUser);
 
 		apiResult.setStatus(CommonMessage.UPDATE.getStatus());
-		apiResult.setMessage("请重新登录小程序以获管理员分配的角色权限!");
 
 		return apiResult;
 
