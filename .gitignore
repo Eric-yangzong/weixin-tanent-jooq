@@ -2,9 +2,10 @@
 /.recommenders/
 
 **/.classpath
-*/.project
+**/.project
 **/.settings
-*/logs
+**/logs
 **/target
-*.class
+**.class
+**.jar
 **/generator
